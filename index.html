@@ -14,6 +14,8 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- html2pdf.js CDN for Client-Side PDF Generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
   <!-- Google Fonts: Noto Sans Gujarati & Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -367,9 +369,10 @@
               <h2 class="text-sm font-bold text-stone-900">સ્ટોક સિલક રજિસ્ટર (Stock Register)</h2>
               <p class="text-[11px] text-stone-500">Opening + Inward - Consumed = Closing</p>
             </div>
-            <button onclick="downloadReport()" class="flex items-center gap-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 px-2.5 py-1 rounded-xl text-xs font-bold shadow-2xs cursor-pointer">
-              <i data-lucide="printer" class="w-3.5 h-3.5"></i>
-              <span>રિપોર્ટ ડાઉનલોડ કરો</span>
+            <!-- Open Export Modal Button -->
+            <button onclick="openExportModal()" class="flex items-center gap-1.5 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold shadow-xs cursor-pointer active:scale-95 transition-all">
+              <i data-lucide="download" class="w-3.5 h-3.5"></i>
+              <span>રિપોર્ટ ડાઉનલોડ</span>
             </button>
           </div>
 
@@ -456,6 +459,98 @@
           <span>લોગઆઉટ</span>
         </button>
       </div>
+    </div>
+  </div>
+
+  <!-- Export Report Modal (PDF & TXT Options) -->
+  <div id="exportModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-5 w-full max-w-xs shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-stone-100 pb-2">
+        <h3 class="text-sm font-bold text-stone-900 flex items-center gap-1.5">
+          <i data-lucide="file-down" class="w-4 h-4 text-amber-600"></i>
+          <span>રિપોર્ટ ડાઉનલોડ ફોર્મેટ</span>
+        </h3>
+        <button onclick="closeExportModal()" class="text-stone-400 hover:text-stone-600"><i data-lucide="x" class="w-4 h-4"></i></button>
+      </div>
+
+      <p class="text-xs text-stone-600 leading-relaxed">
+        તમે આંગણવાડી સ્ટોક અને સિલક રજિસ્ટર (Form 4) PDF અથવા સાદા ટેક્સ્ટ ફોર્મેટમાં સેવ કરી શકો છો.
+      </p>
+
+      <div class="space-y-2 pt-1">
+        <!-- PDF Download Button -->
+        <button onclick="generatePdfReport()" id="btnGeneratePdf" class="w-full py-2.5 bg-gradient-to-r from-rose-600 to-amber-600 hover:from-rose-700 hover:to-amber-700 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-2 shadow-sm active:scale-98 transition-transform cursor-pointer">
+          <i data-lucide="file-text" class="w-4 h-4"></i>
+          <span>PDF ડાઉનલોડ કરો (Official PDF)</span>
+        </button>
+
+        <!-- Plain Text Download Button -->
+        <button onclick="downloadTextReport()" class="w-full py-2 bg-stone-100 hover:bg-stone-200 text-stone-700 font-semibold rounded-xl text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer">
+          <i data-lucide="file-code" class="w-3.5 h-3.5"></i>
+          <span>સાદો ટેક્સ્ટ ડાઉનલોડ કરો (.TXT)</span>
+        </button>
+      </div>
+
+      <button onclick="closeExportModal()" class="w-full py-2 text-stone-400 hover:text-stone-600 font-medium text-xs text-center">
+        રદ કરો
+      </button>
+    </div>
+  </div>
+
+  <!-- Off-Screen Container for Generating High-Quality Printable PDF -->
+  <div id="pdfPrintableTemplate" class="hidden" style="width: 750px; background: #ffffff; color: #1c1917; font-family: 'Noto Sans Gujarati', sans-serif; padding: 28px;">
+    <!-- PDF Header -->
+    <div style="border-bottom: 2px solid #b45309; padding-bottom: 14px; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        <h1 style="font-size: 20px; font-weight: 800; color: #b45309; margin: 0 0 4px 0;">પોષણ સેતુ - આંગણવાડી સ્ટોક રજિસ્ટર (Form 4)</h1>
+        <p style="font-size: 12px; color: #57534e; margin: 0;">મહિલા અને બાળ વિકાસ વિભાગ, ગુજરાત સરકાર (ICDS યોજના)</p>
+      </div>
+      <div style="text-align: right; font-size: 11px; color: #44403c;">
+        <p style="margin: 0; font-weight: 700;">રિપોર્ટ તારીખ: <span id="pdfDateStamp"></span></p>
+        <p style="margin: 2px 0 0 0;">સમય: <span id="pdfTimeStamp"></span></p>
+      </div>
+    </div>
+
+    <!-- Center & Supervisor Info Box -->
+    <div style="background-color: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 12px 16px; margin-bottom: 20px; display: flex; justify-content: space-between; font-size: 12px;">
+      <div>
+        <p style="margin: 0 0 4px 0;"><strong>સેન્ટરનું નામ:</strong> AWC #42 - આણંદનગર (મહેસાણા)</p>
+        <p style="margin: 0;"><strong>સુપરવાઇઝર / કાર્યકર:</strong> અમિત પટેલ (Amit Patel)</p>
+      </div>
+      <div style="text-align: right;">
+        <p style="margin: 0 0 4px 0;"><strong>સ્થાનિક વહીવટ:</strong> મહેસાણા જિલ્લો</p>
+        <p style="margin: 0;"><strong>પ્રમાણપત્ર:</strong> સત્તાવાર સ્ટોક વિગત</p>
+      </div>
+    </div>
+
+    <!-- Stock Data Table -->
+    <table style="width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 28px;">
+      <thead>
+        <tr style="background-color: #f5f5f4; border-top: 1px solid #d6d3d1; border-bottom: 2px solid #d6d3d1;">
+          <th style="padding: 10px 8px; text-align: left; font-weight: 700; color: #292524;">સામગ્રી (Commodity)</th>
+          <th style="padding: 10px 8px; text-align: center; font-weight: 700; color: #292524;">શરૂઆતનો સ્ટોક</th>
+          <th style="padding: 10px 8px; text-align: center; font-weight: 700; color: #047857;">કુલ આવક (+)</th>
+          <th style="padding: 10px 8px; text-align: center; font-weight: 700; color: #b91c1c;">કુલ વપરાશ (-)</th>
+          <th style="padding: 10px 8px; text-align: right; font-weight: 800; color: #1c1917;">હાજર સિલક (Closing)</th>
+        </tr>
+      </thead>
+      <tbody id="pdfStockTableRows"></tbody>
+    </table>
+
+    <!-- Signature and Footer Box -->
+    <div style="margin-top: 40px; display: flex; justify-content: space-between; font-size: 12px; color: #44403c; padding-top: 20px; border-top: 1px dashed #d6d3d1;">
+      <div style="width: 200px; text-align: center;">
+        <div style="border-bottom: 1px solid #78716c; height: 35px; margin-bottom: 6px;"></div>
+        <p style="margin: 0; font-weight: 600;">આંગણવાડી કાર્યકરની સહી</p>
+      </div>
+      <div style="width: 200px; text-align: center;">
+        <div style="border-bottom: 1px solid #78716c; height: 35px; margin-bottom: 6px;"></div>
+        <p style="margin: 0; font-weight: 600;">મુખ્ય સેવિકા / CDPO સહી</p>
+      </div>
+    </div>
+
+    <div style="margin-top: 30px; text-align: center; font-size: 10px; color: #a8a29e;">
+      આ કોમ્પ્યુટરાઈઝ્ડ ઈન્વેન્ટરી દસ્તાવેજ પોષણ સેતુ સિસ્ટમ દ્વારા જનરેટ કરવામાં આવેલ છે.
     </div>
   </div>
 
@@ -946,7 +1041,73 @@
     function openProfileModal() { document.getElementById('profileModal').classList.remove('hidden'); }
     function closeProfileModal() { document.getElementById('profileModal').classList.add('hidden'); }
 
-    function downloadReport() {
+    // Export Modal Controls
+    function openExportModal() {
+      document.getElementById('exportModal').classList.remove('hidden');
+    }
+    function closeExportModal() {
+      document.getElementById('exportModal').classList.add('hidden');
+    }
+
+    // PDF Generator using html2pdf.js
+    function generatePdfReport() {
+      const btn = document.getElementById('btnGeneratePdf');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>પીડીએફ બની રહી છે...</span>`;
+      lucide.createIcons();
+
+      // Populate printable template with fresh data
+      const now = new Date();
+      document.getElementById('pdfDateStamp').innerText = now.toLocaleDateString('gu-IN', { day: '2-digit', month: '2-digit', year: 'numeric' });
+      document.getElementById('pdfTimeStamp').innerText = now.toLocaleTimeString('gu-IN', { hour: '2-digit', minute: '2-digit' });
+
+      const inv = getStoredInventory();
+      const rowsContainer = document.getElementById('pdfStockTableRows');
+      rowsContainer.innerHTML = '';
+
+      Object.values(inv).forEach((item, index) => {
+        const com = COMMODITIES[item.code] || { nameGu: item.code, unitGu: item.unit };
+        const tr = document.createElement('tr');
+        tr.style.backgroundColor = index % 2 === 0 ? '#ffffff' : '#fafaf9';
+        tr.style.borderBottom = '1px solid #e7e5e4';
+        tr.innerHTML = `
+          <td style="padding: 9px 8px; font-weight: 700; color: #1c1917;">${com.nameGu} (${com.unitGu})</td>
+          <td style="padding: 9px 8px; text-align: center; color: #44403c;">${item.opening}</td>
+          <td style="padding: 9px 8px; text-align: center; font-weight: 700; color: #047857;">+${item.received}</td>
+          <td style="padding: 9px 8px; text-align: center; font-weight: 700; color: #b91c1c;">-${item.consumed}</td>
+          <td style="padding: 9px 8px; text-align: right; font-weight: 800; color: #1c1917; font-size: 13px;">${item.closing}</td>
+        `;
+        rowsContainer.appendChild(tr);
+      });
+
+      const element = document.getElementById('pdfPrintableTemplate');
+      element.classList.remove('hidden');
+
+      const opt = {
+        margin: [10, 10, 10, 10],
+        filename: `PoshanSetu-AWC42-${now.toISOString().slice(0, 10)}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      html2pdf().set(opt).from(element).save().then(() => {
+        element.classList.add('hidden');
+        btn.innerHTML = originalText;
+        closeExportModal();
+        lucide.createIcons();
+        showSyncToast('✅ PDF સફળતાપૂર્વક ડાઉનલોડ થઈ ગઈ!');
+      }).catch((err) => {
+        console.error(err);
+        element.classList.add('hidden');
+        btn.innerHTML = originalText;
+        alert('PDF બનાવવામાં ભૂલ આવી, કૃપા કરીને ફરી પ્રયત્ન કરો.');
+        lucide.createIcons();
+      });
+    }
+
+    // Plain Text Report Download (.TXT)
+    function downloadTextReport() {
       const inv = getStoredInventory();
       let text = "========================================================\nપોષણ સેતુ - આંગણવાડી સ્ટોક અને સિલક રજિસ્ટર (Form 4)\n";
       text += `AWC: #42 આણંદનગર, મહેસાણા | કાર્યકર: અમિત પટેલ\nતારીખ: ${new Date().toLocaleDateString('gu-IN')}\n`;
@@ -960,6 +1121,7 @@
       a.href = URL.createObjectURL(blob);
       a.download = `PoshanSetu-AWC42-Report-${new Date().toISOString().slice(0, 10)}.txt`;
       a.click();
+      closeExportModal();
     }
 
     window.addEventListener('DOMContentLoaded', () => {
