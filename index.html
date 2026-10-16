@@ -47,14 +47,14 @@
     <!-- ================= LOGIN SCREEN OVERLAY ================= -->
     <div id="loginOverlay" class="absolute inset-0 z-50 bg-gradient-to-b from-amber-800 via-amber-900 to-stone-900 flex flex-col justify-between p-6">
       
-      <!-- Top Branding -->
-      <div class="pt-8 text-center space-y-2">
-        <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-amber-400 to-orange-500 mx-auto flex items-center justify-center shadow-lg border-2 border-amber-300/40">
-          <i data-lucide="wheat" class="w-9 h-9 text-white"></i>
+      <!-- Top Branding with Poshan Setu Logo -->
+      <div class="pt-6 text-center space-y-2">
+        <div class="w-20 h-20 rounded-3xl bg-white p-2 mx-auto flex items-center justify-center shadow-xl border-2 border-amber-300/60 overflow-hidden">
+          <img src="poshansetu logo.jpg" alt="Poshan Setu Logo" class="w-full h-full object-contain" />
         </div>
-        <h1 class="text-2xl font-extrabold text-white tracking-tight pt-2" data-i18n="appName">પોષણ સેતુ</h1>
+        <h1 class="text-2xl font-extrabold text-white tracking-tight pt-1" data-i18n="appName">પોષણ સેતુ</h1>
         <p class="text-xs text-amber-200/90 font-medium" data-i18n="appSub">આંગણવાડી અન્ન અને પોષણ વ્યવસ્થાપન સિસ્ટમ</p>
-        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-[11px] text-amber-100 mt-2">
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-[11px] text-amber-100 mt-1">
           <i data-lucide="map-pin" class="w-3.5 h-3.5 text-amber-300"></i>
           <span data-i18n="deptTag">ICDS - ગુજરાત સરકાર</span>
         </div>
@@ -155,7 +155,7 @@
         </div>
 
         <div class="flex items-center gap-2 shrink-0">
-          <!-- Status Pill: 🟢 Online (Synced) or 🟡 Offline (Stored Locally) -->
+          <!-- Status Pill -->
           <button id="onlineStatusBadge" onclick="toggleNetworkSimulation()" class="px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-wide transition-all shadow-xs flex items-center gap-1 cursor-pointer bg-emerald-600 text-white border border-emerald-400" title="નેટવર્ક સ્થિતિ (ટેસ્ટ કરવા ક્લિક કરો)">
             <span id="onlineBadgeText">🟢 ઓનલાઇન (Synced)</span>
           </button>
@@ -170,9 +170,10 @@
 
       <!-- Main Header Bar: Brand Logo & User Profile (Amit Patel) -->
       <div class="px-3.5 py-2 flex items-center justify-between gap-2">
-        <div class="flex items-center gap-2">
-          <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-500 to-orange-400 p-0.5 shadow-sm flex items-center justify-center">
-            <i data-lucide="wheat" class="w-5 h-5 text-white"></i>
+        <div class="flex items-center gap-2.5">
+          <!-- Poshan Setu Image Logo -->
+          <div class="w-9 h-9 rounded-xl bg-white p-1 shadow-sm flex items-center justify-center shrink-0 border border-amber-400/40 overflow-hidden">
+            <img src="poshansetu logo.jpg" alt="Poshan Setu Logo" class="w-full h-full object-contain" />
           </div>
           <div>
             <h1 class="text-base font-extrabold tracking-tight leading-none text-white flex items-center gap-1.5">
@@ -183,7 +184,7 @@
           </div>
         </div>
 
-        <!-- Amit Patel User Profile Card -->
+        <!-- User Profile Card -->
         <div class="flex items-center gap-2 bg-black/20 hover:bg-black/30 px-2 py-1 rounded-xl border border-white/10 transition-colors cursor-pointer" onclick="openProfileModal()">
           <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" alt="Amit Patel" class="w-7 h-7 rounded-full object-cover border border-amber-300" />
           <div class="text-left hidden xs:block">
@@ -237,7 +238,7 @@
               </div>
             </div>
 
-            <!-- Quick Add Pills (+10, +25, +50) -->
+            <!-- Quick Add Pills (+10, +25, +50, +100) -->
             <div class="flex items-center gap-1.5 mt-2">
               <span class="text-[10px] font-bold text-stone-500" data-i18n="quickAdd">ઝડપી ઉમેરો:</span>
               <button onclick="quickAddInward(10)" class="px-2 py-0.5 rounded-md text-xs font-bold bg-white text-amber-800 border border-amber-200 hover:bg-amber-100 shadow-2xs cursor-pointer">+10</button>
@@ -500,11 +501,14 @@
 
   <!-- Off-Screen Container for Generating High-Quality Printable PDF -->
   <div id="pdfPrintableTemplate" class="hidden" style="width: 750px; background: #ffffff; color: #1c1917; font-family: 'Noto Sans Gujarati', sans-serif; padding: 28px;">
-    <!-- PDF Header -->
+    <!-- PDF Header with Official Poshan Setu Logo -->
     <div style="border-bottom: 2px solid #b45309; padding-bottom: 14px; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center;">
-      <div>
-        <h1 id="pdfHeaderTitle" style="font-size: 20px; font-weight: 800; color: #b45309; margin: 0 0 4px 0;">પોષણ સેતુ - આંગણવાડી સ્ટોક રજિસ્ટર (Form 4)</h1>
-        <p id="pdfHeaderDept" style="font-size: 12px; color: #57534e; margin: 0;">મહિલા અને બાળ વિકાસ વિભાગ, ગુજરાત સરકાર (ICDS યોજના)</p>
+      <div style="display: flex; align-items: center; gap: 14px;">
+        <img src="poshansetu logo.jpg" alt="Poshan Setu Logo" style="width: 52px; height: 52px; object-fit: contain; border-radius: 8px; border: 1px solid #fde68a;" />
+        <div>
+          <h1 id="pdfHeaderTitle" style="font-size: 20px; font-weight: 800; color: #b45309; margin: 0 0 4px 0;">પોષણ સેતુ - આંગણવાડી સ્ટોક રજિસ્ટર (Form 4)</h1>
+          <p id="pdfHeaderDept" style="font-size: 12px; color: #57534e; margin: 0;">મહિલા અને બાળ વિકાસ વિભાગ, ગુજરાત સરકાર (ICDS યોજના)</p>
+        </div>
       </div>
       <div style="text-align: right; font-size: 11px; color: #44403c;">
         <p style="margin: 0; font-weight: 700;"><span id="pdfDateLabel">તારીખ:</span> <span id="pdfDateStamp"></span></p>
@@ -766,7 +770,6 @@
       currentLang = lang;
       const dict = TRANSLATIONS[lang];
 
-      // Update all elements with data-i18n attribute
       document.querySelectorAll('[data-i18n]').forEach((el) => {
         const key = el.getAttribute('data-i18n');
         if (dict[key]) {
@@ -774,10 +777,8 @@
         }
       });
 
-      // Update Header Toggle Button Label (Shows the OTHER language option)
       document.getElementById('langSwitchBtn').innerText = (lang === 'gu') ? 'English' : 'ગુજરાતી';
 
-      // Update dynamic status badges
       updateOnlineBadge(isOnlineState);
       renderCommoditySelector();
       updateStockBadges();
@@ -897,9 +898,9 @@
     function updateStockBadges() {
       const inv = getStoredInventory();
       const label = TRANSLATIONS[currentLang].stockPresent;
-      if (document.getElementById('balbhogStockBadge') && inv.BALBHOG) document.getElementById('balbhogStockBadge').innerText = `${label}: ${inv.BALBHOG.closing}`;
-      if (document.getElementById('matrumrutStockBadge') && inv.MATRUMRUT) document.getElementById('matrumrutStockBadge').innerText = `${label}: ${inv.MATRUMRUT.closing}`;
-      if (document.getElementById('purnashaktiStockBadge') && inv.PURNASHAKTI) document.getElementById('purnashaktiStockBadge').innerText = `${label}: ${inv.PURNASHAKTI.closing}`;
+      if (document.getElementById('balbhogStockBadge') && inv.BALBHOG) document.getElementById('balbhogStockBadge').innerText = `${label}:${inv.BALBHOG.closing}`;
+      if (document.getElementById('matrumrutStockBadge') && inv.MATRUMRUT) document.getElementById('matrumrutStockBadge').innerText = `${label}:${inv.MATRUMRUT.closing}`;
+      if (document.getElementById('purnashaktiStockBadge') && inv.PURNASHAKTI) document.getElementById('purnashaktiStockBadge').innerText = `${label}:${inv.PURNASHAKTI.closing}`;
     }
 
     function renderBalanceTable() {
@@ -939,7 +940,7 @@
       if (queueBadge) {
         if (pendingCount > 0) {
           queueBadge.className = 'text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300 animate-pulse';
-          queueBadge.innerText = `${pendingCount} ${TRANSLATIONS[currentLang].syncPendingBadge}`;
+          queueBadge.innerText = `${pendingCount}${TRANSLATIONS[currentLang].syncPendingBadge}`;
         } else {
           queueBadge.className = 'text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800';
           queueBadge.innerText = TRANSLATIONS[currentLang].allSyncedBadge;
@@ -960,423 +961,4 @@
         item.className = 'p-2.5 rounded-xl border border-stone-200 bg-stone-50 flex items-center justify-between text-xs shadow-2xs';
         item.innerHTML = `
           <div class="flex items-center gap-2">
-            <span class="w-7 h-7 rounded-lg flex items-center justify-center font-bold ${isInward ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
-              <i data-lucide="${isInward ? 'arrow-down-left' : 'arrow-up-right'}" class="w-4 h-4"></i>
-            </span>
-            <div>
-              <div class="flex items-center gap-1.5">
-                <span class="font-extrabold text-stone-900">${name}</span>
-                <span class="text-[9px] px-1 py-0.2 rounded font-bold ${tx.is_synced ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-900 border border-amber-300'}">
-                  ${tx.is_synced ? TRANSLATIONS[currentLang].syncBadgeSynced : TRANSLATIONS[currentLang].syncBadgeLocal}
-                </span>
-              </div>
-              <span class="text-[10px] text-stone-500">${dateStr} ${tx.batchNo ? '• ' + (currentLang === 'gu' ? 'બેચ ' : 'Batch ') + tx.batchNo : ''}</span>
-            </div>
-          </div>
-          <div class="text-right">
-            <span class="font-extrabold text-sm block ${isInward ? 'text-emerald-700' : 'text-rose-700'}">
-              ${tx.quantityChange > 0 ? '+' + tx.quantityChange : tx.quantityChange}
-            </span>
-            <span class="text-[9px] text-stone-500">${TRANSLATIONS[currentLang].balanceLabel}: ${tx.closingBalanceAfter}</span>
-          </div>
-        `;
-        list.appendChild(item);
-      });
-      lucide.createIcons();
-    }
-
-    function switchTab(tab) {
-      document.getElementById('tab-inward').classList.add('hidden');
-      document.getElementById('tab-consumption').classList.add('hidden');
-      document.getElementById('tab-balance').classList.add('hidden');
-
-      const btnInward = document.getElementById('navBtnInward');
-      const btnConsumption = document.getElementById('navBtnConsumption');
-      const btnBalance = document.getElementById('navBtnBalance');
-
-      btnInward.className = 'flex flex-col items-center justify-center py-1.5 rounded-xl font-medium text-stone-500 hover:text-stone-800 cursor-pointer';
-      btnConsumption.className = 'flex flex-col items-center justify-center py-1.5 rounded-xl font-medium text-stone-500 hover:text-stone-800 cursor-pointer';
-      btnBalance.className = 'flex flex-col items-center justify-center py-1.5 rounded-xl font-medium text-stone-500 hover:text-stone-800 cursor-pointer';
-
-      if (tab === 'inward') {
-        document.getElementById('tab-inward').classList.remove('hidden');
-        btnInward.className = 'flex flex-col items-center justify-center py-1.5 rounded-xl font-bold text-amber-700 bg-amber-50 cursor-pointer';
-      } else if (tab === 'consumption') {
-        document.getElementById('tab-consumption').classList.remove('hidden');
-        btnConsumption.className = 'flex flex-col items-center justify-center py-1.5 rounded-xl font-bold text-rose-700 bg-rose-50 cursor-pointer';
-      } else if (tab === 'balance') {
-        document.getElementById('tab-balance').classList.remove('hidden');
-        btnBalance.className = 'flex flex-col items-center justify-center py-1.5 rounded-xl font-bold text-stone-800 bg-stone-200 cursor-pointer';
-        renderBalanceTable();
-        renderRecentTransactions();
-      }
-      lucide.createIcons();
-    }
-
-    function stepInwardQty(delta) {
-      const input = document.getElementById('inwardQtyInput');
-      input.value = Math.max(1, (parseInt(input.value) || 0) + delta);
-    }
-    function quickAddInward(amt) {
-      document.getElementById('inwardQtyInput').value = amt;
-    }
-
-    function confirmInwardSubmit() {
-      const quantity = parseInt(document.getElementById('inwardQtyInput').value) || 0;
-      if (quantity <= 0) {
-        return alert(currentLang === 'gu' ? 'કૃપા કરીને માન્ય સંખ્યા દાખલ કરો!' : 'Please enter a valid quantity!');
-      }
-
-      const batchNo = document.getElementById('inwardBatchNo').value || 'B26-GEN';
-      const expiryDate = document.getElementById('inwardExpiryDate').value || '2027-06-01';
-
-      const inv = getStoredInventory();
-      if (!inv[selectedCommodity]) {
-        inv[selectedCommodity] = { code: selectedCommodity, opening: 0, received: 0, consumed: 0, closing: 0, unit: COMMODITIES[selectedCommodity].unit };
-      }
-
-      const item = inv[selectedCommodity];
-      item.received = (item.received || 0) + quantity;
-      item.closing = (item.opening || 0) + item.received - (item.consumed || 0);
-      saveStoredInventory(inv);
-
-      const isOnline = isOnlineState;
-      const com = COMMODITIES[selectedCommodity];
-      const newTx = {
-        id: `tx-${Date.now()}`,
-        timestamp: new Date().toISOString(),
-        action: 'INWARD',
-        itemCode: selectedCommodity,
-        itemNameGu: com.nameGu,
-        itemNameEn: com.nameEn,
-        quantityChange: quantity,
-        unit: com.unit,
-        batchNo: batchNo,
-        expiryDate: expiryDate,
-        closingBalanceAfter: item.closing,
-        is_synced: isOnline,
-      };
-
-      const txs = getStoredTransactions();
-      txs.unshift(newTx);
-      saveStoredTransactions(txs);
-
-      if (!isOnline) {
-        const queue = getStoredSyncQueue();
-        queue.unshift({ id: `sync-${Date.now()}`, action: 'INWARD', payload: { selectedCommodity, quantity, batchNo, expiryDate }, is_synced: false });
-        saveStoredSyncQueue(queue);
-      }
-
-      updateStockBadges();
-      renderBalanceTable();
-      renderRecentTransactions();
-      const unit = currentLang === 'gu' ? com.unitGu : com.unitEn;
-      const name = currentLang === 'gu' ? com.nameGu : com.nameEn;
-      const msg = currentLang === 'gu' 
-        ? `✅ સફળ! ${quantity} ${unit} ${name} સ્ટોકમાં જમા થઈ ગયા. હાજર સિલક: ${item.closing}`
-        : `✅ Success! Added ${quantity} ${unit} of ${name} to stock. Current balance: ${item.closing}`;
-      alert(msg);
-      switchTab('balance');
-    }
-
-    function stepBeneficiary(type, delta) {
-      const idMap = { balbhog: 'countBalbhog', matrumrut: 'countMatrumrut', purnashakti: 'countPurnashakti' };
-      const span = document.getElementById(idMap[type]);
-      if (span) span.innerText = Math.max(0, (parseInt(span.innerText) || 0) + delta);
-    }
-
-    function confirmConsumptionSubmit() {
-      const balCount = parseInt(document.getElementById('countBalbhog').innerText) || 0;
-      const matCount = parseInt(document.getElementById('countMatrumrut').innerText) || 0;
-      const purCount = parseInt(document.getElementById('countPurnashakti').innerText) || 0;
-      const riceUsage = parseFloat(document.getElementById('riceConsumptionInput').value) || 0;
-      const wheatUsage = parseFloat(document.getElementById('wheatConsumptionInput').value) || 0;
-      const oilUsage = parseFloat(document.getElementById('oilConsumptionInput').value) || 0;
-
-      if ((balCount + matCount + purCount + riceUsage + wheatUsage + oilUsage) <= 0) {
-        return alert(currentLang === 'gu' ? 'કૃપા કરીને વિતરણ સંખ્યા દાખલ કરો!' : 'Please enter distribution quantity!');
-      }
-
-      const inv = getStoredInventory();
-      if (balCount > (inv.BALBHOG?.closing || 0)) return showInsufficientWarning(currentLang === 'gu' ? 'બાલભોગનો પૂરતો સ્ટોક ઉપલબ્ધ નથી!' : 'Insufficient Balbhog stock available!');
-      if (matCount > (inv.MATRUMRUT?.closing || 0)) return showInsufficientWarning(currentLang === 'gu' ? 'માતૃઅમૃતનો પૂરતો સ્ટોક ઉપલબ્ધ નથી!' : 'Insufficient Matrumrut stock available!');
-      if (purCount > (inv.PURNASHAKTI?.closing || 0)) return showInsufficientWarning(currentLang === 'gu' ? 'પૂર્ણાશક્તિનો પૂરતો સ્ટોક ઉપલબ્ધ નથી!' : 'Insufficient Purnashakti stock available!');
-
-      hideInsufficientWarning();
-      const isOnline = isOnlineState;
-      const txs = getStoredTransactions();
-      const queue = getStoredSyncQueue();
-
-      const allocations = [
-        { code: 'BALBHOG', qty: balCount, count: balCount },
-        { code: 'MATRUMRUT', qty: matCount, count: matCount },
-        { code: 'PURNASHAKTI', qty: purCount, count: purCount },
-        { code: 'RICE', qty: riceUsage, count: null },
-        { code: 'WHEAT', qty: wheatUsage, count: null },
-        { code: 'OIL', qty: oilUsage, count: null },
-      ];
-
-      allocations.forEach(alloc => {
-        if (alloc.qty > 0 && inv[alloc.code]) {
-          const item = inv[alloc.code];
-          item.consumed = (item.consumed || 0) + alloc.qty;
-          item.closing = (item.opening || 0) + (item.received || 0) - item.consumed;
-          const com = COMMODITIES[alloc.code];
-          txs.unshift({
-            id: `tx-${Date.now()}-${alloc.code}`,
-            timestamp: new Date().toISOString(),
-            action: 'CONSUMPTION',
-            itemCode: alloc.code,
-            itemNameGu: com.nameGu,
-            itemNameEn: com.nameEn,
-            quantityChange: -alloc.qty,
-            unit: com.unit,
-            beneficiaryCount: alloc.count,
-            closingBalanceAfter: item.closing,
-            is_synced: isOnline,
-          });
-
-          if (!isOnline) {
-            queue.unshift({ id: `sync-${Date.now()}-${alloc.code}`, action: 'CONSUMPTION', payload: alloc, is_synced: false });
-          }
-        }
-      });
-
-      saveStoredInventory(inv);
-      saveStoredTransactions(txs);
-      saveStoredSyncQueue(queue);
-
-      updateStockBadges();
-      renderBalanceTable();
-      renderRecentTransactions();
-      alert(currentLang === 'gu' ? '✅ વિતરણ સફળતાપૂર્વક સાચવવામાં આવ્યું છે!' : '✅ Daily distribution saved successfully!');
-      switchTab('balance');
-    }
-
-    function showInsufficientWarning(msg) {
-      document.getElementById('insufficientWarningText').innerText = msg;
-      document.getElementById('insufficientStockWarning').classList.remove('hidden');
-    }
-    function hideInsufficientWarning() {
-      document.getElementById('insufficientStockWarning').classList.add('hidden');
-    }
-
-    // Online / Offline Listeners & Simulation
-    function updateOnlineBadge(isOnline) {
-      isOnlineState = isOnline;
-      const badge = document.getElementById('onlineStatusBadge');
-      const text = document.getElementById('onlineBadgeText');
-      if (isOnline) {
-        badge.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-wide transition-all shadow-xs flex items-center gap-1 cursor-pointer bg-emerald-600 text-white border border-emerald-400';
-        text.innerText = TRANSLATIONS[currentLang].onlineSynced;
-      } else {
-        badge.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-wide transition-all shadow-xs flex items-center gap-1 cursor-pointer bg-amber-400 text-amber-950 border border-amber-300 animate-pulse';
-        text.innerText = TRANSLATIONS[currentLang].offlineLocal;
-      }
-    }
-
-    function handleOnlineEvent() {
-      updateOnlineBadge(true);
-      const txs = getStoredTransactions();
-      saveStoredTransactions(txs.map(tx => ({ ...tx, is_synced: true })));
-      saveStoredSyncQueue([]);
-      showSyncToast(currentLang === 'gu' ? 'બધો ડેટા સર્વર પર અપડેટ થઈ ગયો!' : 'All data synced with server!');
-      renderRecentTransactions();
-    }
-    function handleOfflineEvent() {
-      updateOnlineBadge(false);
-    }
-
-    window.addEventListener('online', handleOnlineEvent);
-    window.addEventListener('offline', handleOfflineEvent);
-
-    function toggleNetworkSimulation() {
-      if (isOnlineState) handleOfflineEvent();
-      else handleOnlineEvent();
-    }
-
-    function showSyncToast(msg) {
-      const toast = document.getElementById('syncToast');
-      document.getElementById('syncToastText').innerText = msg;
-      toast.classList.remove('hidden');
-      setTimeout(() => toast.classList.add('hidden'), 4000);
-    }
-    function hideSyncToast() {
-      document.getElementById('syncToast').classList.add('hidden');
-    }
-
-    // Web App Manifest and Service Worker PWA Installation
-    const manifestJson = {
-      name: "PoshanSetu (પોષણ સેતુ) Anganwadi Stock",
-      short_name: "PoshanSetu",
-      start_url: "./index.html",
-      display: "standalone",
-      background_color: "#fffbeb",
-      theme_color: "#b45309",
-      icons: [{ src: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=192&q=80", sizes: "192x192", type: "image/png" }]
-    };
-    const manifestBlob = new Blob([JSON.stringify(manifestJson)], { type: 'application/json' });
-    document.getElementById('manifest-placeholder').setAttribute('href', URL.createObjectURL(manifestBlob));
-
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        const swCode = `
-          self.addEventListener('install', e => self.skipWaiting());
-          self.addEventListener('activate', e => clients.claim());
-          self.addEventListener('fetch', e => e.respondWith(fetch(e.request).catch(() => caches.match(e.request))));
-        `;
-        const swBlob = new Blob([swCode], { type: 'application/javascript' });
-        navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(() => {});
-      });
-    }
-
-    let deferredPrompt;
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      document.getElementById('pwaInstallBanner').classList.remove('hidden');
-    });
-
-    function installPwa() {
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        deferredPrompt.userChoice.then(() => {
-          document.getElementById('pwaInstallBanner').classList.add('hidden');
-          deferredPrompt = null;
-        });
-      }
-    }
-
-    function openProfileModal() { document.getElementById('profileModal').classList.remove('hidden'); }
-    function closeProfileModal() { document.getElementById('profileModal').classList.add('hidden'); }
-    function openExportModal() { document.getElementById('exportModal').classList.remove('hidden'); }
-    function closeExportModal() { document.getElementById('exportModal').classList.add('hidden'); }
-
-    // Multi-Language PDF Generation
-    function generatePdfReport() {
-      const btn = document.getElementById('btnGeneratePdf');
-      const originalText = btn.innerHTML;
-      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>${currentLang === 'gu' ? 'પીડીએફ બની રહી છે...' : 'Generating PDF...'}</span>`;
-      lucide.createIcons();
-
-      const isGu = currentLang === 'gu';
-      const now = new Date();
-      const dateLocale = isGu ? 'gu-IN' : 'en-IN';
-
-      // Update Template Language Labels
-      document.getElementById('pdfHeaderTitle').innerText = isGu 
-        ? 'પોષણ સેતુ - આંગણવાડી સ્ટોક રજિસ્ટર (Form 4)' 
-        : 'PoshanSetu - Anganwadi Stock Register (Form 4)';
-      document.getElementById('pdfHeaderDept').innerText = isGu 
-        ? 'મહિલા અને બાળ વિકાસ વિભાગ, ગુજરાત સરકાર (ICDS યોજના)' 
-        : 'Women & Child Development Dept, Govt. of Gujarat (ICDS Scheme)';
-      document.getElementById('pdfDateLabel').innerText = isGu ? 'તારીખ:' : 'Date:';
-      document.getElementById('pdfTimeLabel').innerText = isGu ? 'સમય:' : 'Time:';
-      document.getElementById('pdfCenterLabel').innerText = isGu ? 'સેન્ટરનું નામ:' : 'Center Name:';
-      document.getElementById('pdfCenterVal').innerText = isGu ? 'આણંદનગર (મહેસાણા)' : 'Anandnagar (Mehsana)';
-      document.getElementById('pdfSupervisorLabel').innerText = isGu ? 'સુપરવાઇઝર / કાર્યકર:' : 'Supervisor / Worker:';
-      document.getElementById('pdfDistLabel').innerText = isGu ? 'સ્થાનિક વહીવટ:' : 'District Administration:';
-      document.getElementById('pdfDistVal').innerText = isGu ? 'મહેસાણા જિલ્લો' : 'Mehsana District';
-      document.getElementById('pdfCertLabel').innerText = isGu ? 'પ્રમાણપત્ર:' : 'Verification:';
-      document.getElementById('pdfCertVal').innerText = isGu ? 'સત્તાવાર સ્ટોક વિગત' : 'Official Stock Audit';
-      
-      document.getElementById('pdfThCom').innerText = isGu ? 'સામગ્રી (Commodity)' : 'Commodity';
-      document.getElementById('pdfThOp').innerText = isGu ? 'શરૂઆતનો સ્ટોક' : 'Opening Stock';
-      document.getElementById('pdfThIn').innerText = isGu ? 'કુલ આવક (+)' : 'Total Received (+)';
-      document.getElementById('pdfThOut').innerText = isGu ? 'કુલ વપરાશ (-)' : 'Total Consumed (-)';
-      document.getElementById('pdfThClose').innerText = isGu ? 'હાજર સિલક (Closing)' : 'Closing Balance';
-
-      document.getElementById('pdfSigWorker').innerText = isGu ? 'આંગણવાડી કાર્યકરની સહી' : 'Anganwadi Worker Signature';
-      document.getElementById('pdfSigSupervisor').innerText = isGu ? 'મુખ્ય સેવિકા / CDPO સહી' : 'Mukhya Sevika / CDPO Signature';
-      document.getElementById('pdfDisclaimer').innerText = isGu 
-        ? 'આ કોમ્પ્યુટરાઈઝ્ડ ઈન્વેન્ટરી દસ્તાવેજ પોષણ સેતુ સિસ્ટમ દ્વારા જનરેટ કરવામાં આવેલ છે.' 
-        : 'This computerized inventory document is generated by the PoshanSetu System.';
-
-      document.getElementById('pdfDateStamp').innerText = now.toLocaleDateString(dateLocale, { day: '2-digit', month: '2-digit', year: 'numeric' });
-      document.getElementById('pdfTimeStamp').innerText = now.toLocaleTimeString(dateLocale, { hour: '2-digit', minute: '2-digit' });
-
-      const inv = getStoredInventory();
-      const rowsContainer = document.getElementById('pdfStockTableRows');
-      rowsContainer.innerHTML = '';
-
-      Object.values(inv).forEach((item, index) => {
-        const com = COMMODITIES[item.code] || { nameGu: item.code, nameEn: item.code, unitGu: item.unit, unitEn: item.unit };
-        const name = isGu ? com.nameGu : com.nameEn;
-        const unit = isGu ? com.unitGu : com.unitEn;
-        const tr = document.createElement('tr');
-        tr.style.backgroundColor = index % 2 === 0 ? '#ffffff' : '#fafaf9';
-        tr.style.borderBottom = '1px solid #e7e5e4';
-        tr.innerHTML = `
-          <td style="padding: 9px 8px; font-weight: 700; color: #1c1917;">${name} (${unit})</td>
-          <td style="padding: 9px 8px; text-align: center; color: #44403c;">${item.opening}</td>
-          <td style="padding: 9px 8px; text-align: center; font-weight: 700; color: #047857;">+${item.received}</td>
-          <td style="padding: 9px 8px; text-align: center; font-weight: 700; color: #b91c1c;">-${item.consumed}</td>
-          <td style="padding: 9px 8px; text-align: right; font-weight: 800; color: #1c1917; font-size: 13px;">${item.closing}</td>
-        `;
-        rowsContainer.appendChild(tr);
-      });
-
-      const element = document.getElementById('pdfPrintableTemplate');
-      element.classList.remove('hidden');
-
-      const opt = {
-        margin: [10, 10, 10, 10],
-        filename: `PoshanSetu-AWC42-${now.toISOString().slice(0, 10)}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-      };
-
-      html2pdf().set(opt).from(element).save().then(() => {
-        element.classList.add('hidden');
-        btn.innerHTML = originalText;
-        closeExportModal();
-        lucide.createIcons();
-        showSyncToast(isGu ? '✅ PDF સફળતાપૂર્વક ડાઉનલોડ થઈ ગઈ!' : '✅ PDF Report downloaded successfully!');
-      }).catch((err) => {
-        console.error(err);
-        element.classList.add('hidden');
-        btn.innerHTML = originalText;
-        alert(isGu ? 'PDF બનાવવામાં ભૂલ આવી, કૃપા કરીને ફરી પ્રયત્ન કરો.' : 'Error generating PDF, please try again.');
-        lucide.createIcons();
-      });
-    }
-
-    // Plain Text Report Download (.TXT)
-    function downloadTextReport() {
-      const isGu = currentLang === 'gu';
-      const inv = getStoredInventory();
-      let text = "========================================================\n";
-      text += isGu ? "પોષણ સેતુ - આંગણવાડી સ્ટોક અને સિલક રજિસ્ટર (Form 4)\n" : "PoshanSetu - Anganwadi Stock Register (Form 4)\n";
-      text += `AWC: #42 Anandnagar, Mehsana | Supervisor: Amit Patel\nDate: ${new Date().toLocaleDateString(isGu ? 'gu-IN' : 'en-IN')}\n`;
-      text += "========================================================\n";
-      text += isGu ? "સામગ્રી\tશરૂઆત\tઆવક(+)\tવપરાશ(-)\tહાજર સિલક\n" : "Item\tOpening\tInward(+)\tUsed(-)\tClosing\n";
-      Object.values(inv).forEach(item => {
-        const com = COMMODITIES[item.code] || { nameGu: item.code, nameEn: item.code, unitGu: item.unit, unitEn: item.unit };
-        const name = isGu ? com.nameGu : com.nameEn;
-        const unit = isGu ? com.unitGu : com.unitEn;
-        text += `${name}\t${item.opening}\t${item.received}\t${item.consumed}\t${item.closing} ${unit}\n`;
-      });
-      text += "========================================================\n";
-      const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = `PoshanSetu-AWC42-Report-${new Date().toISOString().slice(0, 10)}.txt`;
-      a.click();
-      closeExportModal();
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-      checkAuthStatus();
-
-      const expDate = new Date();
-      expDate.setMonth(expDate.getMonth() + 6);
-      if (document.getElementById('inwardExpiryDate')) document.getElementById('inwardExpiryDate').value = expDate.toISOString().slice(0, 10);
-
-      // Initialize with Gujarati
-      updateUILanguage('gu');
-      lucide.createIcons();
-    });
-  </script>
-</body>
-</html>
+            <span class="w-7 h-7 rounded-lg flex items-center justify-center font-bold ${isInward ? '
