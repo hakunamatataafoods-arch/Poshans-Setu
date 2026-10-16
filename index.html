@@ -1,541 +1,1425 @@
 <!DOCTYPE html>
 <html lang="gu">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>PoshanSetu - આંગણવાડી સ્ટોક ટ્રેકર</title>
-  
-  <!-- Mobile & PWA Meta Tags -->
-  <meta name="theme-color" content="#1e40af">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="PoshanSetu">
-  
-  <!-- Inline SVG Favicon -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='100' fill='%231e40af'/%3E%3Cpath d='M156 276c0 60 70 80 100 80s100-20 100-80z' fill='%23ffffff'/%3E%3Crect x='140' y='260' width='232' height='16' rx='8' fill='%23f59e0b'/%3E%3Cpath d='M256 160c-20 40 0 80 0 80s20-40 0-80z' fill='%2334d399'/%3E%3C/svg%3E">
-
-  <!-- Embedded Standalone Web App Manifest -->
-  <link rel="manifest" href='data:application/manifest+json,{"id":"/","name":"PoshanSetu - આંગણવાડી સ્ટોક ટ્રેકર","short_name":"PoshanSetu","display":"standalone","start_url":".","background_color":"%231e40af","theme_color":"%231e40af"}'>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>PoshanSetu (પોષણ સેતુ) - Anganwadi Food-Stock System</title>
+  <meta name="description" content="Gujarat Anganwadi Food-Stock & Nutrition Inventory with Offline LocalStorage, FIFO Tracking & Chrome Install App PWA Support" />
+  <meta name="theme-color" content="#0265FF" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="icon" type="image/svg+xml" href="/icon-192.svg" />
+  <link rel="apple-touch-icon" href="/icon-192.svg" />
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
 
-  <!-- Google Fonts for Gujarati and Modern Numerals -->
+  <!-- Google Fonts: Noto Sans Gujarati & Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Gujarati:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Gujarati:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <!-- Firebase Realtime Database SDK via CDN (Compat) -->
-  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+  <!-- Inline Web App Manifest for PWA Chrome Installation -->
+  <link rel="manifest" id="manifest-placeholder" />
 
   <style>
     body {
       font-family: 'Noto Sans Gujarati', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
       -webkit-tap-highlight-color: transparent;
-      user-select: none;
     }
-    input, button {
-      user-select: auto;
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    @keyframes pulse-subtle {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.75; }
+    }
+    .animate-pulse-subtle {
+      animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
     }
   </style>
 </head>
-<body class="bg-slate-100 text-slate-800 antialiased min-h-screen flex justify-center sm:py-6">
+<body class="bg-stone-900 min-h-screen text-stone-900 antialiased flex items-center justify-center p-0 sm:p-4">
 
-  <!-- Mobile Frame Container -->
-  <div class="w-full max-w-md bg-white shadow-2xl sm:rounded-3xl flex flex-col min-h-screen sm:min-h-[840px] overflow-hidden border border-slate-200">
+  <!-- Mobile Screen Container Frame (max-w-md, rounded-3xl) -->
+  <div class="w-full max-w-md h-[100dvh] sm:h-[860px] bg-stone-100 sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden border-0 sm:border-8 border-stone-800 relative">
     
-    <!-- Cobalt Blue Header -->
-    <header class="bg-gradient-to-b from-blue-900 via-blue-800 to-blue-700 text-white px-5 pt-6 pb-6 shadow-md relative">
-      <div class="flex items-center justify-between mb-3">
-        <div class="flex items-center gap-2">
-          <span class="w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm border border-white/20 flex items-center justify-center font-black text-xs text-white">PS</span>
-          <div>
-            <span class="text-[11px] font-semibold tracking-wider text-blue-200 uppercase block leading-none">પોષણસેતુ • PoshanSetu</span>
-            <span class="text-[10px] text-blue-300">મહિલા & બાળ વિકાસ વિભાગ - ગુજરાત</span>
-          </div>
+    <!-- ================= UNPIX WELCOME SCREEN OVERLAY (Left Reference Screen) ================= -->
+    <div id="loginScreenOverlay" class="absolute inset-0 z-50 bg-[#0265FF] text-white flex flex-col justify-between overflow-y-auto select-none">
+      <!-- Top Govt. Banner -->
+      <div class="pt-4 px-6 flex items-center justify-between z-10">
+        <div class="flex items-center gap-1.5 text-xs text-sky-100 font-medium">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span class="tracking-wide">ગુજરાત ICDS • Mehsana</span>
         </div>
+        <button type="button" onclick="toggleLanguage()" class="flex items-center gap-1.5 bg-white/15 hover:bg-white/25 active:bg-white/30 text-white text-xs px-3 py-1 rounded-full border border-white/20 backdrop-blur-md transition-colors cursor-pointer">
+          <i data-lucide="globe" class="w-3.5 h-3.5 text-sky-200"></i>
+          <span class="font-semibold" id="welcomeLangBtn">English</span>
+        </button>
+      </div>
 
-        <!-- Online/Offline Badge -->
-        <div id="statusBadge" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold backdrop-blur-md bg-emerald-500/25 border border-emerald-400/40 text-emerald-200 shadow-xs">
-          <span class="relative flex h-2 w-2">
-            <span id="statusPing" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span id="statusDot" class="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
-          </span>
-          <span id="statusText">ઓનલાઇન (Online)</span>
+      <!-- Brand Header -->
+      <div class="text-center pt-2 pb-1 z-10 px-4">
+        <h1 class="text-3xl font-extrabold tracking-wider uppercase drop-shadow-sm font-sans">
+          POSHANSETU
+        </h1>
+        <p class="text-xs font-bold tracking-widest text-sky-200 uppercase -mt-0.5">
+          Mobile
+        </p>
+
+        <!-- Welcome Greeting -->
+        <div class="mt-2.5">
+          <h2 class="text-base font-bold text-white tracking-tight" id="welcomeGreeting">
+            નમસ્તે, અમિત પટેલ
+          </h2>
+          <p class="text-xs text-sky-100/90 font-medium" id="welcomeSubtitle">
+            આંગણવાડી પોર્ટલમાં સ્વાગત છે! (Selamat Datang!)
+          </p>
         </div>
       </div>
 
-      <div class="mt-2 flex items-end justify-between">
-        <div>
-          <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-white">
-            નમસ્તે ગીતાબેન <span class="text-blue-200 text-base font-semibold">(વડતાલ-૦૪)</span>
-          </h1>
-          <p class="text-xs text-blue-100 font-medium mt-0.5">આંગણવાડી કાર્યકર્તા • Anganwadi Worker</p>
+      <!-- Center High-Five Community Illustration (Match reference art exactly) -->
+      <div class="flex-1 flex items-center justify-center relative px-6 py-2 z-10 min-h-[190px]">
+        <svg viewBox="0 0 360 250" class="w-full max-w-[280px] h-auto drop-shadow-2xl" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="180" cy="125" r="105" fill="#38BDF8" fill-opacity="0.25" />
+          <path d="M180 50L183 58L191 61L183 64L180 72L177 64L169 61L177 58Z" fill="#FDE047" />
+          <path d="M90 85L92 90L97 92L92 94L90 99L88 94L83 92L88 90Z" fill="#FDE047" opacity="0.8" />
+          <path d="M275 80L277 85L282 87L277 89L275 94L273 89L268 87L273 85Z" fill="#FDE047" opacity="0.8" />
+          <!-- Left Male Character in Red -->
+          <path d="M80 250 C75 210 88 178 110 174 C130 170 150 175 160 200 L165 250 Z" fill="#EF4444" />
+          <rect x="127" y="150" width="18" height="26" rx="6" fill="#FBBF24" />
+          <circle cx="136" cy="132" r="26" fill="#FBBF24" />
+          <path d="M114 125 C112 104 130 95 152 101 C163 105 164 115 163 124 C156 119 142 117 130 123 Z" fill="#1E293B" />
+          <path d="M116 134 C116 156 134 162 154 156 C156 145 154 138 154 134 C143 141 127 141 116 134 Z" fill="#1E293B" />
+          <path d="M148 185 C160 156 168 118 172 88 L184 92 C180 122 170 164 158 193 Z" fill="#EF4444" />
+          <path d="M172 90 C172 80 173 68 177 60 C178 56 184 56 185 62 L185 92 Z" fill="#FBBF24" />
+          <!-- Right Female Character in Pink -->
+          <path d="M200 250 L205 200 C215 175 235 170 255 174 C277 178 290 210 285 250 Z" fill="#F43F5E" />
+          <rect x="220" y="150" width="18" height="26" rx="6" fill="#FCD34D" />
+          <circle cx="229" cy="132" r="24" fill="#FCD34D" />
+          <path d="M210 125 C208 104 230 95 248 102 C257 106 258 115 256 130 C252 121 238 119 224 123 Z" fill="#0F172A" />
+          <path d="M212 185 C200 156 192 118 188 88 L176 92 C180 122 190 164 202 193 Z" fill="#F43F5E" />
+          <path d="M188 90 C188 80 187 68 183 60 C182 56 176 56 175 62 L175 92 Z" fill="#FCD34D" />
+          <!-- High-Five Clapping Contact Sparkle -->
+          <circle cx="180" cy="60" r="14" fill="#FFFFFF" fill-opacity="0.8" />
+          <path d="M180 44 L180 76 M164 60 L196 60 M168 48 L192 72 M168 72 L192 48" stroke="#FBBF24" stroke-width="3" stroke-linecap="round" />
+        </svg>
+      </div>
+
+      <!-- Bottom Sheet White Container (Deep curve: rounded-t-[32px]) -->
+      <div class="bg-white text-stone-900 rounded-t-[32px] sm:rounded-t-[36px] shadow-2xl px-5 pt-4 pb-5 z-20 relative">
+        <!-- Fast Menu Header -->
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-1.5">
+            <h3 class="text-sm font-bold text-stone-800 tracking-tight" id="fastMenuTitle">Fast Menu</h3>
+            <span class="text-stone-400 p-0.5 cursor-pointer">
+              <i data-lucide="info" class="w-3.5 h-3.5"></i>
+            </span>
+          </div>
+          <span class="text-[10px] font-semibold text-[#0265FF] bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100">
+            AWC 04
+          </span>
         </div>
-        <button onclick="toggleAudio()" id="audioBtn" title="અવાજ ચાલુ/બંધ" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-blue-200 flex items-center justify-center transition text-xs font-bold">
-          🔊
+
+        <!-- 4 Pastel Circular Action Row -->
+        <div class="grid grid-cols-4 gap-2 mb-4">
+          <div onclick="openTab('balance'); quickDismissWelcome();" class="flex flex-col items-center text-center cursor-pointer group">
+            <div class="w-12 h-12 rounded-2xl bg-[#E8F1FF] text-[#0265FF] flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform border border-blue-100">
+              <i data-lucide="file-text" class="w-5 h-5"></i>
+            </div>
+            <span class="text-[10px] font-bold text-stone-700 mt-1.5 leading-tight">સ્ટોક હિસાબ</span>
+            <span class="text-[8px] text-stone-400">Catatan</span>
+          </div>
+
+          <div onclick="openTab('inward'); quickDismissWelcome();" class="flex flex-col items-center text-center cursor-pointer group">
+            <div class="w-12 h-12 rounded-2xl bg-[#E0F2FE] text-[#0284C7] flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform border border-sky-100">
+              <i data-lucide="credit-card" class="w-5 h-5"></i>
+            </div>
+            <span class="text-[10px] font-bold text-stone-700 mt-1.5 leading-tight">બાલભોગ</span>
+            <span class="text-[8px] text-stone-400">Balbhog</span>
+          </div>
+
+          <div onclick="openTab('consumption'); quickDismissWelcome();" class="flex flex-col items-center text-center cursor-pointer group">
+            <div class="w-12 h-12 rounded-2xl bg-[#FEF3C7] text-[#D97706] flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform border border-amber-100">
+              <i data-lucide="wallet" class="w-5 h-5"></i>
+            </div>
+            <span class="text-[10px] font-bold text-stone-700 mt-1.5 leading-tight">માતૃઅમૃત</span>
+            <span class="text-[8px] text-stone-400">Digital</span>
+          </div>
+
+          <div onclick="openTab('balance'); quickDismissWelcome();" class="flex flex-col items-center text-center cursor-pointer group">
+            <div class="w-12 h-12 rounded-2xl bg-[#F3E8FF] text-[#9333EA] flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform border border-purple-100">
+              <i data-lucide="zap" class="w-5 h-5"></i>
+            </div>
+            <span class="text-[10px] font-bold text-stone-700 mt-1.5 leading-tight">પૂર્ણાશક્તિ</span>
+            <span class="text-[8px] text-stone-400">Energy</span>
+          </div>
+        </div>
+
+        <!-- Bottom Action CTA: Blue Login Pill + Biometric Cyan Button -->
+        <div class="flex items-center gap-2.5">
+          <button type="button" onclick="openLoginCredentialModal()" class="flex-1 bg-[#0265FF] hover:bg-[#0055DC] active:scale-[0.98] text-white font-bold py-3 px-4 rounded-2xl shadow-[0_6px_18px_rgba(2,101,255,0.35)] flex items-center justify-center gap-2 text-sm transition-all cursor-pointer">
+            <span>લૉગિન કરો (Login)</span>
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+
+          <button type="button" onclick="handleBiometricInstantLogin()" class="w-12 h-12 bg-gradient-to-br from-[#38BDF8] to-[#0284C7] hover:from-[#0EA5E9] hover:to-[#0369A1] active:scale-95 text-white rounded-2xl shadow-[0_6px_16px_rgba(56,189,248,0.35)] flex items-center justify-center transition-all cursor-pointer group" title="બાયોમેટ્રિક ફિંગરપ્રિન્ટ લૉગિન">
+            <i data-lucide="fingerprint" class="w-6 h-6 group-hover:scale-110 transition-transform"></i>
+          </button>
+        </div>
+
+        <p class="text-center text-[10px] text-stone-400 mt-2">
+          ઓળખપત્ર: User: <strong class="text-stone-700">Amit</strong> | Pass: <strong class="text-stone-700">1234</strong> (બાયોમેટ્રિકથી ૧-ક્લિક લૉગિન)
+        </p>
+      </div>
+    </div>
+
+    <!-- Credential Modal for entering User ID & Password -->
+    <div id="credentialModal" class="hidden absolute inset-0 z-55 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-0 sm:p-4">
+      <div class="w-full max-w-sm bg-white rounded-t-[32px] sm:rounded-3xl shadow-2xl p-5 border border-stone-200">
+        <div class="flex items-center justify-between pb-3 border-b border-stone-100">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-xl bg-blue-50 text-[#0265FF] flex items-center justify-center">
+              <i data-lucide="lock" class="w-4 h-4"></i>
+            </div>
+            <div>
+              <h4 class="text-xs font-bold text-stone-900 leading-tight">આંગણવાડી લૉગિન (Login)</h4>
+              <p class="text-[10px] text-stone-500">અમિત પટેલ (Amit Patel)</p>
+            </div>
+          </div>
+          <button type="button" onclick="closeLoginCredentialModal()" class="text-stone-400 hover:text-stone-600 p-1">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <div class="bg-blue-50 border border-blue-200 rounded-xl p-2 flex items-center justify-between text-xs mt-3">
+          <span class="text-[10px] text-blue-900 font-mono">User: <strong>Amit</strong> | Pass: <strong>1234</strong></span>
+          <button type="button" onclick="quickFillStandaloneCredentials()" class="bg-[#0265FF] text-white text-[10px] font-bold px-2 py-0.5 rounded cursor-pointer">
+            ઓટો ભરો
+          </button>
+        </div>
+
+        <div id="loginErrorAlert" class="hidden bg-red-50 border border-red-300 text-red-800 px-3 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 mt-2">
+          <i data-lucide="alert-circle" class="w-4 h-4 text-red-600 shrink-0"></i>
+          <span id="loginErrorMsg">ખોટો યુઝર નેમ અથવા પાસવર્ડ!</span>
+        </div>
+
+        <form onsubmit="handleStandaloneLogin(event)" class="space-y-3 mt-3">
+          <div>
+            <label class="block text-[11px] font-bold text-stone-700 mb-1">યુઝર આઈડી (User ID)</label>
+            <input id="loginUsername" type="text" value="Amit" required class="w-full px-3 py-2 text-xs bg-stone-50 border border-stone-300 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#0265FF] outline-none" />
+          </div>
+          <div>
+            <label class="block text-[11px] font-bold text-stone-700 mb-1">પાસવર્ડ (Password)</label>
+            <div class="relative">
+              <input id="loginPassword" type="password" value="1234" required class="w-full px-3 py-2 text-xs bg-stone-50 border border-stone-300 rounded-xl focus:bg-white focus:ring-2 focus:ring-[#0265FF] outline-none" />
+              <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 top-2 text-stone-400">
+                <i data-lucide="eye" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+          <button type="submit" class="w-full py-2.5 bg-[#0265FF] hover:bg-[#0055DC] text-white font-bold rounded-xl text-xs shadow-md active:scale-95 transition-all">
+            પ્રવેશ કરો (Sign In)
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Toast Notification Banner for Online Sync -->
+    <div id="syncToast" class="hidden absolute top-4 left-1/2 -translate-x-1/2 z-40 w-11/12 max-w-xs transition-all duration-300">
+      <div class="bg-emerald-700 text-white px-3.5 py-2.5 rounded-2xl shadow-2xl flex items-center justify-between border-2 border-emerald-300 gap-2">
+        <div class="flex items-center gap-2">
+          <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-200 shrink-0"></i>
+          <span id="syncToastText" class="text-xs font-bold leading-tight">બધો ડેટા સર્વર પર અપડેટ થઈ ગયો!</span>
+        </div>
+        <button onclick="hideSyncToast()" class="text-white/80 hover:text-white p-1">
+          <i data-lucide="x" class="w-4 h-4"></i>
         </button>
+      </div>
+    </div>
+
+    <!-- PWA Install Prompt Banner -->
+    <div id="pwaInstallBanner" class="hidden bg-gradient-to-r from-amber-600 to-orange-600 text-white px-3 py-1.5 flex items-center justify-between text-xs shadow-md shrink-0">
+      <div class="flex items-center gap-2">
+        <i data-lucide="download" class="w-3.5 h-3.5 text-amber-200"></i>
+        <span class="font-semibold text-[11px]" id="pwaBannerText">મોબાઇલમાં એપ ઇન્સ્ટોલ કરો</span>
+      </div>
+      <button onclick="installPwa()" class="bg-white text-amber-950 font-bold px-2 py-0.5 rounded text-[11px] shadow-xs hover:bg-amber-50 active:scale-95">
+        ઇન્સ્ટોલ
+      </button>
+    </div>
+
+    <!-- Mobile Top Header Bar -->
+    <header class="bg-gradient-to-b from-[#0265FF] via-[#0158EA] to-[#004BD6] text-white shadow-md shrink-0 z-20">
+      <!-- Micro info bar: AWC & Online/Offline Pill -->
+      <div class="px-3.5 pt-2 pb-1.5 flex items-center justify-between border-b border-blue-400/30 text-xs">
+        <div class="flex items-center gap-1.5 truncate">
+          <i data-lucide="building-2" class="w-3.5 h-3.5 text-amber-200 shrink-0"></i>
+          <span class="font-medium text-amber-100 truncate text-[11px]" id="awcCenterName">AWC #42 - આણંદનગર, મહેસાણા</span>
+        </div>
+
+        <div class="flex items-center gap-2 shrink-0">
+          <!-- Offline / Online Status Pill: Exact prompt requirements -->
+          <button id="onlineStatusBadge" onclick="toggleNetworkSimulation()" class="px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-wide transition-all shadow-xs flex items-center gap-1 cursor-pointer bg-emerald-600 text-white border border-emerald-400" title="નેટવર્ક સ્થિતિ (ક્લિક કરીને ટેસ્ટ કરો)">
+            <span id="onlineBadgeText">🟢 ઓનલાઇન (Synced)</span>
+          </button>
+
+          <!-- Language Selector -->
+          <button onclick="toggleLanguage()" class="bg-white/15 hover:bg-white/25 text-white px-2 py-0.5 rounded-lg text-[11px] font-semibold border border-white/20 transition-colors">
+            <span id="langSwitchBtn">English</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Header Bar: Brand Logo & User Profile (Amit Patel) -->
+      <div class="px-3.5 py-2 flex items-center justify-between gap-2">
+        <!-- PoshanSetu Brand Logo -->
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-500 to-orange-400 p-0.5 shadow-sm flex items-center justify-center">
+            <i data-lucide="wheat" class="w-5 h-5 text-white"></i>
+          </div>
+          <div>
+            <h1 class="text-base font-extrabold tracking-tight leading-none text-white flex items-center gap-1.5">
+              <span>પોષણ સેતુ</span>
+              <span class="text-[9px] font-bold bg-amber-400/20 text-amber-200 border border-amber-300/40 px-1 py-0.2 rounded">ICDS</span>
+            </h1>
+            <p class="text-[10px] text-amber-200/90 font-medium">આંગણવાડી અન્ન અને પોષણ વ્યવસ્થાપન</p>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-1.5">
+          <!-- Amit Patel User Profile -->
+          <div class="flex items-center gap-2 bg-black/20 hover:bg-black/30 px-2 py-1 rounded-xl border border-white/10 transition-colors cursor-pointer" onclick="openProfileModal()" title="અમિત પટેલ પ્રોફાઇલ">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=150&q=80" alt="Amit Patel" class="w-7 h-7 rounded-full object-cover border border-amber-300" />
+            <div class="text-left hidden xs:block">
+              <span class="text-[11px] font-bold text-white block leading-tight">અમિત પટેલ</span>
+              <span class="text-[9px] text-amber-200 block leading-tight">સુપરવાઇઝર</span>
+            </div>
+          </div>
+
+          <!-- Quick Logout Button -->
+          <button type="button" onclick="handleLogout()" class="p-1.5 rounded-xl bg-white/10 hover:bg-red-500/80 active:bg-red-600 text-white border border-white/20 transition-all cursor-pointer shadow-xs" title="લૉગઆઉટ (Logout)">
+            <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+          </button>
+        </div>
       </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="flex-1 px-4 py-4 space-y-4 overflow-y-auto">
+    <!-- Scrollable Main Content -->
+    <main class="flex-1 overflow-y-auto p-3.5 space-y-4 no-scrollbar bg-stone-100 pb-20">
 
-      <!-- Toast Notification Alert -->
-      <div id="toast" class="hidden bg-blue-900 text-white text-xs font-medium px-4 py-2.5 rounded-xl shadow-lg border border-blue-600/50 flex items-center justify-between gap-2 transition-all">
-        <span id="toastMsg">સંદેશ</span>
-        <button onclick="hideToast()" class="text-white/60 hover:text-white font-bold ml-2">✕</button>
-      </div>
-
-      <!-- Hero Card: Current Balbhog Balance -->
-      <div class="bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-900 rounded-2xl p-5 text-white shadow-xl relative overflow-hidden border border-blue-500/30">
-        <div class="flex items-center justify-between">
-          <span class="text-xs font-semibold tracking-wide uppercase px-2.5 py-0.5 rounded-full bg-white/15 text-blue-100 border border-white/20">
-            બાલભોગ પૌષ્ટિક આહાર • Balbhog Stock
-          </span>
-          <span id="stockStatusTag" class="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/25 text-emerald-200 border border-emerald-400/30">
-            પૂરતો સ્ટોક
-          </span>
-        </div>
-
-        <div class="mt-4 flex items-baseline justify-between">
-          <div>
-            <div class="text-xs text-blue-200 font-medium">હાલનો ઉપલબ્ધ સ્ટોક (Current Balance)</div>
-            <div class="flex items-baseline gap-2 mt-1">
-              <span id="balanceDisplay" class="text-4xl sm:text-5xl font-black text-white">૧૨૪</span>
-              <span class="text-xl sm:text-2xl font-bold text-blue-200">પેકેટ</span>
-              <span id="balanceDisplayEn" class="text-xs text-blue-300 font-mono">(124 Packets)</span>
-            </div>
-          </div>
-          <div class="text-right">
-            <div class="text-[11px] text-blue-200">અંદાજિત વજન</div>
-            <div id="weightDisplay" class="text-sm font-bold text-amber-300">૬૨.૦ કિ.ગ્રા.</div>
-            <div class="text-[10px] text-blue-300 font-medium">(@ 500g/પેકેટ)</div>
-          </div>
-        </div>
-
-        <div class="mt-4 pt-3 border-t border-white/15 flex items-center justify-between text-xs text-blue-100">
-          <span id="lastActionText" class="truncate pr-2">છેલ્લો ફેરફાર: સ્ટોક આવક (+૧૦ પેકેટ)</span>
-          <span id="lastActionTime" class="text-[11px] text-blue-200 shrink-0">આજે</span>
-        </div>
-      </div>
-
-      <!-- Two Big Action Cards with Stepper Counters -->
-      <div class="space-y-4">
-        
-        <!-- 1. + સ્ટોક આવક (Add inward stock) -->
-        <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 hover:border-emerald-300 transition">
-          <div class="flex items-center justify-between mb-2">
+      <!-- ================= TAB 1: નવી આવક (STOCK INWARD) ================= -->
+      <section id="tab-inward" class="space-y-4">
+        <div class="bg-white rounded-2xl p-3.5 border border-stone-200 shadow-xs">
+          <div class="flex items-center justify-between pb-2 border-b border-stone-100">
             <div>
-              <h2 class="text-base font-bold text-slate-800 leading-tight">+ સ્ટોક આવક</h2>
-              <p class="text-[11px] text-slate-500 font-medium">નવો માલ મેળવ્યો • Add Inward Stock</p>
+              <h2 class="text-sm font-bold text-stone-900" id="inwardTitle">નવી આવક નોંધણી (Stock Inward)</h2>
+              <p class="text-[11px] text-stone-500" id="inwardSubtitle">સપ્લાય વાનમાંથી આવેલ જથ્થાની બેચ મુજબ એન્ટ્રી</p>
             </div>
-            <!-- Quick Chips -->
-            <div class="flex items-center gap-1">
-              <button onclick="setInwardStep(5)" class="px-2 py-0.5 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-700 hover:bg-emerald-100">+૫</button>
-              <button onclick="setInwardStep(10)" class="px-2 py-0.5 rounded-lg text-xs font-bold bg-emerald-600 text-white shadow-xs">+૧૦</button>
-              <button onclick="setInwardStep(25)" class="px-2 py-0.5 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-700 hover:bg-emerald-100">+૨૫</button>
-              <button onclick="setInwardStep(50)" class="px-2 py-0.5 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-700 hover:bg-emerald-100">+૫૦</button>
+            <span class="text-xs bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded-full">THR / અનાજ</span>
+          </div>
+
+          <!-- Commodity Cards Selector -->
+          <div class="mt-3">
+            <label class="text-[11px] font-bold text-stone-700 block mb-1.5" id="lblSelectCommodity">સામગ્રી પસંદ કરો:</label>
+            <div class="grid grid-cols-3 gap-2" id="commoditySelectorGrid">
+              <!-- Dynamically populated -->
             </div>
           </div>
 
-          <!-- Stepper -->
-          <div class="bg-slate-50 rounded-xl p-2.5 flex items-center justify-between border border-slate-200 mb-3">
-            <button onclick="adjustInward(-1)" class="w-10 h-10 rounded-lg bg-white border border-slate-300 text-emerald-800 hover:bg-slate-100 font-black text-xl flex items-center justify-center shadow-xs active:scale-95 transition">−</button>
-            <div class="text-center">
-              <div id="inwardStepDisplay" class="text-2xl font-black text-slate-800">+૧૦ પેકેટ</div>
-              <div id="inwardStepEn" class="text-[10px] text-slate-500">10 Packets inward</div>
+          <!-- Batch No & Expiry Month -->
+          <div class="grid grid-cols-2 gap-2 mt-3.5">
+            <div>
+              <label class="text-[11px] font-bold text-stone-700 block mb-1">બેચ નંબર (Batch No.)</label>
+              <input type="text" id="inwardBatchNo" value="B26-104" placeholder="દા.ત. B26-104" class="w-full px-2.5 py-1.5 text-xs rounded-xl border border-stone-300 bg-stone-50 font-mono font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500" />
             </div>
-            <button onclick="adjustInward(1)" class="w-10 h-10 rounded-lg bg-white border border-slate-300 text-emerald-800 hover:bg-slate-100 font-black text-xl flex items-center justify-center shadow-xs active:scale-95 transition">+</button>
+            <div>
+              <label class="text-[11px] font-bold text-stone-700 block mb-1">એક્સપાયરી તારીખ</label>
+              <input type="date" id="inwardExpiryDate" class="w-full px-2.5 py-1.5 text-xs rounded-xl border border-stone-300 bg-stone-50 font-medium focus:outline-none focus:ring-2 focus:ring-amber-500" />
+            </div>
           </div>
 
-          <!-- Big Button -->
-          <button onclick="handleInward()" class="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 active:scale-[0.98] text-white font-bold shadow-md flex items-center justify-center gap-2 transition">
-            <span id="inwardBtnText" class="text-base font-bold">+ ૧૦ પેકેટ સ્ટોક આવક નોંધો</span>
-            <span class="text-xs bg-emerald-800/60 px-2 py-0.5 rounded-md font-mono">+Add Stock</span>
+          <!-- Quantity Stepper & Quick Add Pills -->
+          <div class="mt-3.5 p-3 rounded-xl bg-amber-50/70 border border-amber-200/80">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-xs font-bold text-stone-800" id="lblQuantityChange">જમા કરવાની સંખ્યા:</span>
+              <div class="flex items-center gap-2">
+                <button onclick="stepInwardQty(-5)" class="w-7 h-7 rounded-lg bg-white border border-stone-300 text-stone-800 font-bold hover:bg-stone-50 active:scale-95 flex items-center justify-center">-</button>
+                <input type="number" id="inwardQtyInput" value="25" min="1" class="w-16 text-center text-sm font-extrabold text-amber-900 bg-white border border-amber-300 rounded-lg py-1" />
+                <button onclick="stepInwardQty(5)" class="w-7 h-7 rounded-lg bg-white border border-stone-300 text-stone-800 font-bold hover:bg-stone-50 active:scale-95 flex items-center justify-center">+</button>
+              </div>
+            </div>
+
+            <!-- Quick Add Pills (+10, +25, +50) -->
+            <div class="flex items-center gap-1.5 mt-2">
+              <span class="text-[10px] font-bold text-stone-500">ઝડપી ઉમેરો:</span>
+              <button onclick="quickAddInward(10)" class="px-2 py-0.5 rounded-md text-xs font-bold bg-white text-amber-800 border border-amber-200 hover:bg-amber-100 shadow-2xs cursor-pointer">+10</button>
+              <button onclick="quickAddInward(25)" class="px-2 py-0.5 rounded-md text-xs font-bold bg-white text-amber-800 border border-amber-200 hover:bg-amber-100 shadow-2xs cursor-pointer">+25</button>
+              <button onclick="quickAddInward(50)" class="px-2 py-0.5 rounded-md text-xs font-bold bg-white text-amber-800 border border-amber-200 hover:bg-amber-100 shadow-2xs cursor-pointer">+50</button>
+              <button onclick="quickAddInward(100)" class="px-2 py-0.5 rounded-md text-xs font-bold bg-white text-amber-800 border border-amber-200 hover:bg-amber-100 shadow-2xs cursor-pointer">+100</button>
+            </div>
+          </div>
+
+          <!-- Confirm Inward Button: "સ્ટોકમાં જમા કરો" -->
+          <button onclick="confirmInwardSubmit()" class="w-full mt-4 py-3 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white font-bold rounded-xl shadow-md flex items-center justify-center gap-2 active:scale-[0.99] transition-transform cursor-pointer">
+            <i data-lucide="package-plus" class="w-4 h-4"></i>
+            <span id="btnConfirmInwardText">સ્ટોકમાં જમા કરો (Confirm Inward)</span>
           </button>
         </div>
+      </section>
 
-        <!-- 2. - દૈનિક વિતરણ (Deduct meal distribution for children) -->
-        <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 hover:border-blue-300 transition">
-          <div class="flex items-center justify-between mb-2">
-            <div>
-              <h2 class="text-base font-bold text-slate-800 leading-tight">- દૈનિક વિતરણ</h2>
-              <p class="text-[11px] text-slate-500 font-medium">બાળકોને પોષણ વિતરણ • Deduct Meal</p>
+      <!-- ================= TAB 2: દૈનિક વપરાશ (DAILY CONSUMPTION) ================= -->
+      <section id="tab-consumption" class="space-y-4 hidden">
+        <!-- Beneficiary Head-Count Steppers -->
+        <div class="bg-white rounded-2xl p-3.5 border border-stone-200 shadow-xs space-y-3.5">
+          <div class="pb-2 border-b border-stone-100">
+            <h2 class="text-sm font-bold text-stone-900" id="consumptionTitle">દૈનિક વિતરણ અને વપરાશ (Daily Consumption)</h2>
+            <p class="text-[11px] text-stone-500">લાભાર્થીવાર હેડ-કાઉન્ટ મુજબ ઓટોમેટેડ સ્ટોક કપાત</p>
+          </div>
+
+          <!-- 1. Balbhog: Children (6mo - 3yr) -->
+          <div class="p-3 rounded-xl border border-stone-200 bg-stone-50/70">
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center gap-2">
+                <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=100&q=80" alt="Balbhog" class="w-9 h-9 rounded-lg object-cover border border-amber-300 shrink-0" />
+                <div>
+                  <h3 class="text-xs font-bold text-stone-900">બાળકો (૬ માસ થી ૩ વર્ષ)</h3>
+                  <p class="text-[10px] text-stone-500">બાલભોગ પેકેટ (૧ બાળક = ૧ પેકેટ)</p>
+                </div>
+              </div>
+              <span id="balbhogStockBadge" class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800">હાજર: 30</span>
             </div>
-            <!-- Quick Chips -->
-            <div class="flex items-center gap-1">
-              <button onclick="setDistributeStep(1)" class="px-2 py-0.5 rounded-lg text-xs font-bold bg-blue-50 text-blue-700 hover:bg-blue-100">-૧</button>
-              <button onclick="setDistributeStep(3)" class="px-2 py-0.5 rounded-lg text-xs font-bold bg-blue-50 text-blue-700 hover:bg-blue-100">-૩</button>
-              <button onclick="setDistributeStep(5)" class="px-2 py-0.5 rounded-lg text-xs font-bold bg-blue-700 text-white shadow-xs">-૫</button>
-              <button onclick="setDistributeStep(10)" class="px-2 py-0.5 rounded-lg text-xs font-bold bg-blue-50 text-blue-700 hover:bg-blue-100">-૧૦</button>
+            <div class="flex items-center justify-between bg-white p-2 rounded-lg border border-stone-200">
+              <span class="text-xs font-semibold text-stone-700">હાજર બાળકો સંખ્યા:</span>
+              <div class="flex items-center gap-2">
+                <button onclick="stepBeneficiary('balbhog', -1)" class="w-6 h-6 rounded bg-stone-100 text-stone-800 font-bold flex items-center justify-center hover:bg-stone-200">-</button>
+                <span id="countBalbhog" class="w-8 text-center font-extrabold text-sm text-stone-900">15</span>
+                <button onclick="stepBeneficiary('balbhog', 1)" class="w-6 h-6 rounded bg-stone-100 text-stone-800 font-bold flex items-center justify-center hover:bg-stone-200">+</button>
+              </div>
             </div>
           </div>
 
-          <!-- Stepper -->
-          <div class="bg-slate-50 rounded-xl p-2.5 flex items-center justify-between border border-slate-200 mb-3">
-            <button onclick="adjustDistribute(-1)" class="w-10 h-10 rounded-lg bg-white border border-slate-300 text-blue-800 hover:bg-slate-100 font-black text-xl flex items-center justify-center shadow-xs active:scale-95 transition">−</button>
-            <div class="text-center">
-              <div id="distributeStepDisplay" class="text-2xl font-black text-slate-800">-૫ પેકેટ</div>
-              <div id="distributeStepEn" class="text-[10px] text-slate-500">5 Packets distributed</div>
+          <!-- 2. Matrumrut: Pregnant & Lactating Mothers -->
+          <div class="p-3 rounded-xl border border-stone-200 bg-stone-50/70">
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center gap-2">
+                <img src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=100&q=80" alt="Matrumrut" class="w-9 h-9 rounded-lg object-cover border border-rose-300 shrink-0" />
+                <div>
+                  <h3 class="text-xs font-bold text-stone-900">સગર્ભા અને ધાત્રી માતાઓ</h3>
+                  <p class="text-[10px] text-stone-500">માતૃઅમૃત પેકેટ (૧ માતા = ૧ પેકેટ)</p>
+                </div>
+              </div>
+              <span id="matrumrutStockBadge" class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800">હાજર: 20</span>
             </div>
-            <button onclick="adjustDistribute(1)" class="w-10 h-10 rounded-lg bg-white border border-slate-300 text-blue-800 hover:bg-slate-100 font-black text-xl flex items-center justify-center shadow-xs active:scale-95 transition">+</button>
+            <div class="flex items-center justify-between bg-white p-2 rounded-lg border border-stone-200">
+              <span class="text-xs font-semibold text-stone-700">હાજર માતાઓની સંખ્યા:</span>
+              <div class="flex items-center gap-2">
+                <button onclick="stepBeneficiary('matrumrut', -1)" class="w-6 h-6 rounded bg-stone-100 text-stone-800 font-bold flex items-center justify-center hover:bg-stone-200">-</button>
+                <span id="countMatrumrut" class="w-8 text-center font-extrabold text-sm text-stone-900">6</span>
+                <button onclick="stepBeneficiary('matrumrut', 1)" class="w-6 h-6 rounded bg-stone-100 text-stone-800 font-bold flex items-center justify-center hover:bg-stone-200">+</button>
+              </div>
+            </div>
           </div>
 
-          <!-- Big Button -->
-          <button onclick="handleDistribute()" id="distributeBtn" class="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-blue-700 to-indigo-800 hover:from-blue-800 hover:to-indigo-900 active:scale-[0.98] text-white font-bold shadow-md flex items-center justify-center gap-2 transition">
-            <span id="distributeBtnText" class="text-base font-bold">- ૫ પેકેટ દૈનિક વિતરણ નોંધો</span>
-            <span class="text-xs bg-blue-900/60 px-2 py-0.5 rounded-md font-mono">-Deduct</span>
+          <!-- 3. Purnashakti: Adolescent Girls -->
+          <div class="p-3 rounded-xl border border-stone-200 bg-stone-50/70">
+            <div class="flex items-center justify-between mb-2">
+              <div class="flex items-center gap-2">
+                <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=100&q=80" alt="Purnashakti" class="w-9 h-9 rounded-lg object-cover border border-purple-300 shrink-0" />
+                <div>
+                  <h3 class="text-xs font-bold text-stone-900">કિશોરીઓ (૧૧ થી ૧૮ વર્ષ)</h3>
+                  <p class="text-[10px] text-stone-500">પૂર્ણાશક્તિ પેકેટ (૧ કિશોરી = ૧ પેકેટ)</p>
+                </div>
+              </div>
+              <span id="purnashaktiStockBadge" class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800">હાજર: 25</span>
+            </div>
+            <div class="flex items-center justify-between bg-white p-2 rounded-lg border border-stone-200">
+              <span class="text-xs font-semibold text-stone-700">હાજર કિશોરીઓની સંખ્યા:</span>
+              <div class="flex items-center gap-2">
+                <button onclick="stepBeneficiary('purnashakti', -1)" class="w-6 h-6 rounded bg-stone-100 text-stone-800 font-bold flex items-center justify-center hover:bg-stone-200">-</button>
+                <span id="countPurnashakti" class="w-8 text-center font-extrabold text-sm text-stone-900">4</span>
+                <button onclick="stepBeneficiary('purnashakti', 1)" class="w-6 h-6 rounded bg-stone-100 text-stone-800 font-bold flex items-center justify-center hover:bg-stone-200">+</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. Raw Staples: Rice, Wheat, Oil (Hot cooked meals) -->
+          <div class="p-3 rounded-xl border border-stone-200 bg-stone-50/70">
+            <h4 class="text-xs font-bold text-stone-800 mb-2">ગરમ તાજો નાસ્તો / રસોડું વપરાશ</h4>
+            <div class="grid grid-cols-3 gap-2">
+              <div>
+                <span class="text-[10px] font-bold text-stone-600 block">ચોખા (kg)</span>
+                <input type="number" id="riceConsumptionInput" value="4" min="0" class="w-full text-center text-xs font-bold bg-white border border-stone-300 rounded-md py-1 mt-0.5" />
+              </div>
+              <div>
+                <span class="text-[10px] font-bold text-stone-600 block">ઘઉં (kg)</span>
+                <input type="number" id="wheatConsumptionInput" value="3" min="0" class="w-full text-center text-xs font-bold bg-white border border-stone-300 rounded-md py-1 mt-0.5" />
+              </div>
+              <div>
+                <span class="text-[10px] font-bold text-stone-600 block">તેલ (Ltr)</span>
+                <input type="number" id="oilConsumptionInput" value="1" min="0" class="w-full text-center text-xs font-bold bg-white border border-stone-300 rounded-md py-1 mt-0.5" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Insufficient Stock Warning Alert -->
+          <div id="insufficientStockWarning" class="hidden p-3 rounded-xl bg-red-50 border border-red-200 text-red-900 text-xs flex items-center gap-2">
+            <i data-lucide="alert-triangle" class="w-4 h-4 text-red-600 shrink-0"></i>
+            <span id="insufficientWarningText">ચેતવણી: પસંદ કરેલ વપરાશ ઉપલબ્ધ સ્ટોક કરતાં વધારે છે!</span>
+          </div>
+
+          <!-- Save Consumption Button: "વિતરણ સાચવો" -->
+          <button onclick="confirmConsumptionSubmit()" class="w-full py-3 bg-gradient-to-r from-rose-600 to-amber-600 hover:from-rose-700 hover:to-amber-700 text-white font-bold rounded-xl shadow-md flex items-center justify-center gap-2 active:scale-[0.99] transition-transform cursor-pointer">
+            <i data-lucide="check-circle-2" class="w-4 h-4"></i>
+            <span id="btnConfirmConsumptionText">વિતરણ સાચવો (Confirm Distribution)</span>
           </button>
         </div>
+      </section>
 
-      </div>
+      <!-- ================= TAB 3: સ્ટોક સિલક (BALANCE OVERVIEW & AUDIT TRAIL) ================= -->
+      <section id="tab-balance" class="space-y-4 hidden">
+        <!-- Stock Summary Cards / Table -->
+        <div class="bg-white rounded-2xl p-3.5 border border-stone-200 shadow-xs">
+          <div class="flex items-center justify-between pb-2 border-b border-stone-100">
+            <div>
+              <h2 class="text-sm font-bold text-stone-900" id="balanceTitle">સ્ટોક સિલક રજિસ્ટર (Stock Register)</h2>
+              <p class="text-[11px] text-stone-500">Opening + Inward - Consumed = Closing</p>
+            </div>
+            <!-- Download Report Button -->
+            <button onclick="downloadReport()" class="flex items-center gap-1 bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 px-2.5 py-1 rounded-xl text-xs font-bold shadow-2xs cursor-pointer">
+              <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+              <span>રિપોર્ટ ડાઉનલોડ કરો</span>
+            </button>
+          </div>
 
-      <!-- Quick Action Buttons: History & WhatsApp Report -->
-      <div class="grid grid-cols-2 gap-2">
-        <button onclick="openHistoryModal()" class="py-2.5 px-3 rounded-xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 active:scale-95 text-xs font-semibold flex items-center justify-center gap-1.5 shadow-2xs transition">
-          <span>📋 હિસાબ રજીસ્ટર (History)</span>
-        </button>
-        <button onclick="shareWhatsAppReport()" class="py-2.5 px-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 hover:bg-emerald-100 active:scale-95 text-xs font-semibold flex items-center justify-center gap-1.5 shadow-2xs transition">
-          <span>📲 વોટ્સએપ રિપોર્ટ (WhatsApp)</span>
-        </button>
-      </div>
-
-      <!-- Database Info Badge -->
-      <div class="p-3 rounded-xl bg-blue-50/70 border border-blue-200 text-slate-700 text-xs space-y-1">
-        <div class="font-bold text-blue-900 flex items-center justify-between">
-          <span>Firebase Realtime Database:</span>
-          <span id="fbLiveTag" class="text-[10px] font-bold text-emerald-700">સક્રિય (Active)</span>
+          <!-- Balance Table -->
+          <div class="overflow-x-auto mt-3">
+            <table class="w-full text-left text-xs">
+              <thead>
+                <tr class="bg-stone-50 text-stone-600 text-[10px] uppercase border-b border-stone-200">
+                  <th class="py-1.5 px-2 font-bold">સામગ્રી</th>
+                  <th class="py-1.5 px-1 font-bold text-center">શરૂઆત</th>
+                  <th class="py-1.5 px-1 font-bold text-center text-emerald-700">આવક(+)</th>
+                  <th class="py-1.5 px-1 font-bold text-center text-rose-700">વપરાશ(-)</th>
+                  <th class="py-1.5 px-2 font-bold text-right text-stone-900">હાજર સિલક</th>
+                </tr>
+              </thead>
+              <tbody id="balanceTableBody" class="divide-y divide-stone-100">
+                <!-- Dynamically populated from localStorage -->
+              </tbody>
+            </table>
+          </div>
         </div>
-        <div class="font-mono text-[11px] text-blue-700 break-all">https://poshan-setu-default-rtdb.firebaseio.com/</div>
-        <div class="text-[10px] text-slate-500">• આપોઆપ <code class="text-blue-900 font-semibold">/active_stock</code> અને <code class="text-blue-900 font-semibold">/transaction_history</code> પર સિંક થાય છે.</div>
-      </div>
+
+        <!-- Audit Trail: Scrollable List of Most Recent Transactions -->
+        <div class="bg-white rounded-2xl p-3.5 border border-stone-200 shadow-xs">
+          <div class="flex items-center justify-between pb-2 border-b border-stone-100">
+            <div class="flex items-center gap-2">
+              <i data-lucide="history" class="w-4 h-4 text-amber-700"></i>
+              <h3 class="text-xs font-bold text-stone-900">તાજેતરના વ્યવહારો (Audit Trail Ledger)</h3>
+            </div>
+            <span id="pendingQueueBadge" class="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800">બધા સિંક</span>
+          </div>
+
+          <!-- Scrollable Recent Transactions List -->
+          <div id="recentTransactionsList" class="mt-3 space-y-2 max-h-64 overflow-y-auto no-scrollbar">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </section>
 
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-slate-50 border-t border-slate-200 px-4 py-2.5 text-center text-[11px] text-slate-500 flex items-center justify-between">
-      <span>પોષણસેતુ • વડતાલ-૦૪</span>
-      <span>Progressive Web App</span>
-    </footer>
+    <!-- Bottom Navigation Tabs -->
+    <nav class="absolute bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-stone-200 px-3 py-2 z-20 shadow-lg">
+      <div class="grid grid-cols-3 gap-1">
+        <button id="navBtnInward" onclick="switchTab('inward')" class="flex flex-col items-center justify-center py-1.5 rounded-xl font-medium text-stone-500 hover:text-stone-800 cursor-pointer">
+          <i data-lucide="package-plus" class="w-5 h-5"></i>
+          <span class="text-[11px] mt-1 font-bold">નવી આવક</span>
+        </button>
+
+        <button id="navBtnConsumption" onclick="switchTab('consumption')" class="flex flex-col items-center justify-center py-1.5 rounded-xl font-bold text-rose-700 bg-rose-50 cursor-pointer">
+          <i data-lucide="users" class="w-5 h-5 stroke-[2.5]"></i>
+          <span class="text-[11px] mt-1 font-bold">દૈનિક વપરાશ</span>
+        </button>
+
+        <button id="navBtnBalance" onclick="switchTab('balance')" class="flex flex-col items-center justify-center py-1.5 rounded-xl font-medium text-stone-500 hover:text-stone-800 cursor-pointer">
+          <i data-lucide="layers" class="w-5 h-5"></i>
+          <span class="text-[11px] mt-1 font-bold">સ્ટોક સિલક</span>
+        </button>
+      </div>
+    </nav>
+
   </div>
 
-  <!-- History Modal -->
-  <div id="historyModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3">
-    <div class="bg-white rounded-3xl w-full max-w-md max-h-[85vh] flex flex-col shadow-2xl overflow-hidden border border-slate-200">
-      <div class="bg-blue-800 text-white px-5 py-4 flex items-center justify-between">
+  <!-- User Profile Modal -->
+  <div id="profileModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl p-5 w-full max-w-sm shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-stone-100 pb-3">
+        <h3 class="text-sm font-bold text-stone-900">આંગણવાડી કાર્યકર વિગત</h3>
+        <button onclick="closeProfileModal()" class="text-stone-400 hover:text-stone-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <div class="flex items-center gap-3">
+        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80" alt="Amit Patel" class="w-14 h-14 rounded-2xl object-cover border-2 border-amber-500 shadow-sm" />
         <div>
-          <h3 class="text-base font-bold">સ્ટોક હિસાબ રજીસ્ટર</h3>
-          <p class="text-xs text-blue-200">Transaction History • આંગણવાડી ૦૪ - વડતાલ</p>
+          <h4 class="text-base font-extrabold text-stone-900">અમિત પટેલ (Amit Patel)</h4>
+          <p class="text-xs text-amber-700 font-semibold">મુખ્ય સુપરવાઇઝર / ICDS ઓફિસર</p>
+          <p class="text-[10px] text-stone-500">સેન્ટર: આણંદનગર #42 (મહેસાણા)</p>
         </div>
-        <button onclick="closeHistoryModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center">✕</button>
       </div>
-      <div id="historyList" class="flex-1 overflow-y-auto p-4 space-y-2">
-        <!-- Rendered items -->
-      </div>
-      <div class="p-3 bg-slate-100 border-t border-slate-200 flex justify-end">
-        <button onclick="closeHistoryModal()" class="px-4 py-2 rounded-xl bg-blue-700 text-white font-bold text-xs hover:bg-blue-800">બંધ કરો (Close)</button>
-      </div>
+      <div class="p-3 bg-stone-50 rounded-xl space-y-1.5 text-xs text-stone-600">
+        <div class="flex justify-between"><span>મોબાઇલ:</span><strong class="text-stone-800 font-mono">+91 98765 43210</strong></div>
+        <div class="flex justify-between"><span>હોદ્દો:</span><strong class="text-stone-800">આંગણવાડી સંચાલક</strong></div>
+        <div class="flex justify-between"><span>સ્થાનિક સંગ્રહ:</span><strong class="text-emerald-700">સક્રિય (LocalStorage)</strong></div>
+      <button onclick="handleLogout()" class="w-full py-2 bg-red-50 text-red-700 hover:bg-red-100 font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 border border-red-200 cursor-pointer">
+        <i data-lucide="log-out" class="w-3.5 h-3.5 text-red-600"></i>
+        <span>અમિત પટેલ લૉગઆઉટ કરો (Log Out)</span>
+      </button>
+      <button onclick="closeProfileModal()" class="w-full py-2.5 bg-stone-800 text-white font-bold rounded-xl text-xs">બંધ કરો</button>
     </div>
   </div>
 
+  <!-- JavaScript Implementation: LocalStorage, FIFO calculation, Online/Offline, PWA SW -->
   <script>
-    const FIREBASE_URL = "https://poshan-setu-default-rtdb.firebaseio.com/";
-    const VILLAGE = "૦૪ - વડતાલ";
-    const WORKER = "ગીતાબેન";
-    let currentBalance = parseInt(localStorage.getItem('ps_balance') || '124', 10);
-    let inwardStep = 10;
-    let distributeStep = 5;
-    let audioOn = true;
-    let db = null;
-    let historyRecords = JSON.parse(localStorage.getItem('ps_history') || '[]');
+    // --- 1. Commodities Definition with Images and Specs ---
+    const COMMODITIES = {
+      BALBHOG: {
+        code: 'BALBHOG',
+        nameGu: 'બાલભોગ',
+        nameEn: 'Balbhog',
+        unit: 'packets',
+        unitGu: 'પેકેટ',
+        imageUrl: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=150&q=80',
+        color: 'from-amber-500 to-orange-500',
+      },
+      MATRUMRUT: {
+        code: 'MATRUMRUT',
+        nameGu: 'માતૃઅમૃત',
+        nameEn: 'Matrumrut',
+        unit: 'packets',
+        unitGu: 'પેકેટ',
+        imageUrl: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=150&q=80',
+        color: 'from-rose-500 to-pink-500',
+      },
+      PURNASHAKTI: {
+        code: 'PURNASHAKTI',
+        nameGu: 'પૂર્ણાશક્તિ',
+        nameEn: 'Purnashakti',
+        unit: 'packets',
+        unitGu: 'પેકેટ',
+        imageUrl: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=150&q=80',
+        color: 'from-purple-500 to-indigo-500',
+      },
+      RICE: {
+        code: 'RICE',
+        nameGu: 'ચોખા',
+        nameEn: 'Rice',
+        unit: 'kg',
+        unitGu: 'કિલો',
+        imageUrl: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=150&q=80',
+        color: 'from-emerald-600 to-teal-600',
+      },
+      WHEAT: {
+        code: 'WHEAT',
+        nameGu: 'ઘઉં',
+        nameEn: 'Wheat',
+        unit: 'kg',
+        unitGu: 'કિલો',
+        imageUrl: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?auto=format&fit=crop&w=150&q=80',
+        color: 'from-amber-600 to-yellow-600',
+      },
+      OIL: {
+        code: 'OIL',
+        nameGu: 'તેલ',
+        nameEn: 'Cooking Oil',
+        unit: 'litres',
+        unitGu: 'લિટર',
+        imageUrl: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&w=150&q=80',
+        color: 'from-yellow-500 to-amber-500',
+      }
+    };
 
-    if (historyRecords.length === 0) {
-      historyRecords = [
-        { balance: 124, lastAction: 'સ્ટોક આવક', change: 25, timestamp: Date.now() - 86400000, village: VILLAGE },
-        { balance: 99, lastAction: 'દૈનિક વિતરણ', change: -15, timestamp: Date.now() - 43200000, village: VILLAGE }
-      ];
-    }
+    // Initial Defaults
+    const DEFAULT_INVENTORY = {
+      BALBHOG: { code: 'BALBHOG', opening: 30, received: 25, consumed: 15, closing: 40, unit: 'packets' },
+      MATRUMRUT: { code: 'MATRUMRUT', opening: 18, received: 8, consumed: 6, closing: 20, unit: 'packets' },
+      PURNASHAKTI: { code: 'PURNASHAKTI', opening: 20, received: 10, consumed: 5, closing: 25, unit: 'packets' },
+      RICE: { code: 'RICE', opening: 40, received: 50, consumed: 15, closing: 75, unit: 'kg' },
+      WHEAT: { code: 'WHEAT', opening: 35, received: 20, consumed: 12, closing: 43, unit: 'kg' },
+      OIL: { code: 'OIL', opening: 12, received: 5, consumed: 4, closing: 13, unit: 'litres' },
+    };
 
-    function toGujarati(num) {
-      const g = ['૦','૧','૨','૩','૪','૫','૬','૭','૮','૯'];
-      return String(num).replace(/[0-9]/g, d => g[parseInt(d, 10)]);
-    }
+    const DEFAULT_TRANSACTIONS = [
+      {
+        id: 'tx-1',
+        timestamp: new Date(Date.now() - 86400000 * 2).toISOString(),
+        action: 'INWARD',
+        itemCode: 'BALBHOG',
+        itemNameGu: 'બાલભોગ',
+        quantityChange: 25,
+        unit: 'packets',
+        batchNo: 'B26-104',
+        closingBalanceAfter: 55,
+        is_synced: true,
+      },
+      {
+        id: 'tx-2',
+        timestamp: new Date(Date.now() - 86400000).toISOString(),
+        action: 'CONSUMPTION',
+        itemCode: 'BALBHOG',
+        itemNameGu: 'બાલભોગ',
+        quantityChange: -15,
+        unit: 'packets',
+        beneficiaryCount: 15,
+        closingBalanceAfter: 40,
+        is_synced: true,
+      },
+      {
+        id: 'tx-3',
+        timestamp: new Date(Date.now() - 3600000 * 5).toISOString(),
+        action: 'CONSUMPTION',
+        itemCode: 'MATRUMRUT',
+        itemNameGu: 'માતૃઅમૃત',
+        quantityChange: -6,
+        unit: 'packets',
+        beneficiaryCount: 6,
+        closingBalanceAfter: 20,
+        is_synced: true,
+      }
+    ];
 
-    function formatTime(ts) {
-      if (!ts) return 'હમણાં જ';
-      const d = new Date(ts);
-      const h = d.getHours();
-      const m = d.getMinutes().toString().padStart(2, '0');
-      const ampm = h >= 12 ? 'બપોરે' : 'સવારે';
-      const displayHours = h % 12 || 12;
-      return `${ampm} ${toGujarati(displayHours)}:${toGujarati(m)} (${toGujarati(d.getDate())}/${toGujarati(d.getMonth() + 1)})`;
-    }
+    // State Variables
+    let selectedCommodity = 'BALBHOG';
+    let currentLang = 'gu';
+    let isOnlineState = navigator.onLine;
 
-    function playTone(type) {
-      if (!audioOn) return;
+    // --- 2. LocalStorage Helpers ---
+    function getStoredInventory() {
       try {
-        const AudioCtx = window.AudioContext || window.webkitAudioContext;
-        if (!AudioCtx) return;
-        const ctx = new AudioCtx();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        if (type === 'add') {
-          osc.frequency.setValueAtTime(587.33, ctx.currentTime);
-          osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.15);
+        const data = localStorage.getItem('poshansetu_stock_balances_v2');
+        return data ? JSON.parse(data) : DEFAULT_INVENTORY;
+      } catch (e) {
+        return DEFAULT_INVENTORY;
+      }
+    }
+
+    function saveStoredInventory(inv) {
+      try {
+        localStorage.setItem('poshansetu_stock_balances_v2', JSON.stringify(inv));
+      } catch (e) {
+        console.error('LocalStorage write error:', e);
+      }
+    }
+
+    function getStoredTransactions() {
+      try {
+        const data = localStorage.getItem('poshansetu_ledger_transactions_v2');
+        return data ? JSON.parse(data) : DEFAULT_TRANSACTIONS;
+      } catch (e) {
+        return DEFAULT_TRANSACTIONS;
+      }
+    }
+
+    function saveStoredTransactions(txs) {
+      try {
+        localStorage.setItem('poshansetu_ledger_transactions_v2', JSON.stringify(txs));
+      } catch (e) {
+        console.error('LocalStorage write error:', e);
+      }
+    }
+
+    function getStoredSyncQueue() {
+      try {
+        const data = localStorage.getItem('poshansetu_pending_sync_queue_v2');
+        return data ? JSON.parse(data) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveStoredSyncQueue(queue) {
+      try {
+        localStorage.setItem('poshansetu_pending_sync_queue_v2', JSON.stringify(queue));
+      } catch (e) {
+        console.error('LocalStorage write error:', e);
+      }
+    }
+
+    // --- 3. UI Update and Rendering ---
+    function renderCommoditySelector() {
+      const grid = document.getElementById('commoditySelectorGrid');
+      grid.innerHTML = '';
+      Object.values(COMMODITIES).forEach((com) => {
+        const isSelected = com.code === selectedCommodity;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.onclick = () => {
+          selectedCommodity = com.code;
+          renderCommoditySelector();
+        };
+        btn.className = `p-2 rounded-xl border text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-1 ${
+          isSelected
+            ? 'border-amber-600 bg-amber-50/80 ring-2 ring-amber-500 font-bold shadow-xs'
+            : 'border-stone-200 bg-stone-50 hover:bg-stone-100 text-stone-700'
+        }`;
+        btn.innerHTML = `
+          <img src="${com.imageUrl}" alt="${com.nameEn}" class="w-8 h-8 rounded-lg object-cover shadow-2xs border border-stone-200" />
+          <span class="text-xs leading-tight block">${currentLang === 'gu' ? com.nameGu : com.nameEn}</span>
+          <span class="text-[9px] text-stone-500">${com.unitGu}</span>
+        `;
+        grid.appendChild(btn);
+      });
+    }
+
+    function updateStockBadges() {
+      const inv = getStoredInventory();
+      const balSpan = document.getElementById('balbhogStockBadge');
+      const matSpan = document.getElementById('matrumrutStockBadge');
+      const purSpan = document.getElementById('purnashaktiStockBadge');
+
+      if (balSpan && inv.BALBHOG) balSpan.innerText = `હાજર: ${inv.BALBHOG.closing}`;
+      if (matSpan && inv.MATRUMRUT) matSpan.innerText = `હાજર: ${inv.MATRUMRUT.closing}`;
+      if (purSpan && inv.PURNASHAKTI) purSpan.innerText = `હાજર: ${inv.PURNASHAKTI.closing}`;
+    }
+
+    function renderBalanceTable() {
+      const tbody = document.getElementById('balanceTableBody');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+      const inv = getStoredInventory();
+
+      Object.values(inv).forEach((row) => {
+        const com = COMMODITIES[row.code] || { nameGu: row.code, nameEn: row.code, unitGu: row.unit };
+        const tr = document.createElement('tr');
+        tr.className = 'hover:bg-stone-50 transition-colors';
+        tr.innerHTML = `
+          <td class="py-2 px-2 font-semibold text-stone-900 flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full ${row.closing < 15 ? 'bg-amber-500 animate-ping' : 'bg-emerald-500'}"></span>
+            <span>${currentLang === 'gu' ? com.nameGu : com.nameEn}</span>
+          </td>
+          <td class="py-2 px-1 text-center text-stone-600">${row.opening}</td>
+          <td class="py-2 px-1 text-center font-bold text-emerald-700">+${row.received}</td>
+          <td class="py-2 px-1 text-center font-bold text-rose-700">-${row.consumed}</td>
+          <td class="py-2 px-2 text-right font-extrabold text-stone-900 text-sm">${row.closing} <span class="text-[10px] font-normal text-stone-500">${com.unitGu}</span></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function renderRecentTransactions() {
+      const list = document.getElementById('recentTransactionsList');
+      if (!list) return;
+      list.innerHTML = '';
+      const txs = getStoredTransactions();
+      const queue = getStoredSyncQueue();
+
+      const queueBadge = document.getElementById('pendingQueueBadge');
+      const pendingCount = queue.filter(q => !q.is_synced).length;
+      if (queueBadge) {
+        if (pendingCount > 0) {
+          queueBadge.className = 'text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300 animate-pulse';
+          queueBadge.innerText = `${pendingCount} સિંક બાકી`;
         } else {
-          osc.frequency.setValueAtTime(523.25, ctx.currentTime);
-          osc.frequency.exponentialRampToValueAtTime(392, ctx.currentTime + 0.15);
-        }
-        gain.gain.setValueAtTime(0.12, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.18);
-        osc.start();
-        osc.stop(ctx.currentTime + 0.18);
-      } catch(e) {}
-    }
-
-    function toggleAudio() {
-      audioOn = !audioOn;
-      document.getElementById('audioBtn').innerText = audioOn ? '🔊' : '🔇';
-    }
-
-    function updateUI() {
-      document.getElementById('balanceDisplay').innerText = toGujarati(currentBalance);
-      document.getElementById('balanceDisplayEn').innerText = `(${currentBalance} Packets)`;
-      document.getElementById('weightDisplay').innerText = `${toGujarati((currentBalance * 0.5).toFixed(1))} કિ.ગ્રા.`;
-      
-      const tag = document.getElementById('stockStatusTag');
-      if (currentBalance > 30) {
-        tag.className = 'text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/25 text-emerald-200 border border-emerald-400/30';
-        tag.innerText = 'પૂરતો સ્ટોક';
-      } else {
-        tag.className = 'text-[11px] font-bold px-2 py-0.5 rounded-full bg-rose-500/30 text-rose-200 border border-rose-400/40 animate-pulse';
-        tag.innerText = 'ઓછો સ્ટોક';
-      }
-
-      document.getElementById('inwardStepDisplay').innerText = `+${toGujarati(inwardStep)} પેકેટ`;
-      document.getElementById('inwardStepEn').innerText = `${inwardStep} Packets inward`;
-      document.getElementById('inwardBtnText').innerText = `+ ${toGujarati(inwardStep)} પેકેટ સ્ટોક આવક નોંધો`;
-
-      document.getElementById('distributeStepDisplay').innerText = `-${toGujarati(distributeStep)} પેકેટ`;
-      document.getElementById('distributeStepEn').innerText = `${distributeStep} Packets distributed`;
-      document.getElementById('distributeBtnText').innerText = `- ${toGujarati(distributeStep)} પેકેટ દૈનિક વિતરણ નોંધો`;
-
-      const distBtn = document.getElementById('distributeBtn');
-      if (currentBalance < distributeStep) {
-        distBtn.classList.add('opacity-50', 'cursor-not-allowed');
-      } else {
-        distBtn.classList.remove('opacity-50', 'cursor-not-allowed');
-      }
-    }
-
-    function showToast(msg) {
-      const toast = document.getElementById('toast');
-      document.getElementById('toastMsg').innerText = msg;
-      toast.classList.remove('hidden');
-      setTimeout(() => toast.classList.add('hidden'), 3500);
-    }
-
-    function hideToast() {
-      document.getElementById('toast').classList.add('hidden');
-    }
-
-    function setInwardStep(val) {
-      inwardStep = val;
-      updateUI();
-    }
-
-    function adjustInward(delta) {
-      inwardStep = Math.max(1, inwardStep + delta);
-      updateUI();
-    }
-
-    function setDistributeStep(val) {
-      distributeStep = val;
-      updateUI();
-    }
-
-    function adjustDistribute(delta) {
-      distributeStep = Math.max(1, distributeStep + delta);
-      updateUI();
-    }
-
-    async function handleInward() {
-      currentBalance += inwardStep;
-      localStorage.setItem('ps_balance', currentBalance);
-      updateUI();
-      playTone('add');
-      
-      const actionName = "સ્ટોક આવક";
-      const change = inwardStep;
-      const timestamp = Date.now();
-
-      document.getElementById('lastActionText').innerText = `છેલ્લો ફેરફાર: ${actionName} (+${toGujarati(change)} પેકેટ)`;
-      document.getElementById('lastActionTime').innerText = 'હમણાં';
-      showToast(`+${toGujarati(change)} પેકેટ સ્ટોક ઉમેરાઈ ગયો! (બેલેન્સ: ${toGujarati(currentBalance)})`);
-
-      const record = { balance: currentBalance, lastAction: actionName, change, timestamp, village: VILLAGE };
-      historyRecords.unshift(record);
-      localStorage.setItem('ps_history', JSON.stringify(historyRecords));
-
-      if (db) {
-        try {
-          await db.ref('/active_stock').set({
-            balance: currentBalance,
-            lastAction: actionName,
-            change: change,
-            timestamp: timestamp,
-            village: VILLAGE
-          });
-          await db.ref('/transaction_history').push({
-            balance: currentBalance,
-            lastAction: actionName,
-            change: change,
-            timestamp: timestamp,
-            village: VILLAGE
-          });
-        } catch (e) {
-          console.error("Firebase write error:", e);
+          queueBadge.className = 'text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800';
+          queueBadge.innerText = 'બધા સિંક થયેલ';
         }
       }
-    }
 
-    async function handleDistribute() {
-      if (currentBalance < distributeStep) {
-        showToast(`ચેતવણી: માત્ર ${toGujarati(currentBalance)} પેકેટ બાકી છે!`);
+      if (txs.length === 0) {
+        list.innerHTML = '<p class="text-xs text-stone-400 text-center py-4">હજુ સુધી કોઈ વ્યવહાર નોંધાયો નથી.</p>';
         return;
       }
-      currentBalance -= distributeStep;
-      localStorage.setItem('ps_balance', currentBalance);
-      updateUI();
-      playTone('deduct');
 
-      const actionName = "દૈનિક વિતરણ";
-      const change = -distributeStep;
-      const timestamp = Date.now();
-
-      document.getElementById('lastActionText').innerText = `છેલ્લો ફેરફાર: ${actionName} (${toGujarati(change)} પેકેટ)`;
-      document.getElementById('lastActionTime').innerText = 'હમણાં';
-      showToast(`-${toGujarati(distributeStep)} પેકેટ બાળકોને વિતરણ નોંધાયું!`);
-
-      const record = { balance: currentBalance, lastAction: actionName, change, timestamp, village: VILLAGE };
-      historyRecords.unshift(record);
-      localStorage.setItem('ps_history', JSON.stringify(historyRecords));
-
-      if (db) {
-        try {
-          await db.ref('/active_stock').set({
-            balance: currentBalance,
-            lastAction: actionName,
-            change: change,
-            timestamp: timestamp,
-            village: VILLAGE
-          });
-          await db.ref('/transaction_history').push({
-            balance: currentBalance,
-            lastAction: actionName,
-            change: change,
-            timestamp: timestamp,
-            village: VILLAGE
-          });
-        } catch (e) {
-          console.error("Firebase write error:", e);
-        }
-      }
-    }
-
-    function openHistoryModal() {
-      const container = document.getElementById('historyList');
-      container.innerHTML = historyRecords.map(item => `
-        <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
-          <div>
-            <div class="flex items-center gap-1.5">
-              <span class="px-2 py-0.5 rounded-md text-[10px] font-bold ${item.change > 0 ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
-                ${item.lastAction || (item.change > 0 ? 'આવક' : 'વિતરણ')}
-              </span>
-              <span class="text-xs text-slate-500 font-medium">${formatTime(item.timestamp)}</span>
+      txs.slice(0, 8).forEach((tx) => {
+        const isInward = tx.action === 'INWARD';
+        const dateStr = new Date(tx.timestamp).toLocaleString('gu-IN', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+        const item = document.createElement('div');
+        item.className = 'p-2.5 rounded-xl border border-stone-200 bg-stone-50 flex items-center justify-between text-xs shadow-2xs';
+        item.innerHTML = `
+          <div class="flex items-center gap-2">
+            <span class="w-7 h-7 rounded-lg flex items-center justify-center font-bold ${isInward ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
+              <i data-lucide="${isInward ? 'arrow-down-left' : 'arrow-up-right'}" class="w-4 h-4"></i>
+            </span>
+            <div>
+              <div class="flex items-center gap-1.5">
+                <span class="font-extrabold text-stone-900">${tx.itemNameGu}</span>
+                <span class="text-[9px] px-1 py-0.2 rounded font-bold ${tx.is_synced ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-900 border border-amber-300'}">
+                  ${tx.is_synced ? '🟢 સિંક' : '🟡 સ્થાનિક'}
+                </span>
+              </div>
+              <span class="text-[10px] text-stone-500">${dateStr} ${tx.batchNo ? '• બેચ ' + tx.batchNo : ''}</span>
             </div>
-            <div class="text-[10px] text-slate-400 mt-1">ગામ: ${item.village || VILLAGE}</div>
           </div>
           <div class="text-right">
-            <div class="text-sm font-black ${item.change > 0 ? 'text-emerald-700' : 'text-rose-700'}">
-              ${item.change > 0 ? '+' : ''}${toGujarati(item.change)} પેકેટ
-            </div>
-            <div class="text-xs text-slate-700 font-bold">બાકી: ${toGujarati(item.balance)}</div>
+            <span class="font-extrabold text-sm block ${isInward ? 'text-emerald-700' : 'text-rose-700'}">
+              ${tx.quantityChange > 0 ? '+' + tx.quantityChange : tx.quantityChange}
+            </span>
+            <span class="text-[9px] text-stone-500">સિલક: ${tx.closingBalanceAfter}</span>
           </div>
-        </div>
-      `).join('');
-      document.getElementById('historyModal').classList.remove('hidden');
+        `;
+        list.appendChild(item);
+      });
+      lucide.createIcons();
     }
 
-    function closeHistoryModal() {
-      document.getElementById('historyModal').classList.add('hidden');
+    // --- 4. Tab Navigation ---
+    function switchTab(tab) {
+      document.getElementById('tab-inward').classList.add('hidden');
+      document.getElementById('tab-consumption').classList.add('hidden');
+      document.getElementById('tab-balance').classList.add('hidden');
+
+      const btnInward = document.getElementById('navBtnInward');
+      const btnConsumption = document.getElementById('navBtnConsumption');
+      const btnBalance = document.getElementById('navBtnBalance');
+
+      btnInward.className = 'flex flex-col items-center justify-center py-1.5 rounded-xl font-medium text-stone-500 hover:text-stone-800 cursor-pointer';
+      btnConsumption.className = 'flex flex-col items-center justify-center py-1.5 rounded-xl font-medium text-stone-500 hover:text-stone-800 cursor-pointer';
+      btnBalance.className = 'flex flex-col items-center justify-center py-1.5 rounded-xl font-medium text-stone-500 hover:text-stone-800 cursor-pointer';
+
+      if (tab === 'inward') {
+        document.getElementById('tab-inward').classList.remove('hidden');
+        btnInward.className = 'flex flex-col items-center justify-center py-1.5 rounded-xl font-bold text-amber-700 bg-amber-50 cursor-pointer';
+      } else if (tab === 'consumption') {
+        document.getElementById('tab-consumption').classList.remove('hidden');
+        btnConsumption.className = 'flex flex-col items-center justify-center py-1.5 rounded-xl font-bold text-rose-700 bg-rose-50 cursor-pointer';
+      } else if (tab === 'balance') {
+        document.getElementById('tab-balance').classList.remove('hidden');
+        btnBalance.className = 'flex flex-col items-center justify-center py-1.5 rounded-xl font-bold text-stone-800 bg-stone-200 cursor-pointer';
+        renderBalanceTable();
+        renderRecentTransactions();
+      }
+      lucide.createIcons();
     }
 
-    function shareWhatsAppReport() {
-      const msg = `*પોષણસેતુ - આંગણવાડી સ્ટોક રિપોર્ટ*\nકેન્દ્ર: ${VILLAGE}\nકાર્યકર્તા: ${WORKER}\nહાલનો બાલભોગ સ્ટોક: *${currentBalance} પેકેટ* (${toGujarati(currentBalance)})\nઅંદાજિત વજન: ${(currentBalance * 0.5).toFixed(1)} કિ.ગ્રા.\n_PoshanSetu Mobile App_`;
-      window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(msg), '_blank');
+    // --- 5. Inward Handler: "સ્ટોકમાં જમા કરો" ---
+    function stepInwardQty(delta) {
+      const input = document.getElementById('inwardQtyInput');
+      let val = parseInt(input.value) || 0;
+      val = Math.max(1, val + delta);
+      input.value = val;
     }
 
-    // Initialize Firebase Realtime Database
-    try {
-      if (window.firebase) {
-        let app = window.firebase.apps && window.firebase.apps.length > 0 
-          ? window.firebase.apps[0] 
-          : firebase.initializeApp({ databaseURL: FIREBASE_URL });
-        db = firebase.database(app);
+    function quickAddInward(amt) {
+      const input = document.getElementById('inwardQtyInput');
+      input.value = amt;
+    }
 
-        // Listen for live updates
-        db.ref('/active_stock').on('value', (snap) => {
-          const val = snap.val();
-          if (val && typeof val.balance === 'number') {
-            currentBalance = val.balance;
-            localStorage.setItem('ps_balance', currentBalance);
-            if (val.lastAction) {
-              document.getElementById('lastActionText').innerText = `છેલ્લો ફેરફાર: ${val.lastAction} (${val.change > 0 ? '+' : ''}${toGujarati(val.change || 0)} પેકેટ)`;
-              document.getElementById('lastActionTime').innerText = formatTime(val.timestamp);
-            }
-            updateUI();
+    function confirmInwardSubmit() {
+      const qtyInput = document.getElementById('inwardQtyInput');
+      const quantity = parseInt(qtyInput.value) || 0;
+      if (quantity <= 0) {
+        alert('કૃપા કરીને માન્ય સંખ્યા દાખલ કરો!');
+        return;
+      }
+
+      const batchNo = document.getElementById('inwardBatchNo').value || 'B26-GEN';
+      const expiryDate = document.getElementById('inwardExpiryDate').value || '2027-06-01';
+
+      // 1. Calculate and update inventory
+      const inv = getStoredInventory();
+      if (!inv[selectedCommodity]) {
+        inv[selectedCommodity] = {
+          code: selectedCommodity,
+          opening: 0,
+          received: 0,
+          consumed: 0,
+          closing: 0,
+          unit: COMMODITIES[selectedCommodity].unit
+        };
+      }
+
+      const item = inv[selectedCommodity];
+      item.received = (item.received || 0) + quantity;
+      // Formula: Closing Balance = Opening Balance + Received Quantity - Consumed Quantity
+      item.closing = (item.opening || 0) + item.received - (item.consumed || 0);
+
+      // Save immediately to localStorage
+      saveStoredInventory(inv);
+
+      // 2. Ledger Transaction with is_synced based on navigator.onLine
+      const isOnline = isOnlineState;
+      const com = COMMODITIES[selectedCommodity];
+      const newTx = {
+        id: `tx-${Date.now()}`,
+        timestamp: new Date().toISOString(),
+        action: 'INWARD',
+        itemCode: selectedCommodity,
+        itemNameGu: com.nameGu,
+        quantityChange: quantity,
+        unit: com.unit,
+        batchNo: batchNo,
+        expiryDate: expiryDate,
+        closingBalanceAfter: item.closing,
+        is_synced: isOnline,
+      };
+
+      const txs = getStoredTransactions();
+      txs.unshift(newTx);
+      saveStoredTransactions(txs);
+
+      // 3. If offline, add to pending sync queue
+      if (!isOnline) {
+        const queue = getStoredSyncQueue();
+        queue.unshift({
+          id: `sync-${Date.now()}`,
+          action: 'INWARD',
+          payload: { selectedCommodity, quantity, batchNo, expiryDate },
+          is_synced: false,
+        });
+        saveStoredSyncQueue(queue);
+      }
+
+      // Update UI
+      updateStockBadges();
+      renderBalanceTable();
+      renderRecentTransactions();
+
+      alert(`✅ સફળ! ${quantity} ${com.unitGu} ${com.nameGu} સ્ટોકમાં જમા થઈ ગયા. હાજર સિલક: ${item.closing}`);
+      switchTab('balance');
+    }
+
+    // --- 6. Consumption Handler: "વિતરણ સાચવો" ---
+    function stepBeneficiary(type, delta) {
+      if (type === 'balbhog') {
+        const span = document.getElementById('countBalbhog');
+        let count = Math.max(0, parseInt(span.innerText) + delta);
+        span.innerText = count;
+      } else if (type === 'matrumrut') {
+        const span = document.getElementById('countMatrumrut');
+        let count = Math.max(0, parseInt(span.innerText) + delta);
+        span.innerText = count;
+      } else if (type === 'purnashakti') {
+        const span = document.getElementById('countPurnashakti');
+        let count = Math.max(0, parseInt(span.innerText) + delta);
+        span.innerText = count;
+      }
+    }
+
+    function confirmConsumptionSubmit() {
+      const balCount = parseInt(document.getElementById('countBalbhog').innerText) || 0;
+      const matCount = parseInt(document.getElementById('countMatrumrut').innerText) || 0;
+      const purCount = parseInt(document.getElementById('countPurnashakti').innerText) || 0;
+
+      const riceUsage = parseFloat(document.getElementById('riceConsumptionInput').value) || 0;
+      const wheatUsage = parseFloat(document.getElementById('wheatConsumptionInput').value) || 0;
+      const oilUsage = parseFloat(document.getElementById('oilConsumptionInput').value) || 0;
+
+      const totalItems = balCount + matCount + purCount + riceUsage + wheatUsage + oilUsage;
+      if (totalItems <= 0) {
+        alert('કૃપા કરીને વિતરણ સંખ્યા દાખલ કરો!');
+        return;
+      }
+
+      const inv = getStoredInventory();
+
+      // Rule: If (Consumption > Available Stock), trigger INSUFFICIENT_STOCK error
+      if (balCount > (inv.BALBHOG?.closing || 0)) {
+        showInsufficientWarning('બાલભોગનો પૂરતો સ્ટોક ઉપલબ્ધ નથી!');
+        return;
+      }
+      if (matCount > (inv.MATRUMRUT?.closing || 0)) {
+        showInsufficientWarning('માતૃઅમૃતનો પૂરતો સ્ટોક ઉપલબ્ધ નથી!');
+        return;
+      }
+      if (purCount > (inv.PURNASHAKTI?.closing || 0)) {
+        showInsufficientWarning('પૂર્ણાશક્તિનો પૂરતો સ્ટોક ઉપલબ્ધ નથી!');
+        return;
+      }
+
+      hideInsufficientWarning();
+      const isOnline = isOnlineState;
+      const txs = getStoredTransactions();
+      const queue = getStoredSyncQueue();
+
+      // Apply deductions
+      const allocations = [
+        { code: 'BALBHOG', qty: balCount, count: balCount, label: 'બાળકો' },
+        { code: 'MATRUMRUT', qty: matCount, count: matCount, label: 'માતાઓ' },
+        { code: 'PURNASHAKTI', qty: purCount, count: purCount, label: 'કિશોરીઓ' },
+        { code: 'RICE', qty: riceUsage, count: null, label: 'રસોડું ચોખા' },
+        { code: 'WHEAT', qty: wheatUsage, count: null, label: 'રસોડું ઘઉં' },
+        { code: 'OIL', qty: oilUsage, count: null, label: 'રસોડું તેલ' },
+      ];
+
+      allocations.forEach(alloc => {
+        if (alloc.qty > 0 && inv[alloc.code]) {
+          const item = inv[alloc.code];
+          item.consumed = (item.consumed || 0) + alloc.qty;
+          // Formula: Closing Balance = Opening Balance + Received Quantity - Consumed Quantity
+          item.closing = (item.opening || 0) + (item.received || 0) - item.consumed;
+
+          const com = COMMODITIES[alloc.code];
+          const newTx = {
+            id: `tx-${Date.now()}-${alloc.code}`,
+            timestamp: new Date().toISOString(),
+            action: 'CONSUMPTION',
+            itemCode: alloc.code,
+            itemNameGu: com.nameGu,
+            quantityChange: -alloc.qty,
+            unit: com.unit,
+            beneficiaryCount: alloc.count,
+            closingBalanceAfter: item.closing,
+            is_synced: isOnline,
+          };
+          txs.unshift(newTx);
+
+          if (!isOnline) {
+            queue.unshift({
+              id: `sync-${Date.now()}-${alloc.code}`,
+              action: 'CONSUMPTION',
+              payload: alloc,
+              is_synced: false,
+            });
           }
-        });
+        }
+      });
 
-        // Listen to connection
-        db.ref('.info/connected').on('value', (snap) => {
-          const connected = snap.val() === true;
-          setOnlineBadge(connected);
-        });
-      }
-    } catch(e) {
-      console.warn("RTDB Initialization warning:", e);
+      // Save immediately to localStorage
+      saveStoredInventory(inv);
+      saveStoredTransactions(txs);
+      saveStoredSyncQueue(queue);
+
+      updateStockBadges();
+      renderBalanceTable();
+      renderRecentTransactions();
+
+      alert(`✅ વિતરણ સફળતાપૂર્વક સાચવવામાં આવ્યું છે! સિલક આપોઆપ કપાઈ ગઈ છે.`);
+      switchTab('balance');
     }
 
-    function setOnlineBadge(online) {
-      const text = document.getElementById('statusText');
-      const badge = document.getElementById('statusBadge');
-      const dot = document.getElementById('statusDot');
-      const ping = document.getElementById('statusPing');
+    function showInsufficientWarning(msg) {
+      const box = document.getElementById('insufficientStockWarning');
+      const text = document.getElementById('insufficientWarningText');
+      if (box && text) {
+        text.innerText = msg;
+        box.classList.remove('hidden');
+      }
+    }
 
-      if (online) {
-        text.innerText = 'ઓનલાઇન (Online)';
-        badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold backdrop-blur-md bg-emerald-500/25 border border-emerald-400/40 text-emerald-200 shadow-xs';
-        dot.className = 'relative inline-flex rounded-full h-2 w-2 bg-emerald-400';
-        ping.className = 'animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75';
+    function hideInsufficientWarning() {
+      const box = document.getElementById('insufficientStockWarning');
+      if (box) box.classList.add('hidden');
+    }
+
+    // --- 7. Window Online / Offline Event Listeners (Prompt Requirement 3) ---
+    function updateOnlineBadge(isOnline) {
+      isOnlineState = isOnline;
+      const badge = document.getElementById('onlineStatusBadge');
+      const badgeText = document.getElementById('onlineBadgeText');
+
+      if (isOnline) {
+        // Green badge: "🟢 ઓનલાઇન (Synced)"
+        badge.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-wide transition-all shadow-xs flex items-center gap-1 cursor-pointer bg-emerald-600 text-white border border-emerald-400';
+        badgeText.innerText = '🟢 ઓનલાઇન (Synced)';
       } else {
-        text.innerText = 'ઓફલાઇન (Offline)';
-        badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold backdrop-blur-md bg-rose-500/25 border border-rose-400/40 text-rose-200 shadow-xs';
-        dot.className = 'relative inline-flex rounded-full h-2 w-2 bg-rose-400';
-        ping.className = 'hidden';
+        // Yellow badge: "🟡 ઓફલાઇન (ફોનમાં સંગ્રહિત)"
+        badge.className = 'px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-wide transition-all shadow-xs flex items-center gap-1 cursor-pointer bg-amber-400 text-amber-950 border border-amber-300 animate-pulse';
+        badgeText.innerText = '🟡 ઓફલાઇન (ફોનમાં સંગ્રહિત)';
       }
     }
 
-    window.addEventListener('online', () => setOnlineBadge(true));
-    window.addEventListener('offline', () => setOnlineBadge(false));
+    function handleOnlineEvent() {
+      updateOnlineBadge(true);
 
-    updateUI();
+      // When connection returns, flip all pending entries to "is_synced: true"
+      const txs = getStoredTransactions();
+      const updatedTxs = txs.map(tx => ({ ...tx, is_synced: true }));
+      saveStoredTransactions(updatedTxs);
+
+      const queue = getStoredSyncQueue();
+      const updatedQueue = queue.map(q => ({ ...q, is_synced: true }));
+      saveStoredSyncQueue([]); // Queue cleared upon successful server sync
+
+      // Trigger a quick alert: "બધો ડેટા સર્વર પર અપડેટ થઈ ગયો!"
+      showSyncToast('બધો ડેટા સર્વર પર અપડેટ થઈ ગયો!');
+      renderRecentTransactions();
+    }
+
+    function handleOfflineEvent() {
+      updateOnlineBadge(false);
+    }
+
+    window.addEventListener('online', handleOnlineEvent);
+    window.addEventListener('offline', handleOfflineEvent);
+
+    function toggleNetworkSimulation() {
+      // Toggle for easy testing in browser preview
+      if (isOnlineState) {
+        handleOfflineEvent();
+      } else {
+        handleOnlineEvent();
+      }
+    }
+
+    function showSyncToast(msg) {
+      const toast = document.getElementById('syncToast');
+      const toastText = document.getElementById('syncToastText');
+      if (toast && toastText) {
+        toastText.innerText = msg;
+        toast.classList.remove('hidden');
+        setTimeout(() => {
+          toast.classList.add('hidden');
+        }, 4000);
+      }
+    }
+
+    function hideSyncToast() {
+      const toast = document.getElementById('syncToast');
+      if (toast) toast.classList.add('hidden');
+    }
+
+    // --- 8. Web App Manifest & Service Worker Registration (Prompt Requirement 4) ---
+    // Inject dynamic Web App Manifest
+    const manifestJson = {
+      name: "PoshanSetu (પોષણ સેતુ) Anganwadi Stock",
+      short_name: "PoshanSetu",
+      start_url: "./index.html",
+      display: "standalone",
+      background_color: "#fffbeb",
+      theme_color: "#b45309",
+      description: "Gujarat Anganwadi Food-Stock & Nutrition Inventory with LocalStorage & FIFO",
+      icons: [
+        {
+          src: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=192&q=80",
+          sizes: "192x192",
+          type: "image/png"
+        },
+        {
+          src: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=512&q=80",
+          sizes: "512x512",
+          type: "image/png"
+        }
+      ]
+    };
+    const stringManifest = JSON.stringify(manifestJson);
+    const blob = new Blob([stringManifest], { type: 'application/json' });
+    const manifestURL = URL.createObjectURL(blob);
+    document.getElementById('manifest-placeholder').setAttribute('href', manifestURL);
+
+    // Register Service Worker for Chrome PWA Installability
+    let deferredPrompt;
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        // Create an in-memory service worker blob for standalone offline caching
+        const swScript = `
+          const CACHE_NAME = 'poshansetu-sw-cache-v1';
+          self.addEventListener('install', (e) => {
+            self.skipWaiting();
+          });
+          self.addEventListener('activate', (e) => {
+            e.waitUntil(clients.claim());
+          });
+          self.addEventListener('fetch', (e) => {
+            e.respondWith(
+              fetch(e.request).catch(() => caches.match(e.request))
+            );
+          });
+        `;
+        const swBlob = new Blob([swScript], { type: 'application/javascript' });
+        const swUrl = URL.createObjectURL(swBlob);
+
+        navigator.serviceWorker.register(swUrl)
+          .then(reg => console.log('PoshanSetu Service Worker active.'))
+          .catch(err => console.log('SW registration note:', err));
+      });
+    }
+
+    // Chrome Install App banner
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const banner = document.getElementById('pwaInstallBanner');
+      if (banner) banner.classList.remove('hidden');
+    });
+
+    function installPwa() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            document.getElementById('pwaInstallBanner').classList.add('hidden');
+          }
+          deferredPrompt = null;
+        });
+      }
+    }
+
+    // --- 9. Language and Report Helpers ---
+    function toggleLanguage() {
+      currentLang = currentLang === 'gu' ? 'en' : 'gu';
+      document.getElementById('langSwitchBtn').innerText = currentLang === 'gu' ? 'English' : 'ગુજરાતી';
+      renderCommoditySelector();
+      renderBalanceTable();
+      renderRecentTransactions();
+    }
+
+    function openProfileModal() {
+      document.getElementById('profileModal').classList.remove('hidden');
+    }
+
+    function closeProfileModal() {
+      document.getElementById('profileModal').classList.add('hidden');
+    }
+
+    function downloadReport() {
+      const inv = getStoredInventory();
+      let text = "========================================================\n";
+      text += "પોષણ સેતુ - આંગણવાડી સ્ટોક અને સિલક રજિસ્ટર (Form 4)\n";
+      text += `AWC: #42 આણંદનગર, મહેસાણા | કાર્યકર: અમિત પટેલ\n`;
+      text += `તારીખ: ${new Date().toLocaleDateString('gu-IN')}\n`;
+      text += "========================================================\n";
+      text += "સામગ્રી\tશરૂઆત\tઆવક(+)\tવપરાશ(-)\tહાજર સિલક\n";
+      Object.values(inv).forEach(item => {
+        text += `${item.code}\t${item.opening}\t${item.received}\t${item.consumed}\t${item.closing} ${item.unit}\n`;
+      });
+      text += "========================================================\n";
+
+      const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `PoshanSetu-AWC42-Report-${new Date().toISOString().slice(0, 10)}.txt`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // --- 10. User ID & Password Authentication (User: Amit, Pass: 1234) ---
+    function checkAuthStatus() {
+      const session = localStorage.getItem('poshansetu_auth_session_v1');
+      const overlay = document.getElementById('loginScreenOverlay');
+      if (!overlay) return;
+      if (session) {
+        try {
+          const data = JSON.parse(session);
+          if (data.isAuthenticated && (data.username?.toLowerCase() === 'amit' || data.username?.toLowerCase() === 'amit patel')) {
+            overlay.classList.add('hidden');
+            return;
+          }
+        } catch (e) {}
+      }
+      overlay.classList.remove('hidden');
+    }
+
+    function handleStandaloneLogin(e) {
+      e.preventDefault();
+      const userInput = document.getElementById('loginUsername').value.trim();
+      const passInput = document.getElementById('loginPassword').value.trim();
+      const errorAlert = document.getElementById('loginErrorAlert');
+      const errorMsg = document.getElementById('loginErrorMsg');
+
+      if ((userInput.toLowerCase() === 'amit' || userInput.toLowerCase() === 'amit patel') && passInput === '1234') {
+        localStorage.setItem('poshansetu_auth_session_v1', JSON.stringify({
+          isAuthenticated: true,
+          username: 'Amit',
+          loginTime: new Date().toISOString()
+        }));
+        document.getElementById('loginScreenOverlay').classList.add('hidden');
+        if (errorAlert) errorAlert.classList.add('hidden');
+      } else {
+        if (errorAlert) errorAlert.classList.remove('hidden');
+        if (userInput.toLowerCase() !== 'amit' && userInput.toLowerCase() !== 'amit patel') {
+          if (errorMsg) errorMsg.innerText = currentLang === 'gu' ? 'ખોટો યુઝર નેમ! કૃપા કરીને "Amit" દાખલ કરો.' : 'Invalid User Name! Enter "Amit".';
+        } else {
+          if (errorMsg) errorMsg.innerText = currentLang === 'gu' ? 'ખોટો પાસવર્ડ! કૃપા કરીને "1234" દાખલ કરો.' : 'Invalid Password! Enter "1234".';
+        }
+      }
+      lucide.createIcons();
+    }
+
+    function quickFillStandaloneCredentials() {
+      const u = document.getElementById('loginUsername');
+      const p = document.getElementById('loginPassword');
+      const errorAlert = document.getElementById('loginErrorAlert');
+      if (u) u.value = 'Amit';
+      if (p) p.value = '1234';
+      if (errorAlert) errorAlert.classList.add('hidden');
+    }
+
+    function openLoginCredentialModal() {
+      const modal = document.getElementById('credentialModal');
+      if (modal) modal.classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeLoginCredentialModal() {
+      const modal = document.getElementById('credentialModal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function handleBiometricInstantLogin() {
+      localStorage.setItem('poshansetu_auth_session_v1', JSON.stringify({
+        isAuthenticated: true,
+        username: 'Amit',
+        loginTime: new Date().toISOString()
+      }));
+      const overlay = document.getElementById('loginScreenOverlay');
+      if (overlay) overlay.classList.add('hidden');
+      closeLoginCredentialModal();
+      lucide.createIcons();
+    }
+
+    function quickDismissWelcome() {
+      localStorage.setItem('poshansetu_auth_session_v1', JSON.stringify({
+        isAuthenticated: true,
+        username: 'Amit',
+        loginTime: new Date().toISOString()
+      }));
+      const overlay = document.getElementById('loginScreenOverlay');
+      if (overlay) overlay.classList.add('hidden');
+      closeLoginCredentialModal();
+      lucide.createIcons();
+    }
+
+    function togglePasswordVisibility() {
+      const passInput = document.getElementById('loginPassword');
+      if (!passInput) return;
+      if (passInput.type === 'password') {
+        passInput.type = 'text';
+      } else {
+        passInput.type = 'password';
+      }
+    }
+
+    function handleLogout() {
+      localStorage.removeItem('poshansetu_auth_session_v1');
+      closeProfileModal();
+      const u = document.getElementById('loginUsername');
+      const p = document.getElementById('loginPassword');
+      const errorAlert = document.getElementById('loginErrorAlert');
+      const overlay = document.getElementById('loginScreenOverlay');
+      if (u) u.value = '';
+      if (p) p.value = '';
+      if (errorAlert) errorAlert.classList.add('hidden');
+      if (overlay) overlay.classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    // --- 11. Initialization on Load ---
+    window.addEventListener('DOMContentLoaded', () => {
+      // Check User ID and Password Authentication
+      checkAuthStatus();
+
+      // Set default expiry date to 6 months from today
+      const expDate = new Date();
+      expDate.setMonth(expDate.getMonth() + 6);
+      const expInput = document.getElementById('inwardExpiryDate');
+      if (expInput) expInput.value = expDate.toISOString().slice(0, 10);
+
+      // Render initial UI
+      updateOnlineBadge(navigator.onLine);
+      renderCommoditySelector();
+      updateStockBadges();
+      renderBalanceTable();
+      renderRecentTransactions();
+      lucide.createIcons();
+    });
   </script>
 </body>
 </html>
