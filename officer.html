@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>PoshanSetu - આંગણવાડી સ્ટોક ટ્રેકર</title>
+  
+  <!-- Mobile & PWA Meta Tags -->
+  <meta name="theme-color" content="#1e40af">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="PoshanSetu">
+  
+  <!-- Inline SVG Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='100' fill='%231e40af'/%3E%3Cpath d='M156 276c0 60 70 80 100 80s100-20 100-80z' fill='%23ffffff'/%3E%3Crect x='140' y='260' width='232' height='16' rx='8' fill='%23f59e0b'/%3E%3Cpath d='M256 160c-20 40 0 80 0 80s20-40 0-80z' fill='%2334d399'/%3E%3C/svg%3E">
+
+  <!-- Embedded Standalone Web App Manifest -->
+  <link rel="manifest" href='data:application/manifest+json,{"id":"/","name":"PoshanSetu - આંગણવાડી સ્ટોક ટ્રેકર","short_name":"PoshanSetu","display":"standalone","start_url":".","background_color":"%231e40af","theme_color":"%231e40af"}'>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts for Gujarati and Modern Numerals -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Gujarati:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Firebase Realtime Database SDK via CDN -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+
+  <!-- jsPDF & AutoTable via CDN for Standalone PDF Export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+
+  <style>
+    body {
+      font-family: 'Noto Sans Gujarati', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    input, button {
+      user-select: auto;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased min-h-screen flex justify-center sm:py-6">
+
+  <!-- Mobile Frame Container -->
+  <div class="w-full max-w-md bg-white shadow-2xl sm:rounded-3xl flex flex-col min-h-screen sm:min-h-[850px] overflow-hidden border border-slate-200">
+    
+    <!-- Cobalt Blue Header -->
+    <header class="bg-gradient-to-b from-blue-900 via-blue-800 to-blue-700 text-white px-5 pt-5 pb-5 shadow-md relative">
+      
+      <!-- Top Row: Logo & Language Selector AT TOP ABOVE ONLINE -->
+      <div class="flex items-center justify-between mb-2.5">
+        <div class="flex items-center gap-2">
+          <span class="w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm border border-white/20 flex items-center justify-center font-black text-xs text-white">PS</span>
+          <div>
+            <span id="headerBrandTitle" class="text-[11px] font-semibold tracking-wider text-blue-200 uppercase block leading-none">પોષણસેતુ • PoshanSetu</span>
+            <span id="headerDeptTitle" class="text-[10px] text-blue-300">મહિલા & બાળ વિકાસ વિભાગ - ગુજરાત</span>
+          </div>
+        </div>
+
+        <!-- Header Right: Language Selector Button (ABOVE ONLINE) + Audio Toggle -->
+        <div class="flex items-center gap-1.5">
+          <!-- Language Toggle Button: English / ગુજરાતી -->
+          <button onclick="toggleLanguage()" id="langToggleBtn" title="ભાષા બદલો / Change Language" class="flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/20 hover:bg-white/30 active:scale-95 transition text-white border border-white/25 shadow-xs font-bold text-xs">
+            🌐 <span id="langBtnText">English</span>
+          </button>
+
+          <button onclick="toggleAudio()" id="audioBtn" title="અવાજ ચાલુ/બંધ" class="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 text-blue-200 flex items-center justify-center transition text-xs font-bold">
+            🔊
+          </button>
+        </div>
+      </div>
+
+      <!-- Second Row: Greeting & Online/Offline Status Indicator (Directly UNDER Language Button) -->
+      <div class="flex items-end justify-between mt-2 pt-1 border-t border-white/10">
+        <div>
+          <h1 id="greetingHeading" class="text-lg sm:text-xl font-bold tracking-tight text-white">
+            નમસ્તે ગીતાબેન <span class="text-blue-200 text-sm font-semibold">(વડતાલ-૦૪)</span>
+          </h1>
+          <p id="workerSubtext" class="text-xs text-blue-100 font-medium mt-0.5">આંગણવાડી કાર્યકર્તા • Anganwadi Worker</p>
+        </div>
+
+        <!-- Online/Offline Badge placed UNDER Language Button -->
+        <div id="statusBadge" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold backdrop-blur-md bg-emerald-500/25 border border-emerald-400/40 text-emerald-200 shadow-xs">
+          <span class="relative flex h-2 w-2">
+            <span id="statusPing" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span id="statusDot" class="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
+          </span>
+          <span id="statusText">ઓનલાઇન (Online)</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 px-4 py-3.5 space-y-3.5 overflow-y-auto">
+
+      <!-- Toast Notification Alert -->
+      <div id="toast" class="hidden bg-blue-900 text-white text-xs font-medium px-4 py-2.5 rounded-xl shadow-lg border border-blue-600/50 flex items-center justify-between gap-2 transition-all">
+        <span id="toastMsg">સંદેશ</span>
+        <button onclick="hideToast()" class="text-white/60 hover:text-white font-bold ml-2">✕</button>
+      </div>
+
+      <!-- Hero Card: Current Balbhog Balance -->
+      <div class="bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-900 rounded-2xl p-4.5 text-white shadow-xl relative overflow-hidden border border-blue-500/30">
+        <div class="flex items-center justify-between">
+          <span id="heroCardTag" class="text-[11px] font-semibold tracking-wide uppercase px-2.5 py-0.5 rounded-full bg-white/15 text-blue-100 border border-white/20">
+            બાલભોગ પૌષ્ટિક આહાર • Balbhog Stock
+          </span>
+          <span id="stockStatusTag" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/25 text-emerald-200 border border-emerald-400/30">
+            પૂરતો સ્ટોક
+          </span>
+        </div>
+
+        <div class="mt-3.5 flex items-baseline justify-between">
+          <div>
+            <div id="availStockLabel" class="text-xs text-blue-200 font-medium">હાલનો ઉપલબ્ધ સ્ટોક (Current Balance)</div>
+            <div class="flex items-baseline gap-2 mt-0.5">
+              <span id="balanceDisplay" class="text-4xl sm:text-5xl font-black text-white">૧૨૪</span>
+              <span id="packetLabel" class="text-xl sm:text-2xl font-bold text-blue-200">પેકેટ</span>
+              <span id="balanceDisplayEn" class="text-xs text-blue-300 font-mono">(124 Packets)</span>
+            </div>
+          </div>
+          <div class="text-right">
+            <div id="estWeightLabel" class="text-[11px] text-blue-200">અંદાજિત વજન</div>
+            <div id="weightDisplay" class="text-sm font-bold text-amber-300">૬૨.૦ કિ.ગ્રા.</div>
+            <div class="text-[10px] text-blue-300 font-medium">(@ 500g/પેકેટ)</div>
+          </div>
+        </div>
+
+        <div class="mt-3.5 pt-2.5 border-t border-white/15 flex items-center justify-between text-xs text-blue-100">
+          <span id="lastActionText" class="truncate pr-2">છેલ્લો ફેરફાર: સ્ટોક આવક (+૧૦ પેકેટ)</span>
+          <span id="lastActionTime" class="text-[11px] text-blue-200 shrink-0">આજે</span>
+        </div>
+      </div>
+
+      <!-- Two Big Action Cards with Stepper Counters -->
+      <div class="space-y-3.5">
+        
+        <!-- 1. + સ્ટોક આવક (Add inward stock) -->
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 hover:border-emerald-300 transition">
+          <div class="flex items-center justify-between mb-2">
+            <div>
+              <h2 id="inwardTitle" class="text-base font-bold text-slate-800 leading-tight">+ સ્ટોક આવક</h2>
+              <p id="inwardSub" class="text-[11px] text-slate-500 font-medium">નવો માલ મેળવ્યો • Add Inward Stock</p>
+            </div>
+            <!-- Quick Chips -->
+            <div class="flex items-center gap-1">
+              <button onclick="setInwardStep(5)" class="px-2 py-0.5 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-700 hover:bg-emerald-100">+૫</button>
+              <button onclick="setInwardStep(10)" class="px-2 py-0.5 rounded-lg text-xs font-bold bg-emerald-600 text-white shadow-xs">+૧૦</button>
+              <button onclick="setInwardStep(25)" class="px-2 py-0.5 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-700 hover:bg-emerald-100">+૨૫</button>
+              <button onclick="setInwardStep(50)" class="px-2 py-0.5 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-700 hover:bg-emerald-100">+૫૦</button>
+            </div>
+          </div>
+
+          <!-- Stepper -->
+          <div class="bg-slate-50 rounded-xl p-2.5 flex items-center justify-between border border-slate-200 mb-3">
+            <button onclick="adjustInward(-1)" class="w-10 h-10 rounded-lg bg-white border border-slate-300 text-emerald-800 hover:bg-slate-100 font-black text-xl flex items-center justify-center shadow-xs active:scale-95 transition">−</button>
+            <div class="text-center">
+              <div id="inwardStepDisplay" class="text-2xl font-black text-slate-800">+૧૦ પેકેટ</div>
+              <div id="inwardStepEn" class="text-[10px] text-slate-500">10 Packets inward</div>
+            </div>
+            <button onclick="adjustInward(1)" class="w-10 h-10 rounded-lg bg-white border border-slate-300 text-emerald-800 hover:bg-slate-100 font-black text-xl flex items-center justify-center shadow-xs active:scale-95 transition">+</button>
+          </div>
+
+          <!-- Big Button -->
+          <button onclick="handleInward()" class="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 active:scale-[0.98] text-white font-bold shadow-md flex items-center justify-center gap-2 transition">
+            <span id="inwardBtnText" class="text-base font-bold">+ ૧૦ પેકેટ સ્ટોક આવક નોંધો</span>
+            <span class="text-xs bg-emerald-800/60 px-2 py-0.5 rounded-md font-mono">+Add Stock</span>
+          </button>
+        </div>
+
+        <!-- 2. - દૈનિક વિતરણ (Deduct meal distribution for children) -->
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 hover:border-blue-300 transition">
+          <div class="flex items-center justify-between mb-2">
+            <div>
+              <h2 id="distributeTitle" class="text-base font-bold text-slate-800 leading-tight">- દૈનિક વિતરણ</h2>
+              <p id="distributeSub" class="text-[11px] text-slate-500 font-medium">બાળકોને પોષણ વિતરણ • Deduct Meal</p>
+            </div>
+            <!-- Quick Chips -->
+            <div class="flex items-center gap-1">
+              <button onclick="setDistributeStep(1)" class="px-2 py-0.5 rounded-lg text-xs font-bold bg-blue-50 text-blue-700 hover:bg-blue-100">-૧</button>
+              <button onclick="setDistributeStep(3)" class="px-2 py-0.5 rounded-lg text-xs font-bold bg-blue-50 text-blue-700 hover:bg-blue-100">-૩</button>
+              <button onclick="setDistributeStep(5)" class="px-2 py-0.5 rounded-lg text-xs font-bold bg-blue-700 text-white shadow-xs">-૫</button>
+              <button onclick="setDistributeStep(10)" class="px-2 py-0.5 rounded-lg text-xs font-bold bg-blue-50 text-blue-700 hover:bg-blue-100">-૧૦</button>
+            </div>
+          </div>
+
+          <!-- Stepper -->
+          <div class="bg-slate-50 rounded-xl p-2.5 flex items-center justify-between border border-slate-200 mb-3">
+            <button onclick="adjustDistribute(-1)" class="w-10 h-10 rounded-lg bg-white border border-slate-300 text-blue-800 hover:bg-slate-100 font-black text-xl flex items-center justify-center shadow-xs active:scale-95 transition">−</button>
+            <div class="text-center">
+              <div id="distributeStepDisplay" class="text-2xl font-black text-slate-800">-૫ પેકેટ</div>
+              <div id="distributeStepEn" class="text-[10px] text-slate-500">5 Packets distributed</div>
+            </div>
+            <button onclick="adjustDistribute(1)" class="w-10 h-10 rounded-lg bg-white border border-slate-300 text-blue-800 hover:bg-slate-100 font-black text-xl flex items-center justify-center shadow-xs active:scale-95 transition">+</button>
+          </div>
+
+          <!-- Big Button -->
+          <button onclick="handleDistribute()" id="distributeBtn" class="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-blue-700 to-indigo-800 hover:from-blue-800 hover:to-indigo-900 active:scale-[0.98] text-white font-bold shadow-md flex items-center justify-center gap-2 transition">
+            <span id="distributeBtnText" class="text-base font-bold">- ૫ પેકેટ દૈનિક વિતરણ નોંધો</span>
+            <span class="text-xs bg-blue-900/60 px-2 py-0.5 rounded-md font-mono">-Deduct</span>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Quick Action Buttons: PDF Export, History, WhatsApp Report -->
+      <div class="grid grid-cols-3 gap-2">
+        <!-- 1. PDF Export Feature Button -->
+        <button onclick="exportBalancePDF()" id="pdfBtn" class="py-2.5 px-2 rounded-xl bg-gradient-to-b from-blue-700 to-blue-800 hover:from-blue-800 hover:to-blue-900 text-white font-bold text-xs flex flex-col items-center justify-center gap-1 shadow-md active:scale-95 transition">
+          <span class="text-sm">📄</span>
+          <span id="pdfBtnText" class="text-[11px] leading-tight text-center">પીડીએફ રિપોર્ટ</span>
+        </button>
+
+        <!-- 2. History -->
+        <button onclick="openHistoryModal()" class="py-2.5 px-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 active:scale-95 text-xs font-semibold flex flex-col items-center justify-center gap-1 shadow-2xs transition">
+          <span class="text-sm">📋</span>
+          <span id="historyBtnText" class="text-[11px] leading-tight text-center">હિસાબ રજીસ્ટર</span>
+        </button>
+
+        <!-- 3. WhatsApp Report -->
+        <button onclick="shareWhatsAppReport()" class="py-2.5 px-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 hover:bg-emerald-100 active:scale-95 text-xs font-semibold flex flex-col items-center justify-center gap-1 shadow-2xs transition">
+          <span class="text-sm">📲</span>
+          <span id="whatsappBtnText" class="text-[11px] leading-tight text-center">વોટ્સએપ શેર</span>
+        </button>
+      </div>
+
+      <!-- Database Info Badge -->
+      <div class="p-3 rounded-xl bg-blue-50/70 border border-blue-200 text-slate-700 text-xs space-y-1">
+        <div class="font-bold text-blue-900 flex items-center justify-between">
+          <span>Firebase Realtime Database:</span>
+          <span id="fbLiveTag" class="text-[10px] font-bold text-emerald-700">સક્રિય (Active)</span>
+        </div>
+        <div class="font-mono text-[11px] text-blue-700 break-all">https://poshan-setu-default-rtdb.firebaseio.com/</div>
+        <div class="text-[10px] text-slate-500">• આપોઆપ <code class="text-blue-900 font-semibold">/active_stock</code> અને <code class="text-blue-900 font-semibold">/transaction_history</code> પર સિંક થાય છે.</div>
+      </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-50 border-t border-slate-200 px-4 py-2.5 text-center text-[11px] text-slate-500 flex items-center justify-between">
+      <span>પોષણસેતુ • વડતાલ-૦૪</span>
+      <span>Progressive Web App</span>
+    </footer>
+  </div>
+
+  <!-- History Modal -->
+  <div id="historyModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3">
+    <div class="bg-white rounded-3xl w-full max-w-md max-h-[85vh] flex flex-col shadow-2xl overflow-hidden border border-slate-200">
+      <div class="bg-blue-800 text-white px-5 py-4 flex items-center justify-between">
+        <div>
+          <h3 id="modalTitle" class="text-base font-bold">સ્ટોક હિસાબ રજીસ્ટર</h3>
+          <p class="text-xs text-blue-200">Transaction History • આંગણવાડી ૦૪ - વડતાલ</p>
+        </div>
+        <button onclick="closeHistoryModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center">✕</button>
+      </div>
+      <div class="p-2.5 bg-blue-50 border-b border-blue-200 flex items-center justify-between">
+        <span class="text-xs font-bold text-blue-900" id="recordCountText">કુલ નોંધણીઓ</span>
+        <button onclick="exportBalancePDF()" class="px-2.5 py-1 rounded-lg bg-blue-700 hover:bg-blue-800 text-white text-xs font-bold flex items-center gap-1 shadow-xs">
+          📄 PDF ડાઉનલોડ
+        </button>
+      </div>
+      <div id="historyList" class="flex-1 overflow-y-auto p-4 space-y-2">
+        <!-- Rendered items -->
+      </div>
+      <div class="p-3 bg-slate-100 border-t border-slate-200 flex justify-end">
+        <button onclick="closeHistoryModal()" class="px-4 py-2 rounded-xl bg-blue-700 text-white font-bold text-xs hover:bg-blue-800">બંધ કરો (Close)</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const FIREBASE_URL = "https://poshan-setu-default-rtdb.firebaseio.com/";
+    const VILLAGE = "૦૪ - વડતાલ";
+    const WORKER = "ગીતાબેન";
+    let currentBalance = parseInt(localStorage.getItem('ps_balance') || '124', 10);
+    let inwardStep = 10;
+    let distributeStep = 5;
+    let audioOn = true;
+    let currentLang = localStorage.getItem('ps_lang') || 'gu'; // 'gu' or 'en'
+    let db = null;
+    let historyRecords = JSON.parse(localStorage.getItem('ps_history') || '[]');
+
+    if (historyRecords.length === 0) {
+      historyRecords = [
+        { balance: 124, lastAction: 'સ્ટોક આવક', change: 25, timestamp: Date.now() - 86400000, village: VILLAGE, note: 'તાલુકા ગોડાઉન સપ્લાય' },
+        { balance: 99, lastAction: 'દૈનિક વિતરણ', change: -15, timestamp: Date.now() - 43200000, village: VILLAGE, note: 'બાળકો ૩ થી ૬ વર્ષ' }
+      ];
+    }
+
+    function toGujarati(num) {
+      const g = ['૦','૧','૨','૩','૪','૫','૬','૭','૮','૯'];
+      return String(num).replace(/[0-9]/g, d => g[parseInt(d, 10)]);
+    }
+
+    function numStr(val) {
+      return currentLang === 'gu' ? toGujarati(val) : String(val);
+    }
+
+    function formatTime(ts) {
+      if (!ts) return currentLang === 'gu' ? 'હમણાં જ' : 'Just now';
+      const d = new Date(ts);
+      const h = d.getHours();
+      const m = d.getMinutes().toString().padStart(2, '0');
+      const ampm = h >= 12 ? (currentLang === 'gu' ? 'બપોરે' : 'PM') : (currentLang === 'gu' ? 'સવારે' : 'AM');
+      const displayHours = h % 12 || 12;
+      if (currentLang === 'gu') {
+        return `${ampm} ${toGujarati(displayHours)}:${toGujarati(m)} (${toGujarati(d.getDate())}/${toGujarati(d.getMonth() + 1)})`;
+      } else {
+        return `${displayHours}:${m} ${ampm} (${d.getDate()}/${d.getMonth() + 1})`;
+      }
+    }
+
+    function toggleLanguage() {
+      currentLang = currentLang === 'gu' ? 'en' : 'gu';
+      localStorage.setItem('ps_lang', currentLang);
+      document.getElementById('langBtnText').innerText = currentLang === 'gu' ? 'English' : 'ગુજરાતી';
+      updateUI();
+      showToast(currentLang === 'gu' ? 'ભાષા: ગુજરાતી પસંદ કરેલ છે' : 'Language: English selected');
+    }
+
+    function playTone(type) {
+      if (!audioOn) return;
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        if (type === 'add') {
+          osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.15);
+        } else {
+          osc.frequency.setValueAtTime(523.25, ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(392, ctx.currentTime + 0.15);
+        }
+        gain.gain.setValueAtTime(0.12, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.18);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.18);
+      } catch(e) {}
+    }
+
+    function toggleAudio() {
+      audioOn = !audioOn;
+      document.getElementById('audioBtn').innerText = audioOn ? '🔊' : '🔇';
+    }
+
+    function updateUI() {
+      const isGu = currentLang === 'gu';
+
+      // Header Texts
+      document.getElementById('headerBrandTitle').innerText = isGu ? 'પોષણસેતુ • POSHANSETU' : 'POSHANSETU • ANGANWADI';
+      document.getElementById('headerDeptTitle').innerText = isGu ? 'મહિલા & બાળ વિકાસ વિભાગ - ગુજરાત' : 'Women & Child Dev. Dept - Gujarat';
+      document.getElementById('greetingHeading').innerHTML = isGu 
+        ? `નમસ્તે ${WORKER} <span class="text-blue-200 text-sm font-semibold">(${VILLAGE})</span>`
+        : `Welcome Geetaben <span class="text-blue-200 text-sm font-semibold">(04-Vadtal)</span>`;
+      document.getElementById('workerSubtext').innerText = isGu ? 'આંગણવાડી કાર્યકર્તા • Anganwadi Worker' : 'Anganwadi Worker (AWW)';
+      document.getElementById('langBtnText').innerText = isGu ? 'English' : 'ગુજરાતી';
+
+      // Balance Card
+      document.getElementById('balanceDisplay').innerText = numStr(currentBalance);
+      document.getElementById('packetLabel').innerText = isGu ? 'પેકેટ' : 'Packets';
+      document.getElementById('balanceDisplayEn').innerText = `(${currentBalance} Pkts)`;
+      document.getElementById('weightDisplay').innerText = `${numStr((currentBalance * 0.5).toFixed(1))} ${isGu ? 'કિ.ગ્રા.' : 'Kg'}`;
+      document.getElementById('availStockLabel').innerText = isGu ? 'હાલનો ઉપલબ્ધ સ્ટોક (Current Balance)' : 'Current Available Stock Balance';
+      document.getElementById('estWeightLabel').innerText = isGu ? 'અંદાજિત વજન' : 'Total Weight';
+      
+      const tag = document.getElementById('stockStatusTag');
+      if (currentBalance > 30) {
+        tag.className = 'text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/25 text-emerald-200 border border-emerald-400/30';
+        tag.innerText = isGu ? 'પૂરતો સ્ટોક' : 'In Stock';
+      } else {
+        tag.className = 'text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-500/30 text-rose-200 border border-rose-400/40 animate-pulse';
+        tag.innerText = isGu ? 'ઓછો સ્ટોક' : 'Low Stock';
+      }
+
+      // Steppers & Buttons
+      document.getElementById('inwardTitle').innerText = isGu ? '+ સ્ટોક આવક' : '+ Add Inward Stock';
+      document.getElementById('inwardSub').innerText = isGu ? 'નવો માલ મેળવ્યો • Add Inward Stock' : 'Receive New Stock from Godown';
+      document.getElementById('inwardStepDisplay').innerText = `+${numStr(inwardStep)} ${isGu ? 'પેકેટ' : 'Pkts'}`;
+      document.getElementById('inwardStepEn').innerText = `${inwardStep} Packets inward`;
+      document.getElementById('inwardBtnText').innerText = isGu ? `+ ${toGujarati(inwardStep)} પેકેટ સ્ટોક આવક નોંધો` : `+ Record ${inwardStep} Packets Inward`;
+
+      document.getElementById('distributeTitle').innerText = isGu ? '- દૈનિક વિતરણ' : '- Daily Distribution';
+      document.getElementById('distributeSub').innerText = isGu ? 'બાળકોને પોષણ વિતરણ • Deduct Meal' : 'Ration for Children & Mothers';
+      document.getElementById('distributeStepDisplay').innerText = `-${numStr(distributeStep)} ${isGu ? 'પેકેટ' : 'Pkts'}`;
+      document.getElementById('distributeStepEn').innerText = `${distributeStep} Packets distributed`;
+      document.getElementById('distributeBtnText').innerText = isGu ? `- ${toGujarati(distributeStep)} પેકેટ દૈનિક વિતરણ નોંધો` : `- Record ${distributeStep} Packets Distributed`;
+
+      document.getElementById('pdfBtnText').innerText = isGu ? 'પીડીએફ રિપોર્ટ' : 'Download PDF';
+      document.getElementById('historyBtnText').innerText = isGu ? 'હિસાબ રજીસ્ટર' : 'Stock Register';
+      document.getElementById('whatsappBtnText').innerText = isGu ? 'વોટ્સએપ શેર' : 'WhatsApp Share';
+
+      const distBtn = document.getElementById('distributeBtn');
+      if (currentBalance < distributeStep) {
+        distBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      } else {
+        distBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+      }
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastMsg').innerText = msg;
+      toast.classList.remove('hidden');
+      setTimeout(() => toast.classList.add('hidden'), 3500);
+    }
+
+    function hideToast() {
+      document.getElementById('toast').classList.add('hidden');
+    }
+
+    function setInwardStep(val) {
+      inwardStep = val;
+      updateUI();
+    }
+
+    function adjustInward(delta) {
+      inwardStep = Math.max(1, inwardStep + delta);
+      updateUI();
+    }
+
+    function setDistributeStep(val) {
+      distributeStep = val;
+      updateUI();
+    }
+
+    function adjustDistribute(delta) {
+      distributeStep = Math.max(1, distributeStep + delta);
+      updateUI();
+    }
+
+    async function handleInward() {
+      currentBalance += inwardStep;
+      localStorage.setItem('ps_balance', currentBalance);
+      updateUI();
+      playTone('add');
+      
+      const actionName = "સ્ટોક આવક";
+      const change = inwardStep;
+      const timestamp = Date.now();
+
+      document.getElementById('lastActionText').innerText = `${currentLang === 'gu' ? 'છેલ્લો ફેરફાર: ' : 'Last Change: '} ${actionName} (+${numStr(change)} ${currentLang === 'gu' ? 'પેકેટ' : 'pkts'})`;
+      document.getElementById('lastActionTime').innerText = currentLang === 'gu' ? 'હમણાં' : 'Just now';
+      showToast(currentLang === 'gu' ? `+${toGujarati(change)} પેકેટ સ્ટોક ઉમેરાઈ ગયો!` : `+${change} Packets Stock Added!`);
+
+      const record = { balance: currentBalance, lastAction: actionName, change, timestamp, village: VILLAGE, note: 'તાલુકા ગોડાઉન સપ્લાય' };
+      historyRecords.unshift(record);
+      localStorage.setItem('ps_history', JSON.stringify(historyRecords));
+
+      if (db) {
+        try {
+          await db.ref('/active_stock').set({
+            balance: currentBalance,
+            lastAction: actionName,
+            change: change,
+            timestamp: timestamp,
+            village: VILLAGE
+          });
+          await db.ref('/transaction_history').push({
+            balance: currentBalance,
+            lastAction: actionName,
+            change: change,
+            timestamp: timestamp,
+            village: VILLAGE,
+            note: 'તાલુકા ગોડાઉન સપ્લાય'
+          });
+        } catch (e) {
+          console.error("Firebase write error:", e);
+        }
+      }
+    }
+
+    async function handleDistribute() {
+      if (currentBalance < distributeStep) {
+        showToast(currentLang === 'gu' ? `ચેતવણી: માત્ર ${toGujarati(currentBalance)} પેકેટ બાકી છે!` : `Warning: Only ${currentBalance} packets left!`);
+        return;
+      }
+      currentBalance -= distributeStep;
+      localStorage.setItem('ps_balance', currentBalance);
+      updateUI();
+      playTone('deduct');
+
+      const actionName = "દૈનિક વિતરણ";
+      const change = -distributeStep;
+      const timestamp = Date.now();
+
+      document.getElementById('lastActionText').innerText = `${currentLang === 'gu' ? 'છેલ્લો ફેરફાર: ' : 'Last Change: '} ${actionName} (${numStr(change)} ${currentLang === 'gu' ? 'પેકેટ' : 'pkts'})`;
+      document.getElementById('lastActionTime').innerText = currentLang === 'gu' ? 'હમણાં' : 'Just now';
+      showToast(currentLang === 'gu' ? `-${toGujarati(distributeStep)} પેકેટ બાળકોને વિતરણ નોંધાયું!` : `-${distributeStep} Packets Distributed!`);
+
+      const record = { balance: currentBalance, lastAction: actionName, change, timestamp, village: VILLAGE, note: 'બાળકો ૩ થી ૬ વર્ષ' };
+      historyRecords.unshift(record);
+      localStorage.setItem('ps_history', JSON.stringify(historyRecords));
+
+      if (db) {
+        try {
+          await db.ref('/active_stock').set({
+            balance: currentBalance,
+            lastAction: actionName,
+            change: change,
+            timestamp: timestamp,
+            village: VILLAGE
+          });
+          await db.ref('/transaction_history').push({
+            balance: currentBalance,
+            lastAction: actionName,
+            change: change,
+            timestamp: timestamp,
+            village: VILLAGE,
+            note: 'બાળકો ૩ થી ૬ વર્ષ'
+          });
+        } catch (e) {
+          console.error("Firebase write error:", e);
+        }
+      }
+    }
+
+    // PDF EXPORT FEATURE
+    function exportBalancePDF() {
+      showToast(currentLang === 'gu' ? 'પીડીએફ ડાઉનલોડ થઈ રહી છે...' : 'Downloading PDF Report...');
+      try {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('p', 'mm', 'a4');
+
+        // Header Background
+        doc.setFillColor(30, 64, 175);
+        doc.rect(0, 0, 210, 40, 'F');
+
+        doc.setTextColor(255, 255, 255);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(18);
+        doc.text('POSHAN SETU - ANGANWADI STOCK REPORT', 14, 15);
+
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(10);
+        doc.text('Integrated Child Development Services (ICDS) - Gujarat', 14, 22);
+        doc.text('Anganwadi Center: 04 - Vadtal (Nadiad) | Worker: Geetaben', 14, 28);
+        doc.setFontSize(8);
+        doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 35);
+
+        // Metric Box
+        doc.setFillColor(241, 245, 249);
+        doc.roundedRect(14, 46, 182, 30, 3, 3, 'F');
+        doc.setDrawColor(203, 213, 225);
+        doc.roundedRect(14, 46, 182, 30, 3, 3, 'D');
+
+        doc.setTextColor(23, 37, 84);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(9);
+        doc.text('CURRENT STOCK BALANCE', 20, 54);
+        doc.setFontSize(18);
+        doc.setTextColor(30, 64, 175);
+        doc.text(`${currentBalance} Packets`, 20, 64);
+        doc.setFontSize(8);
+        doc.setTextColor(100, 116, 139);
+        doc.text(`Approx. ${(currentBalance * 0.5).toFixed(1)} Kg (500g/pkt)`, 20, 71);
+
+        let totIn = 0, totOut = 0;
+        historyRecords.forEach(r => {
+          if (r.change > 0) totIn += r.change;
+          if (r.change < 0) totOut += Math.abs(r.change);
+        });
+
+        doc.setTextColor(23, 37, 84);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(9);
+        doc.text('TOTAL INWARD', 90, 54);
+        doc.setFontSize(15);
+        doc.setTextColor(16, 149, 93);
+        doc.text(`+${totIn} Packets`, 90, 64);
+
+        doc.setTextColor(23, 37, 84);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(9);
+        doc.text('TOTAL DISTRIBUTED', 145, 54);
+        doc.setFontSize(15);
+        doc.setTextColor(225, 29, 72);
+        doc.text(`-${totOut} Packets`, 145, 64);
+
+        // Transactions Table
+        const rows = historyRecords.map((r, i) => {
+          const d = new Date(r.timestamp);
+          const dt = `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()} ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
+          const isAdd = r.change > 0;
+          return [
+            String(i + 1),
+            dt,
+            isAdd ? 'Stock Inward (+)' : 'Daily Distribution (-)',
+            isAdd ? `+${r.change}` : `${r.change}`,
+            `${r.balance} Pkts`,
+            r.note || (isAdd ? 'Taluka Godown Supply' : 'Children 3-6y'),
+            'Verified'
+          ];
+        });
+
+        doc.autoTable({
+          startY: 83,
+          head: [['#', 'Date & Time', 'Action Type', 'Qty (Pkts)', 'Balance After', 'Source / Beneficiary', 'Status']],
+          body: rows,
+          headStyles: { fillColor: [30, 64, 175], textColor: [255, 255, 255], fontStyle: 'bold' },
+          styles: { fontSize: 8 },
+          margin: { left: 14, right: 14 }
+        });
+
+        const finalY = doc.lastAutoTable.finalY || 240;
+        const sigY = Math.min(finalY + 20, 275);
+        doc.setFontSize(8);
+        doc.setTextColor(71, 85, 105);
+        doc.line(20, sigY, 70, sigY);
+        doc.text('Signature of Anganwadi Worker', 20, sigY + 5);
+        doc.line(140, sigY, 190, sigY);
+        doc.text('Supervisor Verification / Stamp', 140, sigY + 5);
+
+        doc.save(`PoshanSetu_Stock_Report_Vadtal04_${new Date().toISOString().slice(0,10)}.pdf`);
+        showToast(currentLang === 'gu' ? 'પીડીએફ રિપોર્ટ સફળતાપૂર્વક ડાઉનલોડ થયો!' : 'PDF Report downloaded successfully!');
+      } catch (e) {
+        console.error("PDF export error:", e);
+        showToast('PDF Export Error: ' + e.message);
+      }
+    }
+
+    function openHistoryModal() {
+      const container = document.getElementById('historyList');
+      document.getElementById('recordCountText').innerText = `${currentLang === 'gu' ? 'કુલ નોંધણીઓ' : 'Total Records'}: ${numStr(historyRecords.length)}`;
+      container.innerHTML = historyRecords.map(item => `
+        <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+          <div>
+            <div class="flex items-center gap-1.5">
+              <span class="px-2 py-0.5 rounded-md text-[10px] font-bold ${item.change > 0 ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
+                ${item.lastAction || (item.change > 0 ? (currentLang === 'gu' ? 'આવક' : 'Inward') : (currentLang === 'gu' ? 'વિતરણ' : 'Distribution'))}
+              </span>
+              <span class="text-xs text-slate-500 font-medium">${formatTime(item.timestamp)}</span>
+            </div>
+            <div class="text-[10px] text-slate-400 mt-1">ગામ: ${item.village || VILLAGE}</div>
+          </div>
+          <div class="text-right">
+            <div class="text-sm font-black ${item.change > 0 ? 'text-emerald-700' : 'text-rose-700'}">
+              ${item.change > 0 ? '+' : ''}${numStr(item.change)} ${currentLang === 'gu' ? 'પેકેટ' : 'pkts'}
+            </div>
+            <div class="text-xs text-slate-700 font-bold">${currentLang === 'gu' ? 'બાકી: ' : 'Bal: '}${numStr(item.balance)}</div>
+          </div>
+        </div>
+      `).join('');
+      document.getElementById('historyModal').classList.remove('hidden');
+    }
+
+    function closeHistoryModal() {
+      document.getElementById('historyModal').classList.add('hidden');
+    }
+
+    function shareWhatsAppReport() {
+      const msg = `*પોષણસેતુ - આંગણવાડી સ્ટોક રિપોર્ટ*\nકેન્દ્ર: ${VILLAGE}\nકાર્યકર્તા: ${WORKER}\nહાલનો બાલભોગ સ્ટોક: *${currentBalance} પેકેટ* (${toGujarati(currentBalance)})\nઅંદાજિત વજન: ${(currentBalance * 0.5).toFixed(1)} કિ.ગ્રા.\n_PoshanSetu Mobile App_`;
+      window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(msg), '_blank');
+    }
+
+    // Initialize Firebase Realtime Database
+    try {
+      if (window.firebase) {
+        let app = window.firebase.apps && window.firebase.apps.length > 0 
+          ? window.firebase.apps[0] 
+          : firebase.initializeApp({ databaseURL: FIREBASE_URL });
+        db = firebase.database(app);
+
+        // Listen for live updates
+        db.ref('/active_stock').on('value', (snap) => {
+          const val = snap.val();
+          if (val && typeof val.balance === 'number') {
+            currentBalance = val.balance;
+            localStorage.setItem('ps_balance', currentBalance);
+            if (val.lastAction) {
+              document.getElementById('lastActionText').innerText = `${currentLang === 'gu' ? 'છેલ્લો ફેરફાર: ' : 'Last Change: '} ${val.lastAction} (${val.change > 0 ? '+' : ''}${numStr(val.change || 0)} ${currentLang === 'gu' ? 'પેકેટ' : 'pkts'})`;
+              document.getElementById('lastActionTime').innerText = formatTime(val.timestamp);
+            }
+            updateUI();
+          }
+        });
+
+        // Listen to connection
+        db.ref('.info/connected').on('value', (snap) => {
+          const connected = snap.val() === true;
+          setOnlineBadge(connected);
+        });
+      }
+    } catch(e) {
+      console.warn("RTDB Initialization warning:", e);
+    }
+
+    function setOnlineBadge(online) {
+      const text = document.getElementById('statusText');
+      const badge = document.getElementById('statusBadge');
+      const dot = document.getElementById('statusDot');
+      const ping = document.getElementById('statusPing');
+
+      if (online) {
+        text.innerText = currentLang === 'gu' ? 'ઓનલાઇન (Online)' : 'Online';
+        badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold backdrop-blur-md bg-emerald-500/25 border border-emerald-400/40 text-emerald-200 shadow-xs';
+        dot.className = 'relative inline-flex rounded-full h-2 w-2 bg-emerald-400';
+        ping.className = 'animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75';
+      } else {
+        text.innerText = currentLang === 'gu' ? 'ઓફલાઇન (Offline)' : 'Offline';
+        badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold backdrop-blur-md bg-rose-500/25 border border-rose-400/40 text-rose-200 shadow-xs';
+        dot.className = 'relative inline-flex rounded-full h-2 w-2 bg-rose-400';
+        ping.className = 'hidden';
+      }
+    }
+
+    window.addEventListener('online', () => setOnlineBadge(true));
+    window.addEventListener('offline', () => setOnlineBadge(false));
+
+    updateUI();
+  </script>
+</body>
+</html>
