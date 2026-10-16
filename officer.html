@@ -44,15 +44,14 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 
   <style>
-    /* Subtle glow animation for newly prepended audit table rows */
     @keyframes rowGlow {
       0% {
-        background-color: #fef08a; /* Amber-200 highlight */
+        background-color: #fef08a;
         box-shadow: inset 0 0 12px rgba(202, 138, 4, 0.45);
         transform: translateY(-2px);
       }
       30% {
-        background-color: #fef9c3; /* Amber-100 */
+        background-color: #fef9c3;
       }
       100% {
         background-color: transparent;
@@ -65,7 +64,6 @@
       animation: rowGlow 3.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
-    /* Live Blinking Green Dot */
     @keyframes liveBlink {
       0%, 100% {
         opacity: 1;
@@ -83,7 +81,6 @@
       animation: liveBlink 1.4s ease-in-out infinite;
     }
 
-    /* Urgent Pulse for Low Stock Alert */
     @keyframes urgentPulse {
       0%, 100% {
         transform: scale(1);
@@ -108,14 +105,13 @@
   <!-- GOVERNMENT TOP EMBLEM & TRICOLOR RIBBON -->
   <div class="h-1.5 w-full bg-gradient-to-r from-orange-500 via-white to-emerald-600"></div>
 
-  <!-- HEADER: DARK SLATE GOV PORTAL HEADER WITH GUJARAT STYLING -->
+  <!-- HEADER -->
   <header class="bg-gov-navy text-white border-b border-gov-border shadow-md">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5">
       <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         
-        <!-- Left: Emblem, Gujarat Government & PoshanSetu CDPO Portal Identity -->
+        <!-- Left: Emblem, Gujarat Government & PoshanSetu Identity -->
         <div class="flex items-center gap-3.5">
-          <!-- Ashoka Lion Capital / Emblem Placeholder Badge -->
           <div class="w-12 h-12 rounded-lg bg-slate-800 border border-slate-700 p-1.5 flex items-center justify-center shrink-0 shadow-inner">
             <svg viewBox="0 0 100 100" class="w-full h-full text-amber-400" fill="currentColor" aria-label="ગુજરાત મુદ્રા">
               <circle cx="50" cy="50" r="42" fill="none" stroke="currentColor" stroke-width="4"/>
@@ -145,30 +141,25 @@
 
         <!-- Right: Real-time Connection status, Clock & Controls -->
         <div class="flex flex-wrap items-center gap-3">
-          <!-- Realtime Connection Pill -->
           <div id="connectionStatusBadge" class="flex items-center gap-2 px-3 py-1.5 rounded-md bg-slate-800/80 border border-slate-700 text-xs">
             <span id="connectionDot" class="w-2.5 h-2.5 rounded-full bg-emerald-500 live-blinking-dot"></span>
             <span id="connectionText" class="font-medium text-emerald-400">RTDB કનેક્ટેડ (Live)</span>
           </div>
 
-          <!-- Digital Clock (IST) -->
           <div class="hidden sm:flex flex-col text-right px-3 py-1 rounded bg-slate-800/50 border border-slate-700/60 text-xs">
             <span class="text-slate-400 font-medium">ભારતીય માનક સમય (IST)</span>
             <span id="liveClock" class="font-mono text-slate-100 font-semibold tabular-nums text-sm">--:--:--</span>
           </div>
 
-          <!-- Simulation / Test Action Button -->
-          <button id="toggleSimulatorBtn" type="button" class="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium border border-slate-600 transition-colors cursor-pointer" title="મોબાઈલ એપ સિમ્યુલેશન ટૂલખોલો">
+          <button id="toggleSimulatorBtn" type="button" class="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium border border-slate-600 transition-colors cursor-pointer" title="મોબાઈલ એપ સિમ્યુલેશન ટૂલ ખોલો">
             <i data-lucide="smartphone" class="w-3.5 h-3.5 text-amber-400"></i>
             <span>મોબાઈલ સિન્ક સિમ્યુલેટર</span>
           </button>
 
-          <!-- Audio alert toggle -->
           <button id="toggleSoundBtn" type="button" class="p-1.5 rounded-md bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition-colors cursor-pointer" title="અવાજ ચેતવણી ચાલુ/બંધ">
             <i id="soundIcon" data-lucide="volume-2" class="w-4 h-4 text-emerald-400"></i>
           </button>
 
-          <!-- Export CSV -->
           <button id="exportCsvBtn" type="button" class="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-amber-600 hover:bg-amber-500 text-white text-xs font-semibold shadow-sm transition-colors cursor-pointer">
             <i data-lucide="download" class="w-3.5 h-3.5"></i>
             <span>ઓડિટ રિપોર્ટ CSV</span>
@@ -201,47 +192,44 @@
     </div>
   </div>
 
-  <!-- MAIN DASHBOARD CONTENT -->
+  <!-- MAIN CONTENT -->
   <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col gap-6">
 
-    <!-- COLLAPSIBLE MOBILE APP SIMULATOR DRAWER FOR TESTING / DEMONSTRATION -->
+    <!-- SIMULATOR DRAWER -->
     <div id="simulatorDrawer" class="hidden bg-amber-50 border border-amber-300 rounded-lg p-4 shadow-sm transition-all">
       <div class="flex items-start justify-between gap-4 mb-3">
         <div>
           <div class="flex items-center gap-2">
             <i data-lucide="smartphone" class="w-4 h-4 text-amber-700"></i>
-            <h2 class="text-sm font-bold text-amber-950 font-gujarati">મોબાઈલ એપ્લિકેશન સિન્ક કંટ્રોલર (આંગણવાડી કાર્યકર ટેસ્ટ ટૂલ)</h2>
+            <h2 class="text-sm font-bold text-amber-950 font-gujarati">મોબાઈલ એપ્લિકેશન સિન્ક કંટ્રોલર (ટેસ્ટ ટૂલ)</h2>
           </div>
           <p class="text-xs text-amber-800 mt-0.5">
-            જ્યારે આંગણવાડી કાર્યકર પોતાના ફોનમાંથી સ્ટોક અપડેટ કરશે, ત્યારે આ લેપટોપ સ્ક્રીન કોઈ પેજ રિફ્રેશ વગર આપમેળે અપડેટ થશે. તમે અહીંથી સીધા ટેસ્ટ કરી શકો છો:
+            આંગણવાડી કાર્યકર ફોનમાંથી સ્ટોક અપડેટ કરે ત્યારે સ્ક્રીન પેજ રિફ્રેશ વગર આપમેળે બદલાશે:
           </p>
         </div>
-        <button id="closeSimulatorBtn" class="text-amber-800 hover:text-amber-950 p-1 rounded hover:bg-amber-100">
+        <button id="closeSimulatorBtn" class="text-amber-800 hover:text-amber-950 p-1 rounded hover:bg-amber-100 cursor-pointer">
           <i data-lucide="x" class="w-4 h-4"></i>
         </button>
       </div>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
-        <!-- Action 1: Inward +25 -->
-        <button id="simInwardBtn" class="flex flex-col items-start p-3 bg-white border border-emerald-300 hover:border-emerald-500 rounded-md shadow-xs hover:bg-emerald-50 text-left transition cursor-pointer">
+        <button id="simInwardBtn" class="flex flex-col items-start p-3 bg-white border border-emerald-300 hover:border-emerald-500 rounded-md shadow-sm hover:bg-emerald-50 text-left transition cursor-pointer">
           <div class="flex items-center gap-1.5 text-emerald-700 font-semibold text-xs mb-1">
             <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i>
             <span>આવક નોંધો (+૨૫)</span>
           </div>
-          <span class="text-[11px] text-slate-500">નવા સ્ટોક પેકેટ્સ ગોડાઉનમાંથી પ્રાપ્ત થયા (+25 Inward)</span>
+          <span class="text-[11px] text-slate-500">નવા પેકેટ્સ ગોડાઉનમાંથી પ્રાપ્ત થયા (+25 Inward)</span>
         </button>
 
-        <!-- Action 2: Distribution -10 -->
-        <button id="simDistributeBtn" class="flex flex-col items-start p-3 bg-white border border-blue-300 hover:border-blue-500 rounded-md shadow-xs hover:bg-blue-50 text-left transition cursor-pointer">
+        <button id="simDistributeBtn" class="flex flex-col items-start p-3 bg-white border border-blue-300 hover:border-blue-500 rounded-md shadow-sm hover:bg-blue-50 text-left transition cursor-pointer">
           <div class="flex items-center gap-1.5 text-blue-700 font-semibold text-xs mb-1">
             <i data-lucide="minus-circle" class="w-3.5 h-3.5"></i>
             <span>બાળભોગ વિતરણ (-૧૦)</span>
           </div>
-          <span class="text-[11px] text-slate-500">લાભાર્થી બાળકોને વિતરણ કરવામાં આવ્યું (-10 Distributed)</span>
+          <span class="text-[11px] text-slate-500">લાભાર્થીઓને વિતરણ કરવામાં આવ્યું (-10 Distribution)</span>
         </button>
 
-        <!-- Action 3: Trigger Low Stock < 15 -->
-        <button id="simLowStockBtn" class="flex flex-col items-start p-3 bg-white border border-red-300 hover:border-red-500 rounded-md shadow-xs hover:bg-red-50 text-left transition cursor-pointer">
+        <button id="simLowStockBtn" class="flex flex-col items-start p-3 bg-white border border-red-300 hover:border-red-500 rounded-md shadow-sm hover:bg-red-50 text-left transition cursor-pointer">
           <div class="flex items-center gap-1.5 text-red-700 font-semibold text-xs mb-1">
             <i data-lucide="alert-triangle" class="w-3.5 h-3.5"></i>
             <span>લો-સ્ટોક ટેસ્ટ કરો (૮ પેકેટ)</span>
@@ -249,9 +237,8 @@
           <span class="text-[11px] text-slate-500">સ્ટોક ૧૫ થી ઓછો કરો (&lt; 15) જેથી લાલ એલર્ટ તપાસાય</span>
         </button>
 
-        <!-- Action 4: Custom value input -->
         <div class="p-2.5 bg-white border border-slate-300 rounded-md flex flex-col justify-between">
-          <label class="text-[11px] font-medium text-slate-700 mb-1">કસ્ટમ સ્ટોક સેટ કરો:</label>
+          <label for="customBalanceInput" class="text-[11px] font-medium text-slate-700 mb-1">કસ્ટમ સ્ટોક સેટ કરો:</label>
           <div class="flex items-center gap-1.5">
             <input id="customBalanceInput" type="number" min="0" max="1000" value="45" class="w-20 px-2 py-1 border border-slate-300 rounded text-xs text-center font-mono" />
             <button id="setCustomStockBtn" class="flex-1 px-2.5 py-1 bg-slate-800 hover:bg-slate-900 text-white text-xs font-medium rounded cursor-pointer">
@@ -262,11 +249,11 @@
       </div>
     </div>
 
-    <!-- TOP METRICS ROW WITH 3 MANDATORY CARDS -->
+    <!-- METRICS CARDS -->
     <section aria-label="મુખ્ય પરિમાણો" class="grid grid-cols-1 md:grid-cols-3 gap-5">
 
-      <!-- CARD 1: Selected Centre: "૦૪ - વડતાલ (આણંદ)" -->
-      <div class="bg-white rounded-xl border border-slate-200/90 shadow-xs p-5 flex flex-col justify-between hover:border-slate-300 transition-colors">
+      <!-- Card 1 -->
+      <div class="bg-white rounded-xl border border-slate-200/90 shadow-sm p-5 flex flex-col justify-between hover:border-slate-300 transition-colors">
         <div>
           <div class="flex items-center justify-between text-xs text-slate-500 mb-2">
             <span class="font-semibold uppercase tracking-wider text-slate-600">પસંદ કરેલ આંગણવાડી કેન્દ્ર</span>
@@ -292,9 +279,8 @@
         </div>
       </div>
 
-      <!-- CARD 2: Live Balbhog Balance (Large font with a live blinking green dot) -->
-      <div class="bg-white rounded-xl border border-slate-200/90 shadow-xs p-5 flex flex-col justify-between hover:border-slate-300 transition-colors relative overflow-hidden">
-        <!-- Decorative subtle top border accent -->
+      <!-- Card 2 -->
+      <div class="bg-white rounded-xl border border-slate-200/90 shadow-sm p-5 flex flex-col justify-between hover:border-slate-300 transition-colors relative overflow-hidden">
         <div class="absolute top-0 left-0 right-0 h-1 bg-emerald-500"></div>
 
         <div>
@@ -329,8 +315,8 @@
         </div>
       </div>
 
-      <!-- CARD 3: Low-Stock Alert: If balance is < 15 packets, show red alert badge "⚠️ તાત્કાલિક રીસ્ટોક કરો (Low Stock)" -->
-      <div id="alertCardContainer" class="rounded-xl border shadow-xs p-5 flex flex-col justify-between transition-all bg-emerald-50/60 border-emerald-200 text-slate-800">
+      <!-- Card 3 -->
+      <div id="alertCardContainer" class="rounded-xl border shadow-sm p-5 flex flex-col justify-between transition-all bg-emerald-50/60 border-emerald-200 text-slate-800">
         <div>
           <div class="flex items-center justify-between text-xs text-slate-500 mb-2">
             <span class="font-semibold uppercase tracking-wider text-slate-700">સ્ટોક એલર્ટ મોનિટર (CDPO)</span>
@@ -339,7 +325,6 @@
             </span>
           </div>
 
-          <!-- Dynamic Badge Area: In low stock state (<15), shows prominent red alert badge -->
           <div id="alertBadgeWrapper" class="my-2">
             <div id="normalStockBadge" class="flex items-center gap-2.5 p-3 rounded-lg bg-emerald-100/70 border border-emerald-300 text-emerald-900">
               <i data-lucide="shield-check" class="w-5 h-5 text-emerald-700 shrink-0"></i>
@@ -374,10 +359,8 @@
 
     </section>
 
-    <!-- REAL-TIME AUDIT TABLE SECTION -->
-    <section class="bg-white rounded-xl border border-slate-200 shadow-xs overflow-hidden flex flex-col">
-      
-      <!-- Table Header & Filter Toolbar -->
+    <!-- REAL-TIME AUDIT TABLE -->
+    <section class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
       <div class="px-5 py-4 border-b border-slate-200 bg-slate-50/70 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
           <div class="flex items-center gap-2">
@@ -391,7 +374,6 @@
           </p>
         </div>
 
-        <!-- Filter and Search controls -->
         <div class="flex items-center gap-2">
           <div class="relative">
             <i data-lucide="search" class="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
@@ -410,7 +392,6 @@
         </div>
       </div>
 
-      <!-- Table Container -->
       <div class="overflow-x-auto min-h-[320px]">
         <table class="w-full text-left border-collapse text-xs sm:text-sm">
           <thead>
@@ -448,7 +429,6 @@
             </tr>
           </thead>
           <tbody id="auditTableBody" class="divide-y divide-slate-100 text-slate-700 font-sans">
-            <!-- Loading initial rows placeholder -->
             <tr id="emptyTableRow">
               <td colspan="5" class="py-12 text-center text-slate-400">
                 <div class="flex flex-col items-center justify-center gap-2">
@@ -461,22 +441,20 @@
         </table>
       </div>
 
-      <!-- Table Footer Status Note -->
       <div class="px-5 py-3 bg-slate-50 border-t border-slate-200 text-xs text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-2">
         <div class="flex items-center gap-2">
           <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-          <span>નવી એન્ટ્રી આપમેળે ટોચ પર ઉમેરાશે અને <span class="font-semibold text-amber-700 bg-amber-100 px-1.5 py-0.2 rounded">પીળા ગ્લો એનિમેશન</span> સાથે હાઇલાઇટ થશે.</span>
+          <span>નવી એન્ટ્રી આપમેળે ટોચ પર ઉમેરાશે અને <span class="font-semibold text-amber-700 bg-amber-100 px-1.5 py-0.5 rounded">પીળા ગ્લો એનિમેશન</span> સાથે હાઇલાઇટ થશે.</span>
         </div>
         <div class="text-[11px] text-slate-400">
           સત્તાવાર રેકોર્ડ: આઈ.સી.ડી.એસ. આણંદ ઘટક-૧
         </div>
       </div>
-
     </section>
 
   </main>
 
-  <!-- CDPO NOTIFICATION MODAL / TOAST -->
+  <!-- TOAST NOTIFICATION -->
   <div id="toastNotification" class="fixed bottom-5 right-5 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none">
     <div class="flex items-center gap-3 bg-slate-900 text-white px-4 py-3 rounded-lg shadow-xl border border-slate-700 text-xs max-w-md">
       <div id="toastIconContainer" class="p-1 rounded bg-amber-500/20 text-amber-400">
@@ -505,23 +483,19 @@
     </div>
   </footer>
 
-  <!-- SCRIPT LOGIC -->
+  <!-- JAVASCRIPT -->
   <script>
-    // -------------------------------------------------------------
     // 1. CONFIGURATION & STATE
-    // -------------------------------------------------------------
     const FIREBASE_DB_URL = "https://poshan-setu-default-rtdb.firebaseio.com/";
     const STOCK_PATH = "/active_stock";
     const LOW_STOCK_THRESHOLD = 15;
     const DEFAULT_VILLAGE = "૦૪ - વડતાલ (આણંદ)";
 
-    // Application state
     let currentBalance = null;
     let transactions = [];
     let soundEnabled = true;
     let initialLoadDone = false;
 
-    // Load persisted transactions from localStorage so audit history stays rich across page reloads
     try {
       const savedHistory = localStorage.getItem('poshansetu_audit_history');
       if (savedHistory) {
@@ -531,26 +505,27 @@
       console.warn("Could not read stored transactions:", e);
     }
 
-    // -------------------------------------------------------------
-    // 2. WEB AUDIO API SYNTH CHIMES (NO EXTERNAL AUDIO FILES)
-    // -------------------------------------------------------------
+    // 2. AUDIO SYNTH
     function playNotificationSound(type = 'update') {
       if (!soundEnabled) return;
       try {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        if (!AudioContext) return;
-        const ctx = new AudioContext();
+        const AudioCtxClass = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtxClass) return;
+        const ctx = new AudioCtxClass();
+
+        if (ctx.state === 'suspended') {
+          ctx.resume();
+        }
 
         if (type === 'alert') {
-          // Urgent warning dual chime (for low stock < 15)
           const osc1 = ctx.createOscillator();
           const osc2 = ctx.createOscillator();
           const gain = ctx.createGain();
 
           osc1.type = 'sawtooth';
           osc2.type = 'triangle';
-          osc1.frequency.setValueAtTime(587.33, ctx.currentTime); // D5
-          osc2.frequency.setValueAtTime(880, ctx.currentTime + 0.1); // A5
+          osc1.frequency.setValueAtTime(587.33, ctx.currentTime);
+          osc2.frequency.setValueAtTime(880, ctx.currentTime + 0.1);
 
           gain.gain.setValueAtTime(0.15, ctx.currentTime);
           gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
@@ -564,12 +539,11 @@
           osc1.stop(ctx.currentTime + 0.5);
           osc2.stop(ctx.currentTime + 0.6);
         } else {
-          // Pleasant high chime for inward / distribution sync
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
           osc.type = 'sine';
-          osc.frequency.setValueAtTime(523.25, ctx.currentTime); // C5
-          osc.frequency.exponentialRampToValueAtTime(783.99, ctx.currentTime + 0.12); // G5
+          osc.frequency.setValueAtTime(523.25, ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(783.99, ctx.currentTime + 0.12);
 
           gain.gain.setValueAtTime(0.12, ctx.currentTime);
           gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
@@ -580,14 +554,10 @@
           osc.start();
           osc.stop(ctx.currentTime + 0.35);
         }
-      } catch (err) {
-        // Audio policy restrictions on unclicked first load
-      }
+      } catch (err) {}
     }
 
-    // -------------------------------------------------------------
-    // 3. DATE & TIME FORMATTERS (GUJARATI & IST)
-    // -------------------------------------------------------------
+    // 3. DATE/TIME HELPERS
     function formatISTTime(dateObj = new Date()) {
       return dateObj.toLocaleTimeString('gu-IN', {
         timeZone: 'Asia/Kolkata',
@@ -609,7 +579,6 @@
       return `${d} ${t}`;
     }
 
-    // Live clock in header
     setInterval(() => {
       const clockEl = document.getElementById('liveClock');
       if (clockEl) {
@@ -624,39 +593,31 @@
       }
     }, 1000);
 
-    // -------------------------------------------------------------
-    // 4. FIREBASE REALTIME DATABASE INITIALIZATION
-    // -------------------------------------------------------------
+    // 4. FIREBASE INITIALIZATION
     let firebaseDb = null;
     let activeStockRef = null;
 
     try {
-      const firebaseConfig = {
-        databaseURL: FIREBASE_DB_URL
-      };
-
+      const firebaseConfig = { databaseURL: FIREBASE_DB_URL };
       firebase.initializeApp(firebaseConfig);
       firebaseDb = firebase.database();
       activeStockRef = firebaseDb.ref(STOCK_PATH);
-
-      console.log("Firebase RTDB initialized for:", FIREBASE_DB_URL);
     } catch (e) {
-      console.error("Firebase RTDB init error:", e);
+      console.error("Firebase init error:", e);
       showToast("Firebase જોડાણ ત્રુટિ", "કૃપા કરીને ઇન્ટરનેટ કનેક્શન તપાસો.", true);
     }
 
-    // Connection listener
     if (firebaseDb) {
       const connectedRef = firebaseDb.ref(".info/connected");
       connectedRef.on("value", (snap) => {
-        const isConnected = snap.val() === true;
-        updateConnectionStatusUI(isConnected);
+        updateConnectionStatusUI(snap.val() === true);
       });
     }
 
     function updateConnectionStatusUI(connected) {
       const dot = document.getElementById('connectionDot');
       const text = document.getElementById('connectionText');
+      if (!dot || !text) return;
       if (connected) {
         dot.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 live-blinking-dot";
         text.className = "font-medium text-emerald-400";
@@ -668,19 +629,14 @@
       }
     }
 
-    // -------------------------------------------------------------
-    // 5. PARSE RTDB PAYLOAD & REACT TO VALUE EVENT
-    // -------------------------------------------------------------
+    // 5. PROCESS INCOMING STOCK EVENTS
     function handleStockValueEvent(snapshot) {
       const val = snapshot.val();
-      console.log("Firebase '/active_stock' value event received:", val);
-
       if (val === null || val === undefined) {
-        console.warn("Received null active_stock value");
+        renderAuditTable();
         return;
       }
 
-      // Extract new balance and metadata
       let newBalance = 0;
       let villageName = DEFAULT_VILLAGE;
       let explicitAction = null;
@@ -705,14 +661,10 @@
       const prevBalance = currentBalance;
       const isFirstLoad = !initialLoadDone;
       initialLoadDone = true;
-
-      // Update current balance
       currentBalance = newBalance;
 
-      // Update UI displays
       updateMetricsUI(newBalance);
 
-      // Determine delta & action
       let delta = 0;
       if (explicitChange !== null && explicitChange !== undefined && explicitChange !== 0) {
         delta = explicitChange;
@@ -733,7 +685,6 @@
         }
       }
 
-      // If balance changed or it's first load with empty list, record transaction
       if (delta !== 0 || (isFirstLoad && transactions.length === 0)) {
         const txRecord = {
           id: 'tx_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
@@ -742,13 +693,11 @@
           action: actionTaken,
           change: delta,
           balance: newBalance,
-          isNew: !isFirstLoad // Highlight only real-time incoming changes
+          isNew: !isFirstLoad
         };
 
-        // Prepend incoming transaction to audit log
         transactions.unshift(txRecord);
 
-        // Keep maximum 100 historical records in localStorage
         if (transactions.length > 100) {
           transactions = transactions.slice(0, 100);
         }
@@ -757,7 +706,6 @@
           localStorage.setItem('poshansetu_audit_history', JSON.stringify(transactions));
         } catch (e) {}
 
-        // Sound & Toast feedback
         if (!isFirstLoad) {
           if (newBalance < LOW_STOCK_THRESHOLD) {
             playNotificationSound('alert');
@@ -769,24 +717,19 @@
         }
       }
 
-      // Render updated audit table with subtle glow animation on new item
       renderAuditTable();
     }
 
-    // Attach listener to Firebase RTDB
     if (activeStockRef) {
       activeStockRef.on('value', handleStockValueEvent, (error) => {
         console.error("Firebase on(value) error:", error);
-        // Fallback polling via REST in case WebSocket gets blocked in sandbox
         initRestFallback();
       });
     } else {
       initRestFallback();
     }
 
-    // Robust REST Fallback (Server-Sent Events / Polling)
     function initRestFallback() {
-      console.log("Setting up REST backup poller for", FIREBASE_DB_URL);
       setInterval(async () => {
         try {
           const res = await fetch(`${FIREBASE_DB_URL}active_stock.json?t=${Date.now()}`);
@@ -796,15 +739,11 @@
               handleStockValueEvent({ val: () => data });
             }
           }
-        } catch (err) {
-          console.warn("REST check failed:", err);
-        }
+        } catch (err) {}
       }, 5000);
     }
 
-    // -------------------------------------------------------------
-    // 6. UPDATE TOP 3 METRICS CARDS & LOW STOCK ALERT
-    // -------------------------------------------------------------
+    // 6. METRICS UI
     function updateMetricsUI(balance) {
       const balanceEl = document.getElementById('liveBalanceDisplay');
       const lastUpdatedEl = document.getElementById('lastUpdatedTime');
@@ -814,51 +753,33 @@
       const normalBadge = document.getElementById('normalStockBadge');
       const lowStockBadge = document.getElementById('lowStockAlertBadge');
 
-      // 1. Live Balbhog Balance
-      if (balanceEl) {
-        balanceEl.textContent = balance.toLocaleString('en-IN');
-      }
+      if (balanceEl) balanceEl.textContent = balance.toLocaleString('en-IN');
+      if (lastUpdatedEl) lastUpdatedEl.textContent = formatISTTime();
 
-      if (lastUpdatedEl) {
-        lastUpdatedEl.textContent = formatISTTime();
-      }
-
-      // 2. Low-Stock Alert logic: If balance is < 15 packets, show red alert badge "⚠️ તાત્કાલિક રીસ્ટોક કરો (Low Stock)"
       const isLowStock = balance < LOW_STOCK_THRESHOLD;
 
       if (isLowStock) {
-        // Red Low-Stock Alert State
         alertContainer.className = "rounded-xl border-2 shadow-md p-5 flex flex-col justify-between transition-all bg-red-50 border-red-400 text-red-950";
         alertTag.className = "px-2 py-0.5 rounded text-[11px] font-bold bg-red-600 text-white border border-red-700 animate-pulse";
         alertTag.textContent = "તાકીદની જરૂરિયાત (CRITICAL)";
-
         normalBadge.classList.add('hidden');
         lowStockBadge.classList.remove('hidden');
-
         stockStatusText.className = "font-bold text-red-600 flex items-center gap-1";
         stockStatusText.innerHTML = `<span>⚠️ સ્ટોક ઓછો છે (&lt;૧૫)</span>`;
       } else {
-        // Normal Healthy State
-        alertContainer.className = "rounded-xl border shadow-xs p-5 flex flex-col justify-between transition-all bg-white border-slate-200 text-slate-800";
+        alertContainer.className = "rounded-xl border shadow-sm p-5 flex flex-col justify-between transition-all bg-white border-slate-200 text-slate-800";
         alertTag.className = "px-2 py-0.5 rounded text-[11px] font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200";
         alertTag.textContent = "સામાન્ય (Normal)";
-
         normalBadge.classList.remove('hidden');
         lowStockBadge.classList.add('hidden');
-
         stockStatusText.className = "font-medium text-emerald-700 flex items-center gap-1";
         stockStatusText.innerHTML = `<span>✓ પર્યાપ્ત સ્ટોક (Adequate)</span>`;
       }
 
-      // Re-initialize any dynamic Lucide icons created
-      if (window.lucide) {
-        lucide.createIcons();
-      }
+      if (window.lucide) lucide.createIcons();
     }
 
-    // -------------------------------------------------------------
-    // 7. RENDER AUDIT TABLE WITH SUBTLE GLOW ANIMATION
-    // -------------------------------------------------------------
+    // 7. RENDER AUDIT TABLE
     function renderAuditTable() {
       const tbody = document.getElementById('auditTableBody');
       const countBadge = document.getElementById('auditCountBadge');
@@ -867,7 +788,6 @@
 
       if (!tbody) return;
 
-      // Filter transactions
       const filtered = transactions.filter(item => {
         if (filterAction === 'Inward' && !item.action.toLowerCase().includes('inward') && !(item.change > 0)) {
           return false;
@@ -882,9 +802,7 @@
         return true;
       });
 
-      if (countBadge) {
-        countBadge.textContent = `${filtered.length} રેકોર્ડ્સ`;
-      }
+      if (countBadge) countBadge.textContent = `${filtered.length} રેકોર્ડ્સ`;
 
       if (filtered.length === 0) {
         tbody.innerHTML = `
@@ -901,13 +819,11 @@
         return;
       }
 
-      // Build rows
       let html = '';
       filtered.forEach((tx, index) => {
         const isDistribution = tx.change < 0 || tx.action.includes('વિતરણ') || tx.action.includes('Distribution');
         const isInward = tx.change > 0 || tx.action.includes('આવક') || tx.action.includes('Inward');
 
-        // Action styling badge
         let actionBadge = '';
         if (isInward) {
           actionBadge = `
@@ -932,7 +848,6 @@
           `;
         }
 
-        // Packets Changed column (+ / -)
         let changeBadge = '';
         if (tx.change > 0) {
           changeBadge = `<span class="font-mono font-bold text-emerald-600 tabular-nums text-sm">+${tx.change}</span>`;
@@ -942,38 +857,28 @@
           changeBadge = `<span class="font-mono text-slate-400 tabular-nums">૦</span>`;
         }
 
-        // Subtle Glow Animation on freshly prepended rows
         const glowClass = (tx.isNew && index === 0) ? 'glow-new-row' : '';
 
         html += `
           <tr class="hover:bg-slate-50/80 transition-colors ${glowClass} border-b border-slate-100">
-            <!-- Timestamp -->
             <td class="py-3 px-4 font-mono text-xs text-slate-600 tabular-nums">
               <div class="flex items-center gap-1.5">
                 <i data-lucide="clock" class="w-3.5 h-3.5 text-slate-400 shrink-0"></i>
                 <span>${tx.timestampStr}</span>
               </div>
             </td>
-
-            <!-- Village Name -->
             <td class="py-3 px-4 font-medium text-slate-900 font-gujarati">
               <div class="flex items-center gap-1.5">
                 <i data-lucide="map-pin" class="w-3.5 h-3.5 text-amber-600 shrink-0"></i>
                 <span>${escapeHtml(tx.village)}</span>
               </div>
             </td>
-
-            <!-- Action Taken -->
             <td class="py-3 px-4">
               ${actionBadge}
             </td>
-
-            <!-- Packets Changed (+ / -) -->
             <td class="py-3 px-4 text-right">
               ${changeBadge}
             </td>
-
-            <!-- Resulting Stock Balance -->
             <td class="py-3 px-4 text-right">
               <span class="font-mono font-extrabold text-slate-900 text-sm tabular-nums bg-slate-100 px-2.5 py-1 rounded border border-slate-200">
                 ${tx.balance} પેકેટ
@@ -985,14 +890,11 @@
 
       tbody.innerHTML = html;
 
-      // Reset isNew flag after rendering animation so future renders don't keep flashing
       if (transactions.length > 0) {
         transactions[0].isNew = false;
       }
 
-      if (window.lucide) {
-        lucide.createIcons();
-      }
+      if (window.lucide) lucide.createIcons();
     }
 
     function escapeHtml(str) {
@@ -1004,9 +906,7 @@
         .replace(/"/g, '&quot;');
     }
 
-    // -------------------------------------------------------------
-    // 8. SIMULATION TOOL / PHONE APP SYNC SIMULATOR
-    // -------------------------------------------------------------
+    // 8. SIMULATOR LOGIC
     async function updateStockInFirebase(newBal, changeAmt, actionLabel) {
       const payload = {
         balance: Math.max(0, newBal),
@@ -1016,62 +916,44 @@
         timestamp: new Date().toISOString()
       };
 
-      console.log("Simulating mobile update payload:", payload);
-
-      // Attempt write via Firebase RTDB SDK
       if (activeStockRef) {
         try {
           await activeStockRef.set(payload);
-          console.log("Firebase RTDB updated successfully via SDK");
           return;
-        } catch (e) {
-          console.warn("RTDB set failed (might be read-only rules), falling back to REST/local:", e);
-        }
+        } catch (e) {}
       }
 
-      // Attempt write via REST PUT
       try {
         const resp = await fetch(`${FIREBASE_DB_URL}active_stock.json`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
-        if (resp.ok) {
-          console.log("Firebase RTDB updated via REST PUT");
-          return;
-        }
-      } catch (err) {
-        console.warn("REST PUT rejected:", err);
-      }
+        if (resp.ok) return;
+      } catch (err) {}
 
-      // If database rules prevent anonymous writes, simulate locally so testing works flawlessly!
       handleStockValueEvent({ val: () => payload });
     }
 
-    // Simulator Buttons Wiring
     document.getElementById('toggleSimulatorBtn')?.addEventListener('click', () => {
-      const drawer = document.getElementById('simulatorDrawer');
-      drawer.classList.toggle('hidden');
+      document.getElementById('simulatorDrawer')?.classList.toggle('hidden');
     });
 
     document.getElementById('closeSimulatorBtn')?.addEventListener('click', () => {
-      document.getElementById('simulatorDrawer').classList.add('hidden');
+      document.getElementById('simulatorDrawer')?.classList.add('hidden');
     });
 
-    // Inward (+25 packets)
     document.getElementById('simInwardBtn')?.addEventListener('click', () => {
       const base = (currentBalance !== null) ? currentBalance : 30;
       updateStockInFirebase(base + 25, 25, "આવક - નવો સ્ટોક જમા (Inward)");
     });
 
-    // Distribute (-10 packets)
     document.getElementById('simDistributeBtn')?.addEventListener('click', () => {
       const base = (currentBalance !== null) ? currentBalance : 30;
       const next = Math.max(0, base - 10);
       updateStockInFirebase(next, -10, "વિતરણ - બાળભોગ આપેલ (Distribution)");
     });
 
-    // Trigger Low-Stock (< 15)
     document.getElementById('simLowStockBtn')?.addEventListener('click', () => {
       const targetStock = 8;
       const base = (currentBalance !== null) ? currentBalance : 30;
@@ -1079,7 +961,6 @@
       updateStockInFirebase(targetStock, diff, "વિતરણ - બાળભોગ આપેલ (Distribution)");
     });
 
-    // Custom stock set
     document.getElementById('setCustomStockBtn')?.addEventListener('click', () => {
       const input = document.getElementById('customBalanceInput');
       const val = parseInt(input.value, 10);
@@ -1091,25 +972,16 @@
       }
     });
 
-    // Emergency restock trigger from CDPO alert card
     document.getElementById('dispatchRestockOrderBtn')?.addEventListener('click', () => {
       const base = (currentBalance !== null) ? currentBalance : 10;
       updateStockInFirebase(base + 50, 50, "ઇમરજન્સી રીસ્ટોક પુરવઠો (Emergency Restock Inward)");
       showToast("રીસ્ટોક રિક્વેસ્ટ મંજૂર", "ગોડાઉનમાંથી ૫૦ પેકેટ્સ વડતાલ કેન્દ્ર ખાતે રવાના કરવામાં આવ્યા છે.", false);
     });
 
-    // -------------------------------------------------------------
-    // 9. SEARCH & FILTER CONTROLS
-    // -------------------------------------------------------------
-    document.getElementById('tableSearchInput')?.addEventListener('input', () => {
-      renderAuditTable();
-    });
+    // 9. CONTROLS & CSV EXPORT WITH BOM
+    document.getElementById('tableSearchInput')?.addEventListener('input', () => renderAuditTable());
+    document.getElementById('actionFilterSelect')?.addEventListener('change', () => renderAuditTable());
 
-    document.getElementById('actionFilterSelect')?.addEventListener('change', () => {
-      renderAuditTable();
-    });
-
-    // Sound toggle
     document.getElementById('toggleSoundBtn')?.addEventListener('click', () => {
       soundEnabled = !soundEnabled;
       const icon = document.getElementById('soundIcon');
@@ -1125,38 +997,37 @@
       if (window.lucide) lucide.createIcons();
     });
 
-    // Export CSV
     document.getElementById('exportCsvBtn')?.addEventListener('click', () => {
       if (transactions.length === 0) {
         alert("નિકાસ કરવા માટે કોઈ ટ્રાન્ઝેક્શન રેકોર્ડ નથી.");
         return;
       }
-      let csvContent = "data:text/csv;charset=utf-8,";
-      csvContent += "Timestamp,Village Name,Action Taken,Packets Changed,Resulting Balance\n";
+      // UTF-8 BOM (\uFEFF) ensures Excel renders Gujarati text correctly
+      let csvContent = "\uFEFFTimestamp,Village Name,Action Taken,Packets Changed,Resulting Balance\r\n";
 
       transactions.forEach(t => {
         const row = [
-          `"${t.timestampStr}"`,
-          `"${t.village}"`,
-          `"${t.action}"`,
+          `"${t.timestampStr.replace(/"/g, '""')}"`,
+          `"${t.village.replace(/"/g, '""')}"`,
+          `"${t.action.replace(/"/g, '""')}"`,
           t.change,
           t.balance
         ].join(",");
-        csvContent += row + "\n";
+        csvContent += row + "\r\n";
       });
 
-      const encodedUri = encodeURI(csvContent);
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
-      link.setAttribute("href", encodedUri);
+      link.setAttribute("href", url);
       link.setAttribute("download", `PoshanSetu_Audit_Report_${new Date().toISOString().slice(0, 10)}.csv`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      URL.revokeObjectURL(url);
     });
 
-    // -------------------------------------------------------------
-    // 10. TOAST NOTIFICATION HELPER
-    // -------------------------------------------------------------
+    // 10. TOAST NOTIFICATIONS
     let toastTimeout = null;
     function showToast(title, msg, isAlert = false) {
       const toast = document.getElementById('toastNotification');
@@ -1187,11 +1058,8 @@
       }, 4000);
     }
 
-    // Initialize Lucide icons on page load
     window.addEventListener('DOMContentLoaded', () => {
-      if (window.lucide) {
-        lucide.createIcons();
-      }
+      if (window.lucide) lucide.createIcons();
     });
   </script>
 </body>
