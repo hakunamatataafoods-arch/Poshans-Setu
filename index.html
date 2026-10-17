@@ -18,10 +18,6 @@
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
 
-  <!-- Firebase App & Realtime Database SDKs (Compat versions) -->
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
-
   <script>
     tailwind.config = {
       theme: {
@@ -58,8 +54,14 @@
     }
 
     @keyframes cardFadeUp {
-      0% { opacity: 0; transform: translateY(18px) scale(0.97); }
-      100% { opacity: 1; transform: translateY(0) scale(1); }
+      0% {
+        opacity: 0;
+        transform: translateY(18px) scale(0.97);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
 
     .animate-card-1 { animation: cardFadeUp 400ms cubic-bezier(0.16, 1, 0.3, 1) 40ms both; }
@@ -72,7 +74,10 @@
     .animate-card-8 { animation: cardFadeUp 400ms cubic-bezier(0.16, 1, 0.3, 1) 320ms both; }
     .animate-card-9 { animation: cardFadeUp 400ms cubic-bezier(0.16, 1, 0.3, 1) 360ms both; }
 
-    .page-view { transition: opacity 220ms ease-in-out, transform 220ms ease-in-out; }
+    .page-view {
+      transition: opacity 220ms ease-in-out, transform 220ms ease-in-out;
+    }
+
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
@@ -85,7 +90,7 @@
 </head>
 <body class="h-full antialiased text-slate-800 flex flex-col items-center justify-start p-0 md:py-6 md:px-4">
 
-  <!-- MAIN APPLICATION CONTAINER -->
+  <!-- MAIN CONTAINER -->
   <main class="w-full max-w-[430px] min-h-[890px] h-[92vh] max-h-[940px] bg-[#F7FAF7] md:rounded-[38px] shadow-[0_20px_60px_-15px_rgba(21,128,61,0.18)] md:border-[6px] md:border-white relative flex flex-col justify-between overflow-hidden"
     style="background: linear-gradient(180deg, #F8FAF8 0%, #FFFFFF 30%, #F6FAF6 85%, #EBF6EB 100%);">
     
@@ -100,13 +105,12 @@
       </button>
     </div>
 
-    <!-- ======================================================== -->
-    <!-- VIEW 1: HOMEPAGE                                         -->
-    <!-- ======================================================== -->
+    <!-- VIEW 1: HOMEPAGE -->
     <div id="viewHome" class="page-view flex-1 flex flex-col justify-between overflow-hidden">
+      
       <div class="flex-1 overflow-y-auto px-4 pt-4 pb-24 no-scrollbar">
 
-        <!-- Status & Timing Bar -->
+        <!-- 1. TOP TIMING & STATUS BAR -->
         <div class="bg-white rounded-2xl px-3.5 py-2.5 mb-3 border border-slate-100 shadow-[0_2px_12px_-3px_rgba(0,0,0,0.05)] flex items-center justify-between">
           <div class="flex items-center gap-2.5">
             <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center shrink-0 border border-emerald-100">
@@ -121,28 +125,28 @@
             </div>
           </div>
 
-          <button onclick="openModal('notificationsModal')" class="w-9 h-9 rounded-full bg-slate-50 hover:bg-slate-100 border border-slate-200/90 shadow-xs flex items-center justify-center relative cursor-pointer active:scale-95 transition-all" title="Notifications">
+          <button onclick="openModal('notificationsModal')" class="w-9 h-9 rounded-full bg-slate-50 hover:bg-slate-100 border border-slate-200/90 shadow-xs flex items-center justify-center relative cursor-pointer active:scale-95 transition-all" title="Notifications & Stock Alerts">
             <i data-lucide="bell" class="w-4 h-4 text-slate-700"></i>
             <span class="absolute top-1.5 right-1.5 w-2.5 h-2.5 rounded-full bg-[#EA580C] ring-2 ring-white"></span>
           </button>
         </div>
 
-        <!-- Brand Header & Language Switcher -->
+        <!-- 2. BRAND ROW & LANGUAGE SELECTOR -->
         <div class="flex items-center justify-between mb-3 px-1">
           <div class="flex items-center gap-2">
             <div class="w-10 h-10 shrink-0 drop-shadow-xs">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="25 25 450 350" class="w-full h-full drop-shadow-xs">
                 <g id="logo-icon-header" transform="translate(0, -10)">
                   <path d="M 120 178 C 85 142, 105 88, 168 96 C 182 142, 160 188, 120 178 Z" fill="#78B833" />
+                  <path d="M 116 174 Q 146 138 168 96" stroke="#FFFFFF" stroke-width="2.5" fill="none" stroke-linecap="round" />
                   <path d="M 380 178 C 415 142, 395 88, 332 96 C 318 142, 340 188, 380 178 Z" fill="#78B833" />
+                  <path d="M 384 174 Q 354 138 332 96" stroke="#FFFFFF" stroke-width="2.5" fill="none" stroke-linecap="round" />
                   <circle cx="258" cy="94" r="32" fill="#EB6B14" />
                   <path d="M 196 44 C 182 82, 172 130, 240 162 C 285 184, 298 238, 294 300 Z" fill="#EB6B14" />
                   <circle cx="180" cy="214" r="22" fill="#137A3D" />
                   <circle cx="340" cy="225" r="21" fill="#78B833" />
                   <path d="M 148 330 C 185 292, 315 292, 352 330 Z" fill="#137A3D" />
                   <path d="M 160 326 C 188 308, 312 308, 340 326 L 340 370 L 160 370 Z" fill="#137A3D" />
-                  <path d="M 35 315 C 95 310, 160 348, 200 372 Z" fill="#78B833" />
-                  <path d="M 465 315 C 405 310, 340 348, 300 372 Z" fill="#78B833" />
                 </g>
               </svg>
             </div>
@@ -175,11 +179,11 @@
           </div>
         </div>
 
-        <!-- Worker Profile Card -->
+        <!-- 3. PROFILE CARD -->
         <div class="bg-white rounded-[24px] p-3.5 px-4 shadow-[0_4px_20px_-3px_rgba(0,0,0,0.05)] border border-slate-100 flex items-center justify-between mb-4">
           <div class="flex items-center gap-3">
-            <div class="w-[50px] h-[50px] rounded-full ring-2 ring-emerald-500/25 p-0.5 overflow-hidden bg-gradient-to-br from-emerald-100 to-amber-100 flex items-center justify-center font-bold text-emerald-800 text-lg shadow-xs">
-              અશ
+            <div class="w-[50px] h-[50px] rounded-full ring-2 ring-emerald-500/25 p-0.5 overflow-hidden bg-gradient-to-br from-emerald-100 to-amber-100 flex items-center justify-center shadow-xs">
+              <span class="text-2xl">👩‍💼</span>
             </div>
             <div>
               <h1 class="font-extrabold text-slate-900 text-[15px] tracking-tight leading-tight" id="lblWorkerName">
@@ -198,7 +202,7 @@
                 <i data-lucide="map-pin" class="w-3.5 h-3.5 text-emerald-700 shrink-0"></i>
                 <span class="truncate max-w-[95px]" id="lblCentreName">Kalyan Centre</span>
               </div>
-              <button onclick="toggleOnlineState()" title="Click to toggle Online/Offline simulation" class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold transition-all cursor-pointer bg-emerald-50 text-emerald-700 border border-emerald-200" id="networkPill">
+              <button onclick="toggleOnlineState()" class="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold transition-all cursor-pointer bg-emerald-50 text-emerald-700 border border-emerald-200" id="networkPill">
                 <span id="networkDot" class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                 <span id="networkText">Online</span>
               </button>
@@ -206,94 +210,94 @@
           </div>
         </div>
 
-        <!-- 3x3 Feature Cards Grid -->
+        <!-- 4. 3x3 MODULE GRID -->
         <div class="grid grid-cols-3 gap-2.5 mb-5">
-          <!-- Card 1: Stock Received -->
-          <button onclick="navigateTo('viewStockInward')" class="animate-card-1 bg-[#EAF7EE] hover:bg-[#DFF2E4] active:scale-[0.97] transition-all rounded-[22px] p-2.5 flex flex-col items-center justify-between border border-emerald-200/60 shadow-[0_3px_12px_-2px_rgba(21,128,61,0.08)] min-h-[142px] cursor-pointer text-center group">
-            <div class="w-full h-20 flex items-center justify-center text-emerald-700">
-              <i data-lucide="truck" class="w-10 h-10 stroke-[2.2]"></i>
+          <!-- CARD 1: Stock Received -->
+          <button onclick="navigateTo('viewStockInward')" class="animate-card-1 bg-[#EAF7EE] hover:bg-[#DFF2E4] active:scale-[0.97] transition-all rounded-[22px] p-2.5 flex flex-col items-center justify-between border border-emerald-200/60 shadow-xs min-h-[142px] cursor-pointer text-center group">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center my-auto">
+              <i data-lucide="truck" class="w-6 h-6"></i>
             </div>
-            <span class="block font-extrabold text-slate-800 text-[12px] leading-tight mt-1" data-key="cardStockReceived">
+            <span class="block font-extrabold text-slate-800 text-[12px] leading-tight" data-key="cardStockReceived">
               Stock Received
             </span>
           </button>
 
-          <!-- Card 2: Stock Usage -->
-          <button onclick="navigateTo('viewStockUsage')" class="animate-card-2 bg-[#FFF5EB] hover:bg-[#FFEAD5] active:scale-[0.97] transition-all rounded-[22px] p-2.5 flex flex-col items-center justify-between border border-orange-200/60 shadow-[0_3px_12px_-2px_rgba(234,88,12,0.08)] min-h-[142px] cursor-pointer text-center group">
-            <div class="w-full h-20 flex items-center justify-center text-[#EA580C]">
-              <i data-lucide="wheat" class="w-10 h-10 stroke-[2.2]"></i>
+          <!-- CARD 2: Stock Usage -->
+          <button onclick="navigateTo('viewStockUsage')" class="animate-card-2 bg-[#FFF5EB] hover:bg-[#FFEAD5] active:scale-[0.97] transition-all rounded-[22px] p-2.5 flex flex-col items-center justify-between border border-orange-200/60 shadow-xs min-h-[142px] cursor-pointer text-center group">
+            <div class="w-12 h-12 rounded-2xl bg-orange-100 text-orange-800 flex items-center justify-center my-auto">
+              <i data-lucide="cooking-pot" class="w-6 h-6"></i>
             </div>
-            <span class="block font-extrabold text-slate-800 text-[12px] leading-tight mt-1" data-key="cardStockUsage">
+            <span class="block font-extrabold text-slate-800 text-[12px] leading-tight" data-key="cardStockUsage">
               Stock Usage
             </span>
           </button>
 
-          <!-- Card 3: Balance Remaining -->
-          <button onclick="navigateTo('viewBalance')" class="animate-card-3 bg-[#EAF7EE] hover:bg-[#DFF2E4] active:scale-[0.97] transition-all rounded-[22px] p-2.5 flex flex-col items-center justify-between border border-emerald-200/60 shadow-[0_3px_12px_-2px_rgba(21,128,61,0.08)] min-h-[142px] cursor-pointer text-center group">
-            <div class="w-full h-20 flex items-center justify-center text-teal-700">
-              <i data-lucide="boxes" class="w-10 h-10 stroke-[2.2]"></i>
+          <!-- CARD 3: Balance Remaining -->
+          <button onclick="navigateTo('viewBalance')" class="animate-card-3 bg-[#EAF7EE] hover:bg-[#DFF2E4] active:scale-[0.97] transition-all rounded-[22px] p-2.5 flex flex-col items-center justify-between border border-emerald-200/60 shadow-xs min-h-[142px] cursor-pointer text-center group">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center my-auto">
+              <i data-lucide="boxes" class="w-6 h-6"></i>
             </div>
-            <span class="block font-extrabold text-slate-800 text-[11px] leading-tight mt-1" data-key="cardBalance">
+            <span class="block font-extrabold text-slate-800 text-[11px] leading-tight" data-key="cardBalance">
               Balance Remaining<br>(Item-wise)
             </span>
           </button>
 
-          <!-- Card 4: Setu Share Exchange -->
-          <button onclick="navigateTo('viewSetuShare')" class="animate-card-4 bg-[#EAF7EE] hover:bg-[#DFF2E4] active:scale-[0.97] transition-all rounded-[22px] p-2.5 flex flex-col items-center justify-between border border-emerald-200/60 shadow-[0_3px_12px_-2px_rgba(21,128,61,0.08)] min-h-[142px] cursor-pointer text-center group">
-            <div class="w-full h-20 flex items-center justify-center text-emerald-700">
-              <i data-lucide="arrow-left-right" class="w-10 h-10 stroke-[2.2]"></i>
+          <!-- CARD 4: Setu Share -->
+          <button onclick="navigateTo('viewSetuShare')" class="animate-card-4 bg-[#EAF7EE] hover:bg-[#DFF2E4] active:scale-[0.97] transition-all rounded-[22px] p-2.5 flex flex-col items-center justify-between border border-emerald-200/60 shadow-xs min-h-[142px] cursor-pointer text-center group">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center my-auto">
+              <i data-lucide="repeat" class="w-6 h-6"></i>
             </div>
-            <span class="block font-extrabold text-slate-800 text-[12px] leading-tight mt-1" data-key="cardSetuShare">
+            <span class="block font-extrabold text-slate-800 text-[12px] leading-tight" data-key="cardSetuShare">
               Setu Share<br>Exchange
             </span>
           </button>
 
-          <!-- Card 5: Daily Food Menu -->
-          <button onclick="navigateTo('viewDailyMenu')" class="animate-card-5 bg-[#FFF5EB] hover:bg-[#FFEAD5] active:scale-[0.97] transition-all rounded-[22px] p-2.5 flex flex-col items-center justify-between border border-orange-200/60 shadow-[0_3px_12px_-2px_rgba(234,88,12,0.08)] min-h-[142px] cursor-pointer text-center group">
-            <div class="w-full h-20 flex items-center justify-center text-[#EA580C]">
-              <i data-lucide="utensils" class="w-10 h-10 stroke-[2.2]"></i>
+          <!-- CARD 5: Daily Food Menu -->
+          <button onclick="navigateTo('viewDailyMenu')" class="animate-card-5 bg-[#FFF5EB] hover:bg-[#FFEAD5] active:scale-[0.97] transition-all rounded-[22px] p-2.5 flex flex-col items-center justify-between border border-orange-200/60 shadow-xs min-h-[142px] cursor-pointer text-center group">
+            <div class="w-12 h-12 rounded-2xl bg-orange-100 text-orange-800 flex items-center justify-center my-auto">
+              <i data-lucide="utensils" class="w-6 h-6"></i>
             </div>
-            <span class="block font-extrabold text-slate-800 text-[12px] leading-tight mt-1" data-key="cardDailyMenu">
+            <span class="block font-extrabold text-slate-800 text-[12px] leading-tight" data-key="cardDailyMenu">
               Daily<br>Food Menu
             </span>
           </button>
 
-          <!-- Card 6: Student Attendance -->
-          <button onclick="navigateTo('viewAttendance')" class="animate-card-6 bg-[#EAF7EE] hover:bg-[#DFF2E4] active:scale-[0.97] transition-all rounded-[22px] p-2.5 flex flex-col items-center justify-between border border-emerald-200/60 shadow-[0_3px_12px_-2px_rgba(21,128,61,0.08)] min-h-[142px] cursor-pointer text-center group">
-            <div class="w-full h-20 flex items-center justify-center text-emerald-700">
-              <i data-lucide="user-check" class="w-10 h-10 stroke-[2.2]"></i>
+          <!-- CARD 6: Student Attendance -->
+          <button onclick="navigateTo('viewAttendance')" class="animate-card-6 bg-[#EAF7EE] hover:bg-[#DFF2E4] active:scale-[0.97] transition-all rounded-[22px] p-2.5 flex flex-col items-center justify-between border border-emerald-200/60 shadow-xs min-h-[142px] cursor-pointer text-center group">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center my-auto">
+              <i data-lucide="user-check" class="w-6 h-6"></i>
             </div>
-            <span class="block font-extrabold text-slate-800 text-[12px] leading-tight mt-1" data-key="cardAttendance">
+            <span class="block font-extrabold text-slate-800 text-[12px] leading-tight" data-key="cardAttendance">
               Student<br>Attendance
             </span>
           </button>
 
-          <!-- Card 7: Meal Photo Upload -->
-          <button onclick="navigateTo('viewMealPhoto')" class="animate-card-7 bg-[#FFF5EB] hover:bg-[#FFEAD5] active:scale-[0.97] transition-all rounded-[22px] p-2.5 flex flex-col items-center justify-between border border-orange-200/60 shadow-[0_3px_12px_-2px_rgba(234,88,12,0.08)] min-h-[142px] cursor-pointer text-center group">
-            <div class="w-full h-20 flex items-center justify-center text-[#EA580C]">
-              <i data-lucide="camera" class="w-10 h-10 stroke-[2.2]"></i>
+          <!-- CARD 7: Meal Photo Upload -->
+          <button onclick="navigateTo('viewMealPhoto')" class="animate-card-7 bg-[#FFF5EB] hover:bg-[#FFEAD5] active:scale-[0.97] transition-all rounded-[22px] p-2.5 flex flex-col items-center justify-between border border-orange-200/60 shadow-xs min-h-[142px] cursor-pointer text-center group">
+            <div class="w-12 h-12 rounded-2xl bg-orange-100 text-orange-800 flex items-center justify-center my-auto">
+              <i data-lucide="camera" class="w-6 h-6"></i>
             </div>
-            <span class="block font-extrabold text-slate-800 text-[12px] leading-tight mt-1" data-key="cardMealPhoto">
+            <span class="block font-extrabold text-slate-800 text-[12px] leading-tight" data-key="cardMealPhoto">
               Meal Photo<br>Upload
             </span>
           </button>
 
-          <!-- Card 8: Smart Ration -->
-          <button onclick="navigateTo('viewSmartRation')" class="animate-card-8 bg-[#EAF7EE] hover:bg-[#DFF2E4] active:scale-[0.97] transition-all rounded-[22px] p-2.5 flex flex-col items-center justify-between border border-emerald-200/60 shadow-[0_3px_12px_-2px_rgba(21,128,61,0.08)] min-h-[142px] cursor-pointer text-center group">
-            <div class="w-full h-20 flex items-center justify-center text-emerald-700">
-              <i data-lucide="clipboard-list" class="w-10 h-10 stroke-[2.2]"></i>
+          <!-- CARD 8: Smart Ration -->
+          <button onclick="navigateTo('viewSmartRation')" class="animate-card-8 bg-[#EAF7EE] hover:bg-[#DFF2E4] active:scale-[0.97] transition-all rounded-[22px] p-2.5 flex flex-col items-center justify-between border border-emerald-200/60 shadow-xs min-h-[142px] cursor-pointer text-center group">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center my-auto">
+              <i data-lucide="calculator" class="w-6 h-6"></i>
             </div>
-            <span class="block font-extrabold text-slate-800 text-[12px] leading-tight mt-1" data-key="cardSmartRation">
+            <span class="block font-extrabold text-slate-800 text-[12px] leading-tight" data-key="cardSmartRation">
               Smart<br>Ration
             </span>
           </button>
 
-          <!-- Card 9: Download Report -->
-          <button onclick="navigateTo('viewReport')" class="animate-card-9 bg-[#FFF5EB] hover:bg-[#FFEAD5] active:scale-[0.97] transition-all rounded-[22px] p-2.5 flex flex-col items-center justify-between border border-orange-200/60 shadow-[0_3px_12px_-2px_rgba(234,88,12,0.08)] min-h-[142px] cursor-pointer text-center group">
-            <div class="w-full h-20 flex items-center justify-center text-teal-700">
-              <i data-lucide="file-down" class="w-10 h-10 stroke-[2.2]"></i>
+          <!-- CARD 9: Download Report -->
+          <button onclick="navigateTo('viewReport')" class="animate-card-9 bg-[#FFF5EB] hover:bg-[#FFEAD5] active:scale-[0.97] transition-all rounded-[22px] p-2.5 flex flex-col items-center justify-between border border-orange-200/60 shadow-xs min-h-[142px] cursor-pointer text-center group">
+            <div class="w-12 h-12 rounded-2xl bg-orange-100 text-orange-800 flex items-center justify-center my-auto">
+              <i data-lucide="file-text" class="w-6 h-6"></i>
             </div>
-            <span class="block font-extrabold text-slate-800 text-[12px] leading-tight mt-1" data-key="cardDownloadReport">
+            <span class="block font-extrabold text-slate-800 text-[12px] leading-tight" data-key="cardDownloadReport">
               Download<br>Report
             </span>
           </button>
@@ -301,371 +305,255 @@
 
       </div>
 
-      <!-- Bottom Floating Nav -->
-      <nav class="absolute bottom-0 left-0 right-0 h-[74px] bg-white/95 backdrop-blur-md border-t border-slate-100 shadow-[0_-4px_25px_rgba(0,0,0,0.04)] flex items-center justify-around px-3 z-30">
-        <button onclick="navigateTo('viewHome')" class="flex flex-col items-center justify-center cursor-pointer px-4 py-1.5 rounded-2xl bg-emerald-50 text-emerald-800 transition-all font-bold" id="navBtnHome">
+      <!-- BOTTOM NAVIGATION -->
+      <nav class="absolute bottom-0 left-0 right-0 h-[74px] bg-white/95 backdrop-blur-md border-t border-slate-100 flex items-center justify-around px-3 z-30">
+        <button onclick="navigateTo('viewHome')" class="flex flex-col items-center justify-center cursor-pointer px-4 py-1.5 rounded-2xl bg-emerald-50 text-emerald-800 font-bold" id="navBtnHome">
           <i data-lucide="home" class="w-5 h-5 text-emerald-700 stroke-[2.4]"></i>
           <span class="text-[11px] mt-0.5" data-key="navHome">Home</span>
         </button>
-
-        <button onclick="navigateTo('viewHelp')" class="flex flex-col items-center justify-center cursor-pointer px-3 py-1.5 rounded-2xl text-slate-500 hover:text-slate-800 transition-all font-medium" id="navBtnHelp">
-          <i data-lucide="help-circle" class="w-5 h-5 stroke-[2]"></i>
+        <button onclick="navigateTo('viewHelp')" class="flex flex-col items-center justify-center cursor-pointer px-3 py-1.5 rounded-2xl text-slate-500 font-medium" id="navBtnHelp">
+          <i data-lucide="help-circle" class="w-5 h-5"></i>
           <span class="text-[11px] mt-0.5" data-key="navHelp">Help</span>
         </button>
-
-        <button onclick="navigateTo('viewCentreDetails')" class="flex flex-col items-center justify-center cursor-pointer px-3 py-1.5 rounded-2xl text-slate-500 hover:text-slate-800 transition-all font-medium" id="navBtnCentre">
-          <i data-lucide="building-2" class="w-5 h-5 stroke-[2]"></i>
-          <span class="text-[11px] mt-0.5" data-key="navCentre">Centre Details</span>
+        <button onclick="navigateTo('viewCentreDetails')" class="flex flex-col items-center justify-center cursor-pointer px-3 py-1.5 rounded-2xl text-slate-500 font-medium" id="navBtnCentre">
+          <i data-lucide="building-2" class="w-5 h-5"></i>
+          <span class="text-[11px] mt-0.5" data-key="navCentre">Centre</span>
         </button>
-
-        <button onclick="navigateTo('viewProfile')" class="flex flex-col items-center justify-center cursor-pointer px-3 py-1.5 rounded-2xl text-slate-500 hover:text-slate-800 transition-all font-medium" id="navBtnProfile">
-          <i data-lucide="user" class="w-5 h-5 stroke-[2]"></i>
+        <button onclick="navigateTo('viewProfile')" class="flex flex-col items-center justify-center cursor-pointer px-3 py-1.5 rounded-2xl text-slate-500 font-medium" id="navBtnProfile">
+          <i data-lucide="user" class="w-5 h-5"></i>
           <span class="text-[11px] mt-0.5" data-key="navProfile">Profile</span>
         </button>
       </nav>
+
     </div>
 
-    <!-- ======================================================== -->
-    <!-- VIEW 2: STOCK INWARD                                     -->
-    <!-- ======================================================== -->
+    <!-- VIEW 2: STOCK INWARD -->
     <div id="viewStockInward" class="page-view hidden flex-1 flex flex-col justify-between overflow-hidden bg-[#F7FAF7]">
       <div class="flex-1 overflow-y-auto px-4 pt-4 pb-28 no-scrollbar">
-        <div class="flex items-center justify-between mb-3">
-          <button onclick="navigateTo('viewHome')" class="w-10 h-10 rounded-full bg-[#EAF7EE] hover:bg-[#DFF2E4] active:scale-95 transition-all flex items-center justify-center border border-emerald-200/80 shadow-xs cursor-pointer">
-            <i data-lucide="chevron-left" class="w-5 h-5 text-emerald-800 stroke-[2.5]"></i>
+        <div class="flex items-center justify-between mb-4">
+          <button onclick="navigateTo('viewHome')" class="w-10 h-10 rounded-full bg-[#EAF7EE] flex items-center justify-center border border-emerald-200 cursor-pointer">
+            <i data-lucide="chevron-left" class="w-5 h-5 text-emerald-800"></i>
           </button>
-          <div class="flex items-center gap-1.5">
-            <span class="text-[17px] font-extrabold text-[#EB6B14]">Poshan</span>
-            <span class="text-[17px] font-extrabold text-[#137A3D]">Setu</span>
-          </div>
-          <div class="text-right leading-tight">
-            <p class="text-[11px] font-extrabold text-emerald-800 font-gujarati">સુસંત બાળકો,</p>
-            <p class="text-[10px] font-extrabold text-emerald-700 font-gujarati">સશક્ત ભારત</p>
-          </div>
+          <h2 class="text-lg font-extrabold text-slate-900" id="lblInwardTitle">નવો જથ્થો નોંધણી (Stock Inward)</h2>
+          <span class="text-xs bg-emerald-100 text-emerald-800 font-bold px-2 py-1 rounded-lg">AWC-10103</span>
         </div>
 
-        <div class="text-center mb-4">
-          <h2 class="text-[20px] font-extrabold text-slate-900 tracking-tight" id="lblInwardTitle">
-            નવો જથ્થો નોંધણી (Stock Inward Entry)
-          </h2>
-          <p class="text-[12px] font-semibold text-slate-500 mt-0.5">AWC-10103 Kalyan Centre</p>
+        <!-- Inward Form Cards -->
+        <div class="bg-white rounded-3xl p-4 border border-slate-100 shadow-xs mb-3 space-y-3">
+          <div>
+            <label class="text-xs font-bold text-slate-700 block mb-1">વસ્તુ પસંદ કરો (Commodity)</label>
+            <select id="inwardCommoditySelect" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm font-bold">
+              <option value="balbhog">બાળભોગ પેકેટ (Balbhog 500g)</option>
+              <option value="rice">ચોખા (Rice - Fortified)</option>
+              <option value="matrumrut">માતૃઅમૃત (Matrumrut)</option>
+              <option value="oil">તેલ (Fortified Oil)</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-xs font-bold text-slate-700 block mb-1">બેચ નંબર અને ચલણ (Batch / Challan)</label>
+            <input type="text" id="inwardBatchInput" value="BAT-2026-99" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm font-bold font-mono">
+          </div>
+          <div>
+            <label class="text-xs font-bold text-slate-700 block mb-1">આવેલ જથ્થો (Received Quantity)</label>
+            <div class="flex items-center justify-between bg-slate-50 rounded-2xl p-2 border border-slate-200">
+              <button onclick="adjustInwardQty(-5)" class="w-10 h-10 rounded-xl bg-white text-slate-800 font-bold shadow-xs cursor-pointer">-5</button>
+              <span id="inwardQtyDisplay" class="font-black text-2xl text-emerald-800 font-mono">50</span>
+              <button onclick="adjustInwardQty(5)" class="w-10 h-10 rounded-xl bg-white text-slate-800 font-bold shadow-xs cursor-pointer">+5</button>
+            </div>
+          </div>
+          <button onclick="submitInward()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold py-3.5 rounded-2xl shadow-lg cursor-pointer">
+            જથ્થો જમા કરો (Confirm & Save)
+          </button>
         </div>
-
-        <!-- Commodity Selection -->
-        <div class="bg-white rounded-[24px] p-4 shadow-[0_4px_20px_-3px_rgba(0,0,0,0.05)] border border-slate-100 mb-3.5">
-          <div class="flex items-center gap-2 mb-3">
-            <div class="w-8 h-8 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-800">
-              <i data-lucide="package" class="w-5 h-5 stroke-[2.2]"></i>
-            </div>
-            <h3 class="font-extrabold text-slate-900 text-[15px]" id="lblInwardCard1Title">વસ્તુ પસંદ કરો (Select Commodity)</h3>
-          </div>
-          <select id="inwardCommoditySelect" class="w-full bg-slate-50 border border-slate-200/90 rounded-2xl py-3 px-3.5 text-[14px] font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/30">
-            <option value="balbhog">બાળભોગ પેકેટ (Balbhog 500g)</option>
-            <option value="rice">ચોખા (Rice - Fortified)</option>
-            <option value="matrumrut">માતૃઅમૃત (Matrumrut 500g)</option>
-            <option value="oil">તેલ (Fortified Edible Oil)</option>
-            <option value="dal">તુવેર દાળ (Toor Dal)</option>
-            <option value="wheat">ઘઉં (Wheat Grains)</option>
-          </select>
-        </div>
-
-        <!-- Batch & Challan -->
-        <div class="bg-white rounded-[24px] p-4 shadow-[0_4px_20px_-3px_rgba(0,0,0,0.05)] border border-slate-100 mb-3.5">
-          <div class="flex items-center gap-2 mb-3">
-            <div class="w-8 h-8 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-800">
-              <i data-lucide="file-text" class="w-5 h-5 stroke-[2.2]"></i>
-            </div>
-            <h3 class="font-extrabold text-slate-900 text-[15px]" id="lblInwardCard2Title">Batch & Challan</h3>
-          </div>
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="block text-[11px] font-bold text-slate-700 mb-1" id="lblChallanNo">ચલણ નં. (Challan No.)</label>
-              <input type="text" id="inwardChallanInput" value="CH-2026-904" class="w-full bg-slate-50 border border-slate-200/90 rounded-2xl py-2.5 px-3 text-xs font-bold text-slate-800">
-            </div>
-            <div>
-              <label class="block text-[11px] font-bold text-slate-700 mb-1" id="lblExpiryDate">એક્સપાયરી તારીખ</label>
-              <input type="text" id="inwardExpiryInput" value="Aug 2027" class="w-full bg-slate-50 border border-slate-200/90 rounded-2xl py-2.5 px-3 text-xs font-bold text-slate-800">
-            </div>
-          </div>
-        </div>
-
-        <!-- Received Quantity Stepper -->
-        <div class="bg-white rounded-[24px] p-4 shadow-[0_4px_20px_-3px_rgba(0,0,0,0.05)] border border-slate-100 mb-4">
-          <div class="flex items-center gap-2 mb-3">
-            <div class="w-8 h-8 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-800">
-              <i data-lucide="scale" class="w-5 h-5 stroke-[2.2]"></i>
-            </div>
-            <h3 class="font-extrabold text-slate-900 text-[15px]" id="lblInwardCard3Title">મળેલ જથ્થો (Received Quantity)</h3>
-          </div>
-          <div class="flex items-center justify-center gap-3 my-2">
-            <button onclick="changeInwardQty(-5)" class="w-13 h-13 rounded-full bg-[#EAF7EE] hover:bg-[#DFF2E4] active:scale-90 transition-all flex items-center justify-center text-emerald-900 font-extrabold text-2xl cursor-pointer">—</button>
-            <div class="flex-1 max-w-[150px] bg-[#F0FDF4] border-2 border-emerald-300 rounded-2xl py-2 text-center shadow-xs">
-              <span id="inwardQtyDisplay" class="font-black text-[#137A3D] text-[36px] font-mono leading-none tracking-tight">50</span>
-              <span class="block text-[10px] font-bold text-emerald-700 mt-0.5" id="inwardUnitText">પેકેટ / Packets</span>
-            </div>
-            <button onclick="changeInwardQty(5)" class="w-13 h-13 rounded-full bg-[#EAF7EE] hover:bg-[#DFF2E4] active:scale-90 transition-all flex items-center justify-center text-emerald-900 font-extrabold text-2xl cursor-pointer">+</button>
-          </div>
-        </div>
-
-      </div>
-
-      <div class="absolute bottom-0 left-0 right-0 p-4 bg-white/95 backdrop-blur-md border-t border-slate-100 shadow-[0_-4px_25px_rgba(0,0,0,0.06)] z-30">
-        <button onclick="saveStockInward()" class="w-full bg-[#137A3D] hover:bg-[#0F6030] active:scale-[0.98] transition-all text-white font-extrabold text-[15px] py-3.5 px-4 rounded-2xl flex items-center justify-center gap-2 shadow-lg cursor-pointer">
-          <i data-lucide="check-square" class="w-5 h-5 stroke-[2.5]"></i>
-          <span id="lblConfirmInwardBtn">સ્ટોકમાં જમા કરો (Confirm & Save Inward)</span>
-        </button>
       </div>
     </div>
 
-    <!-- ======================================================== -->
-    <!-- VIEW 3: STOCK USAGE                                      -->
-    <!-- ======================================================== -->
+    <!-- VIEW 3: STOCK USAGE -->
     <div id="viewStockUsage" class="page-view hidden flex-1 flex flex-col justify-between overflow-hidden bg-[#F7FAF7]">
       <div class="flex-1 overflow-y-auto px-4 pt-4 pb-28 no-scrollbar">
-        <div class="flex items-center justify-between mb-3">
-          <button onclick="navigateTo('viewHome')" class="w-10 h-10 rounded-full bg-[#FFF5EB] hover:bg-[#FFEAD5] active:scale-95 transition-all flex items-center justify-center border border-orange-200/80 shadow-xs cursor-pointer">
-            <i data-lucide="chevron-left" class="w-5 h-5 text-orange-800 stroke-[2.5]"></i>
-          </button>
-          <div class="flex items-center gap-1.5">
-            <span class="text-[17px] font-extrabold text-[#EB6B14]">Poshan</span>
-            <span class="text-[17px] font-extrabold text-[#137A3D]">Setu</span>
-          </div>
-          <div class="w-10"></div>
-        </div>
-
-        <div class="text-center mb-4">
-          <h2 class="text-[20px] font-extrabold text-slate-900 tracking-tight" id="lblUsageTitle">દૈનિક વપરાશ નોંધણી (Stock Usage)</h2>
-          <p class="text-[12px] font-semibold text-slate-500 mt-0.5">AWC-10103 Kalyan Centre</p>
-        </div>
-
-        <div class="bg-white rounded-[24px] p-4 shadow-[0_4px_20px_-3px_rgba(0,0,0,0.05)] border border-slate-100 mb-3.5">
-          <label class="block text-xs font-bold text-slate-700 mb-1">સામગ્રી (Commodity)</label>
-          <select id="usageCommoditySelect" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3 text-xs font-bold text-slate-800 mb-3">
-            <option value="balbhog">બાળભોગ પેકેટ (Balbhog 500g)</option>
-            <option value="rice">ચોખા (Rice - kg)</option>
-            <option value="dal">તુવેર દાળ (Toor Dal - kg)</option>
-            <option value="oil">તેલ (Edible Oil - L)</option>
-            <option value="matrumrut">માતૃઅમૃત (Matrumrut 500g)</option>
-          </select>
-
-          <label class="block text-xs font-bold text-slate-700 mb-1">વપરાશ જથ્થો (Quantity to Deduct)</label>
-          <div class="flex items-center justify-center gap-3 my-2">
-            <button onclick="changeUsageQty(-1)" class="w-10 h-10 rounded-full bg-slate-100 font-bold text-lg cursor-pointer">-</button>
-            <span id="usageQtyDisplay" class="font-black text-[#EA580C] text-2xl font-mono w-16 text-center">5</span>
-            <button onclick="changeUsageQty(1)" class="w-10 h-10 rounded-full bg-slate-100 font-bold text-lg cursor-pointer">+</button>
-          </div>
-        </div>
-
-      </div>
-
-      <div class="absolute bottom-0 left-0 right-0 p-4 bg-white/95 backdrop-blur-md border-t border-slate-100 shadow-[0_-4px_25px_rgba(0,0,0,0.06)] z-30">
-        <button onclick="saveStockUsage()" class="w-full bg-[#EA580C] hover:bg-[#C2410C] active:scale-[0.98] transition-all text-white font-extrabold text-[15px] py-3.5 px-4 rounded-2xl flex items-center justify-center gap-2 shadow-lg cursor-pointer">
-          <i data-lucide="check-circle-2" class="w-5 h-5 stroke-[2.5]"></i>
-          <span id="lblConfirmUsageBtn">વપરાશ મંજૂર કરો (Confirm & Deduct Usage)</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- ======================================================== -->
-    <!-- VIEW 4: BALANCE REMAINING                                -->
-    <!-- ======================================================== -->
-    <div id="viewBalance" class="page-view hidden flex-1 flex flex-col justify-between overflow-hidden bg-[#F7FAF7]">
-      <div class="flex-1 overflow-y-auto px-4 pt-4 pb-24 no-scrollbar">
-        <div class="flex items-center justify-between mb-4">
-          <button onclick="navigateTo('viewHome')" class="w-10 h-10 rounded-full bg-[#EAF7EE] flex items-center justify-center border border-emerald-200 cursor-pointer">
-            <i data-lucide="chevron-left" class="w-5 h-5 text-emerald-800"></i>
-          </button>
-          <h2 class="text-lg font-extrabold text-slate-900">બાકી સિલક (Item-wise Balance)</h2>
-          <button onclick="navigateTo('viewStockInward')" class="px-2.5 py-1.5 rounded-xl bg-emerald-700 text-white text-xs font-bold flex items-center gap-1 cursor-pointer">
-            <i data-lucide="plus" class="w-3.5 h-3.5"></i>
-            <span>આવક ઉમેરો</span>
-          </button>
-        </div>
-
-        <div id="inventoryCardsContainer" class="space-y-3">
-          <!-- Injected via renderInventory() -->
-        </div>
-      </div>
-    </div>
-
-    <!-- ======================================================== -->
-    <!-- VIEW 5: SETU SHARE EXCHANGE                              -->
-    <!-- ======================================================== -->
-    <div id="viewSetuShare" class="page-view hidden flex-1 flex flex-col justify-between overflow-hidden bg-[#F7FAF7]">
-      <div class="flex-1 overflow-y-auto px-4 pt-4 pb-24 no-scrollbar">
-        <div class="flex items-center justify-between mb-4">
-          <button onclick="navigateTo('viewHome')" class="w-10 h-10 rounded-full bg-[#EAF7EE] flex items-center justify-center border border-emerald-200 cursor-pointer">
-            <i data-lucide="chevron-left" class="w-5 h-5 text-emerald-800"></i>
-          </button>
-          <h2 class="text-lg font-extrabold text-slate-900">સેતુ-શેર (Setu Share Exchange)</h2>
-          <span class="text-xs bg-emerald-100 text-emerald-800 font-bold px-2 py-1 rounded-lg">P2P Network</span>
-        </div>
-
-        <div class="bg-white rounded-3xl p-4 border border-slate-100 shadow-xs mb-4">
-          <label class="block text-xs font-bold text-slate-700 mb-1">જરૂરી સામગ્રી (Commodity Needed)</label>
-          <select id="shareReqItem" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 px-3 text-xs font-bold text-slate-800 mb-3">
-            <option value="Balbhog">બાળભોગ પેકેટ (Balbhog 500g)</option>
-            <option value="Fortified Rice">ફોર્ટિફાઇડ ચોખા (Rice)</option>
-            <option value="Edible Oil">ફોર્ટિફાઇડ તેલ (Edible Oil)</option>
-          </select>
-
-          <label class="block text-xs font-bold text-slate-700 mb-1">જથ્થો (Quantity Needed)</label>
-          <input type="number" id="shareReqQty" value="10" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 px-3 text-xs font-bold text-slate-800 mb-3">
-
-          <label class="block text-xs font-bold text-slate-700 mb-1">નજીકનું કેન્દ્ર પસંદ કરો</label>
-          <select id="shareReqCenter" class="w-full bg-slate-50 border border-slate-200 rounded-xl py-2 px-3 text-xs font-bold text-slate-800 mb-4">
-            <option value="Bakrol AWC">બાકરોલ કેન્દ્ર - Bakrol AWC (1.2 km away)</option>
-            <option value="Anand Ward 4">આણંદ વોર્ડ ૪ - Anand Ward 4 (2.5 km away)</option>
-          </select>
-
-          <button onclick="submitShareRequest()" class="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs py-3 rounded-xl cursor-pointer">
-            સુરક્ષિત ટ્રાન્સફર કોડ બનાવો (Generate 4-Digit Code)
-          </button>
-        </div>
-
-        <div id="shareCodeBanner" class="hidden bg-emerald-900 text-white rounded-3xl p-4 text-center mb-4 border border-emerald-700">
-          <p class="text-xs text-emerald-200 font-medium">તમારો વેરિફિકેશન પિન / Verification OTP</p>
-          <p class="text-3xl font-black font-mono tracking-widest my-1 text-emerald-300">#8491</p>
-          <p class="text-[11px] text-emerald-200">આ કોડ બાકરોલ કેન્દ્રના કાર્યકરને બતાવી સ્ટોક સ્વીકારો</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- ======================================================== -->
-    <!-- VIEW 6: DAILY FOOD MENU                                  -->
-    <!-- ======================================================== -->
-    <div id="viewDailyMenu" class="page-view hidden flex-1 flex flex-col justify-between overflow-hidden bg-[#F7FAF7]">
-      <div class="flex-1 overflow-y-auto px-4 pt-4 pb-24 no-scrollbar">
         <div class="flex items-center justify-between mb-4">
           <button onclick="navigateTo('viewHome')" class="w-10 h-10 rounded-full bg-[#FFF5EB] flex items-center justify-center border border-orange-200 cursor-pointer">
             <i data-lucide="chevron-left" class="w-5 h-5 text-orange-800"></i>
           </button>
-          <h2 class="text-lg font-extrabold text-slate-900">દૈનિક આહાર મેનુ (Weekly Schedule)</h2>
-          <span class="text-xs bg-orange-100 text-orange-800 font-bold px-2 py-1 rounded-lg">Gujarat WCDD</span>
+          <h2 class="text-lg font-extrabold text-slate-900">દૈનિક સ્ટોક વપરાશ (Stock Usage)</h2>
+          <span class="text-xs bg-orange-100 text-orange-800 font-bold px-2 py-1 rounded-lg">Rasoi</span>
         </div>
 
-        <div class="bg-white rounded-3xl p-4 border border-orange-200/80 shadow-xs mb-4">
-          <div class="flex items-center justify-between mb-2">
-            <h3 class="font-extrabold text-slate-900 text-base">વેજિટેબલ ખીચડી અને દૂધ (Khichdi)</h3>
-            <span class="text-[10px] bg-emerald-100 text-emerald-800 font-extrabold px-2 py-0.5 rounded-full">મંગળવાર</span>
+        <div class="bg-white rounded-3xl p-4 border border-slate-100 shadow-xs mb-3 space-y-3">
+          <div>
+            <label class="text-xs font-bold text-slate-700 block mb-1">સામગ્રી પસંદ કરો (Ingredient)</label>
+            <select id="usageCommoditySelect" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm font-bold">
+              <option value="rice">ચોખા (Rice - Fortified)</option>
+              <option value="balbhog">બાળભોગ (Balbhog)</option>
+              <option value="dal">તુવેર દાળ (Toor Dal)</option>
+            </select>
           </div>
-          <p class="text-xs text-slate-600 mb-3">ફોર્ટિફાઇડ ચોખા, તુવેર દાળ, ગાજર અને તેલ વડે બનતી પૌષ્ટિક ખીચડી.</p>
-          <div class="grid grid-cols-2 gap-2 text-xs">
-            <div class="p-2 rounded-xl bg-orange-50 border border-orange-100">🍚 ચોખા: ૩૫g / બાળક</div>
-            <div class="p-2 rounded-xl bg-orange-50 border border-orange-100">🥣 તુવેર દાળ: ૧૫g / બાળક</div>
+          <div>
+            <label class="text-xs font-bold text-slate-700 block mb-1">આજના લાભાર્થી બાળકો (Children Count)</label>
+            <div class="flex items-center justify-between bg-slate-50 rounded-2xl p-2 border border-slate-200">
+              <button onclick="adjustUsageChildren(-1)" class="w-10 h-10 rounded-xl bg-white text-slate-800 font-bold shadow-xs cursor-pointer">-1</button>
+              <span id="usageChildrenDisplay" class="font-black text-2xl text-orange-700 font-mono">28</span>
+              <button onclick="adjustUsageChildren(1)" class="w-10 h-10 rounded-xl bg-white text-slate-800 font-bold shadow-xs cursor-pointer">+1</button>
+            </div>
+            <p id="usageFormulaText" class="text-xs text-slate-500 font-bold mt-2 text-center">૨૮ બાળકો × ૩૫g = ૯૮૦ ગ્રામ ચોખા</p>
           </div>
+          <button onclick="saveStockUsage()" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-extrabold py-3.5 rounded-2xl shadow-lg cursor-pointer">
+            વપરાશ બાદ કરો (Deduct Usage)
+          </button>
         </div>
       </div>
     </div>
 
-    <!-- ======================================================== -->
-    <!-- VIEW 7: STUDENT ATTENDANCE (10 STUDENTS)                 -->
-    <!-- ======================================================== -->
-    <div id="viewAttendance" class="page-view hidden flex-1 flex flex-col justify-between overflow-hidden bg-[#F7FAF7]">
-      <div class="flex-1 overflow-y-auto px-4 pt-4 pb-24 no-scrollbar">
+    <!-- VIEW 4: BALANCE REMAINING -->
+    <div id="viewBalance" class="page-view hidden flex-1 flex flex-col justify-between overflow-hidden bg-[#F7FAF7]">
+      <div class="flex-1 overflow-y-auto px-4 pt-4 pb-28 no-scrollbar">
         <div class="flex items-center justify-between mb-4">
           <button onclick="navigateTo('viewHome')" class="w-10 h-10 rounded-full bg-[#EAF7EE] flex items-center justify-center border border-emerald-200 cursor-pointer">
             <i data-lucide="chevron-left" class="w-5 h-5 text-emerald-800"></i>
           </button>
-          <h2 class="text-lg font-extrabold text-slate-900">વિદ્યાર્થી હાજરી (Student Attendance)</h2>
-          <span class="text-xs bg-emerald-100 text-emerald-800 font-extrabold px-2.5 py-1 rounded-full" id="attendanceSummary">8/10 હાજર</span>
+          <h2 class="text-lg font-extrabold text-slate-900">બાકી સિલક (Balance Remaining)</h2>
+          <span class="text-xs bg-emerald-100 text-emerald-800 font-bold px-2 py-1 rounded-lg">Live Stock</span>
         </div>
-
-        <div class="flex items-center justify-between mb-3 px-1">
-          <span class="text-xs text-slate-500 font-medium">કલ્યાણ આંગણવાડી • નોંધાયેલ બાળકો</span>
-          <button onclick="markAllPresent()" class="text-xs font-bold text-emerald-700 hover:underline cursor-pointer">બધાને હાજર કરો (Mark All)</button>
-        </div>
-
-        <div class="space-y-2.5" id="studentRosterContainer">
-          <!-- Populated dynamically via renderAttendanceList() -->
+        <div id="inventoryCardsContainer" class="space-y-2.5">
+          <!-- Rendered dynamically -->
         </div>
       </div>
     </div>
 
-    <!-- ======================================================== -->
-    <!-- VIEW 8: MEAL PHOTO UPLOAD                                -->
-    <!-- ======================================================== -->
+    <!-- VIEW 5: SETUSHARE -->
+    <div id="viewSetuShare" class="page-view hidden flex-1 flex flex-col justify-between overflow-hidden bg-[#F7FAF7]">
+      <div class="flex-1 overflow-y-auto px-4 pt-4 pb-28 no-scrollbar">
+        <div class="flex items-center justify-between mb-4">
+          <button onclick="navigateTo('viewHome')" class="w-10 h-10 rounded-full bg-[#EAF7EE] flex items-center justify-center border border-emerald-200 cursor-pointer">
+            <i data-lucide="chevron-left" class="w-5 h-5 text-emerald-800"></i>
+          </button>
+          <h2 class="text-lg font-extrabold text-slate-900">સેતુ-શેર આપ-લે (SetuShare)</h2>
+          <span class="text-xs bg-emerald-100 text-emerald-800 font-bold px-2 py-1 rounded-lg">P2P Stock</span>
+        </div>
+        <div class="bg-white rounded-3xl p-4 border border-slate-100 shadow-xs mb-3 space-y-3">
+          <p class="text-xs text-slate-600">નજીકના આંગણવાડી કેન્દ્ર સાથે ઘટતો અથવા વધારાનો જથ્થો આપ-લે કરો:</p>
+          <input type="text" placeholder="સામગ્રી (e.g., ચોખા ૨૦ કિલો)" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs">
+          <button onclick="submitShareRequest()" class="w-full bg-emerald-700 text-white font-extrabold py-3 rounded-2xl text-xs cursor-pointer">
+            શેર વિનંતી મોકલો (Send Request)
+          </button>
+          <div id="shareCodeBanner" class="hidden p-3 bg-emerald-50 border border-emerald-200 rounded-2xl text-emerald-800 text-xs font-bold text-center">
+            P2P શેર કોડ: <span class="text-base font-mono">#SETU-8491</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW 6: ATTENDANCE -->
+    <div id="viewAttendance" class="page-view hidden flex-1 flex flex-col justify-between overflow-hidden bg-[#F7FAF7]">
+      <div class="flex-1 overflow-y-auto px-4 pt-4 pb-28 no-scrollbar">
+        <div class="flex items-center justify-between mb-4">
+          <button onclick="navigateTo('viewHome')" class="w-10 h-10 rounded-full bg-[#EAF7EE] flex items-center justify-center border border-emerald-200 cursor-pointer">
+            <i data-lucide="chevron-left" class="w-5 h-5 text-emerald-800"></i>
+          </button>
+          <h2 class="text-lg font-extrabold text-slate-900">બાળકોની હાજરી (Attendance)</h2>
+          <span id="attendanceSummary" class="text-xs bg-emerald-100 text-emerald-800 font-bold px-2 py-1 rounded-lg">૨૮/૩૪ હાજર</span>
+        </div>
+        <div class="flex gap-2 mb-3">
+          <button onclick="markAllPresent()" class="flex-1 bg-emerald-600 text-white font-extrabold text-xs py-2 rounded-xl cursor-pointer">
+            બધા હાજર (Mark All Present)
+          </button>
+        </div>
+        <div id="studentRosterContainer" class="space-y-2">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW 7: DAILY FOOD MENU -->
+    <div id="viewDailyMenu" class="page-view hidden flex-1 flex flex-col justify-between overflow-hidden bg-[#F7FAF7]">
+      <div class="flex-1 overflow-y-auto px-4 pt-4 pb-28 no-scrollbar">
+        <div class="flex items-center justify-between mb-4">
+          <button onclick="navigateTo('viewHome')" class="w-10 h-10 rounded-full bg-[#FFF5EB] flex items-center justify-center border border-orange-200 cursor-pointer">
+            <i data-lucide="chevron-left" class="w-5 h-5 text-orange-800"></i>
+          </button>
+          <h2 class="text-lg font-extrabold text-slate-900">સાપ્તાહિક મેનુ (Food Menu)</h2>
+          <span class="text-xs bg-orange-100 text-orange-800 font-bold px-2 py-1 rounded-lg">WCDD Gujarat</span>
+        </div>
+        <div class="space-y-2.5 text-xs">
+          <div class="p-3 bg-white rounded-2xl border border-slate-100 shadow-xs flex justify-between">
+            <div><span class="font-bold text-slate-900">સોમવાર (Monday):</span><p class="text-slate-500">સુખડી અને ગરમ ખીચડી</p></div>
+            <span class="text-emerald-700 font-bold">SNACK + HCM</span>
+          </div>
+          <div class="p-3 bg-white rounded-2xl border border-slate-100 shadow-xs flex justify-between">
+            <div><span class="font-bold text-slate-900">મંગળવાર (Tuesday):</span><p class="text-slate-500">પૌંઆ અને મિક્સ દાળ</p></div>
+            <span class="text-emerald-700 font-bold">SNACK + HCM</span>
+          </div>
+          <div class="p-3 bg-white rounded-2xl border border-slate-100 shadow-xs flex justify-between">
+            <div><span class="font-bold text-slate-900">બુધવાર (Wednesday):</span><p class="text-slate-500">બાળભોગ શીરો અને શાક પુલાવ</p></div>
+            <span class="text-emerald-700 font-bold">SNACK + HCM</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW 8: MEAL PHOTO -->
     <div id="viewMealPhoto" class="page-view hidden flex-1 flex flex-col justify-between overflow-hidden bg-[#F7FAF7]">
-      <div class="flex-1 overflow-y-auto px-4 pt-4 pb-24 no-scrollbar">
+      <div class="flex-1 overflow-y-auto px-4 pt-4 pb-28 no-scrollbar">
         <div class="flex items-center justify-between mb-4">
           <button onclick="navigateTo('viewHome')" class="w-10 h-10 rounded-full bg-[#FFF5EB] flex items-center justify-center border border-orange-200 cursor-pointer">
             <i data-lucide="chevron-left" class="w-5 h-5 text-orange-800"></i>
           </button>
           <h2 class="text-lg font-extrabold text-slate-900">ભોજન ફોટો અપલોડ (Meal Photo)</h2>
-          <span class="text-xs bg-emerald-100 text-emerald-800 font-bold px-2 py-1 rounded-lg">GPS Tagged</span>
+          <span class="text-xs bg-orange-100 text-orange-800 font-bold px-2 py-1 rounded-lg">Geo-tag</span>
         </div>
-
-        <div class="bg-slate-900 text-white rounded-3xl p-4 relative overflow-hidden flex flex-col items-center justify-center min-h-[220px] mb-4 border border-slate-700">
-          <div class="absolute top-3 left-3 bg-black/60 px-2.5 py-1 rounded-full text-[10px] font-mono text-emerald-400">
-            📍 Lat: 22.5645° N, 72.9289° E • Kalyan AWC
+        <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-xs text-center space-y-3">
+          <div class="w-20 h-20 rounded-2xl bg-orange-50 text-orange-600 flex items-center justify-center mx-auto text-3xl">
+            📷
           </div>
-          <div class="w-20 h-20 rounded-full bg-white/10 border-2 border-dashed border-white/40 flex items-center justify-center mb-2">
-            <i data-lucide="camera" class="w-8 h-8 text-white"></i>
-          </div>
-          <p class="text-xs font-bold text-white">બાળકો સાથે તૈયાર ગરમ ભોજનનો ફોટો લો</p>
+          <p class="text-xs text-slate-500">ગરમ ભોજન વિતરણનો ફોટો જીઓ-ટેગ અને સમય સાથે અપલોડ કરો:</p>
+          <button onclick="simulatePhotoCapture()" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-extrabold py-3.5 rounded-2xl text-xs cursor-pointer">
+            કેમેરા ખોલો અને ફોટો લો (Capture Photo)
+          </button>
         </div>
-
-        <button onclick="simulatePhotoCapture()" class="w-full bg-[#15803D] hover:bg-[#166534] text-white font-extrabold text-xs py-3 rounded-2xl flex items-center justify-center gap-2 cursor-pointer shadow-md">
-          <i data-lucide="camera" class="w-4 h-4"></i>
-          <span>કેમેરા વડે ફોટો ક્લિક કરો (Capture & Sync)</span>
-        </button>
       </div>
     </div>
 
-    <!-- ======================================================== -->
-    <!-- VIEW 9: SMART RATION (SMART RASOI)                       -->
-    <!-- ======================================================== -->
+    <!-- VIEW 9: SMART RATION -->
     <div id="viewSmartRation" class="page-view hidden flex-1 flex flex-col justify-between overflow-hidden bg-[#F7FAF7]">
-      <div class="flex-1 overflow-y-auto px-4 pt-4 pb-24 no-scrollbar">
+      <div class="flex-1 overflow-y-auto px-4 pt-4 pb-28 no-scrollbar">
         <div class="flex items-center justify-between mb-4">
           <button onclick="navigateTo('viewHome')" class="w-10 h-10 rounded-full bg-[#EAF7EE] flex items-center justify-center border border-emerald-200 cursor-pointer">
             <i data-lucide="chevron-left" class="w-5 h-5 text-emerald-800"></i>
           </button>
-          <h2 class="text-lg font-extrabold text-slate-900">સ્માર્ટ રાશન (Smart Ration Norms)</h2>
-          <span class="text-xs bg-emerald-100 text-emerald-800 font-bold px-2 py-1 rounded-lg">ICDS Formula</span>
+          <h2 class="text-lg font-extrabold text-slate-900">સ્માર્ટ રેશન કેલ્ક્યુલેટર</h2>
+          <span class="text-xs bg-emerald-100 text-emerald-800 font-bold px-2 py-1 rounded-lg">THR Planner</span>
         </div>
-
-        <div class="bg-white rounded-3xl p-4 border border-slate-100 shadow-xs mb-4 space-y-3">
-          <h3 class="font-extrabold text-slate-900 text-sm">લાભાર્થી પ્રમાણ ગણતરી (Auto Portion)</h3>
-          <div class="p-3 bg-emerald-50 rounded-2xl border border-emerald-200 text-xs space-y-1.5 text-emerald-900 font-medium">
-            <p>📦 <strong>બાળભોગ:</strong> ૭ પેકેટ (૫૦૦ ગ્રામ દરેક) દર મહિને</p>
-            <p>⚡ <strong>દૈનિક કેલરી જરૂરિયાત:</strong> ૫૦૦ kcal • ૧૨-૧૫g પ્રોટીન</p>
-          </div>
+        <div class="bg-white rounded-3xl p-4 border border-slate-100 shadow-xs space-y-3 text-xs">
+          <p class="font-bold text-slate-800">લાભાર્થી દીઠ માસિક ભથ્થું (Per Child Norms):</p>
+          <div class="flex justify-between border-b pb-2"><span>બાળભોગ (૬ માસ થી ૩ વર્ષ):</span><span class="font-bold">૭ પેકેટ / માસ</span></div>
+          <div class="flex justify-between border-b pb-2"><span>માતૃઅમૃત (સગર્ભા બહેનો):</span><span class="font-bold">૪ પેકેટ / માસ</span></div>
+          <div class="flex justify-between"><span>પૂર્ણા શક્તિ (કિશોરીઓ):</span><span class="font-bold">૪ પેકેટ / માસ</span></div>
         </div>
       </div>
     </div>
 
-    <!-- ======================================================== -->
-    <!-- VIEW 10: DOWNLOAD REPORT                                 -->
-    <!-- ======================================================== -->
+    <!-- VIEW 10: DOWNLOAD REPORT -->
     <div id="viewReport" class="page-view hidden flex-1 flex flex-col justify-between overflow-hidden bg-[#F7FAF7]">
-      <div class="flex-1 overflow-y-auto px-4 pt-4 pb-24 no-scrollbar">
+      <div class="flex-1 overflow-y-auto px-4 pt-4 pb-28 no-scrollbar">
         <div class="flex items-center justify-between mb-4">
           <button onclick="navigateTo('viewHome')" class="w-10 h-10 rounded-full bg-[#FFF5EB] flex items-center justify-center border border-orange-200 cursor-pointer">
             <i data-lucide="chevron-left" class="w-5 h-5 text-orange-800"></i>
           </button>
-          <h2 class="text-lg font-extrabold text-slate-900">માસિક રિપોર્ટ (Download Report)</h2>
-          <span class="text-xs bg-orange-100 text-orange-800 font-bold px-2 py-1 rounded-lg">WCDD Format</span>
+          <h2 class="text-lg font-extrabold text-slate-900">માસિક રિપોર્ટ (Monthly Report)</h2>
+          <span class="text-xs bg-orange-100 text-orange-800 font-bold px-2 py-1 rounded-lg">MIS MPR</span>
         </div>
-
-        <div class="bg-white rounded-3xl p-4 border border-slate-200 shadow-xs mb-4 text-xs">
-          <div class="border-b border-slate-200 pb-2 mb-2 text-center">
-            <p class="font-extrabold text-slate-900 text-sm">ગુજરાત સરકાર • મહિલા અને બાળ વિકાસ વિભાગ</p>
-            <p class="text-[11px] text-slate-500">AWC-10103 કલ્યાણ કેન્દ્ર • ઓક્ટોબર ૨૦૨૬ MIS રિપોર્ટ</p>
-          </div>
-          <div class="space-y-1.5 text-slate-700">
-            <div class="flex justify-between"><span>કુલ નોંધાયેલ બાળકો:</span><span class="font-bold">૧૦</span></div>
-            <div class="flex justify-between"><span>બાલભોગ સિલક:</span><span class="font-bold text-orange-700" id="repBalbhog">92 Pkts</span></div>
-            <div class="flex justify-between"><span>ચોખા સિલક:</span><span class="font-bold text-emerald-700" id="repRice">145 kg</span></div>
-          </div>
+        <div class="bg-white rounded-3xl p-4 border border-slate-100 shadow-xs space-y-2 text-xs mb-4">
+          <div class="flex justify-between border-b pb-2"><span>નોંધાયેલ બાળકો:</span><span class="font-bold">૩૪</span></div>
+          <div class="flex justify-between border-b pb-2"><span>સરેરાશ હાજરી:</span><span class="font-bold text-emerald-700">૮૮.૫%</span></div>
+          <div class="flex justify-between border-b pb-2"><span>કુલ ભોજન વિતરણ:</span><span class="font-bold">૬૧૨ થાળી</span></div>
+          <div class="flex justify-between"><span>બાકી બાળભોગ સ્ટોક:</span><span class="font-bold text-orange-700">૯૨ પેકેટ</span></div>
         </div>
-
         <div class="flex gap-2">
-          <button onclick="window.print()" class="flex-1 bg-emerald-700 hover:bg-emerald-800 text-white font-extrabold text-xs py-3 rounded-2xl flex items-center justify-center gap-1.5 cursor-pointer">
+          <button onclick="window.print()" class="flex-1 bg-emerald-700 text-white font-extrabold text-xs py-3 rounded-2xl flex items-center justify-center gap-1.5 cursor-pointer">
             <i data-lucide="printer" class="w-4 h-4"></i>
-            <span>પ્રિન્ટ (Print MPR)</span>
+            <span>પ્રિન્ટ (Print)</span>
           </button>
-          <button onclick="downloadCsv()" class="flex-1 bg-slate-800 hover:bg-slate-900 text-white font-extrabold text-xs py-3 rounded-2xl flex items-center justify-center gap-1.5 cursor-pointer">
+          <button onclick="downloadCsv()" class="flex-1 bg-slate-800 text-white font-extrabold text-xs py-3 rounded-2xl flex items-center justify-center gap-1.5 cursor-pointer">
             <i data-lucide="download" class="w-4 h-4"></i>
             <span>CSV ડાઉનલોડ</span>
           </button>
@@ -673,9 +561,7 @@
       </div>
     </div>
 
-    <!-- ======================================================== -->
-    <!-- VIEW 11: HELP & SUPPORT                                  -->
-    <!-- ======================================================== -->
+    <!-- VIEW 11: HELP -->
     <div id="viewHelp" class="page-view hidden flex-1 flex flex-col justify-between overflow-hidden bg-[#F7FAF7]">
       <div class="flex-1 overflow-y-auto px-4 pt-4 pb-24 no-scrollbar">
         <div class="flex items-center justify-between mb-4">
@@ -683,9 +569,8 @@
             <i data-lucide="chevron-left" class="w-5 h-5 text-emerald-800"></i>
           </button>
           <h2 class="text-lg font-extrabold text-slate-900">મદદ અને સહાય (Help & Support)</h2>
-          <span class="text-xs bg-emerald-100 text-emerald-800 font-bold px-2 py-1 rounded-lg">24x7 Support</span>
+          <span class="text-xs bg-emerald-100 text-emerald-800 font-bold px-2 py-1 rounded-lg">24x7</span>
         </div>
-
         <div class="space-y-3 text-xs">
           <div class="p-3.5 bg-white rounded-2xl border border-slate-100 shadow-xs flex items-center justify-between">
             <div>
@@ -694,13 +579,18 @@
             </div>
             <a href="tel:181" class="px-3 py-1.5 rounded-xl bg-emerald-600 text-white font-bold">181 Dial</a>
           </div>
+          <div class="p-3.5 bg-white rounded-2xl border border-slate-100 shadow-xs flex items-center justify-between">
+            <div>
+              <p class="font-bold text-slate-900">સુપરવાઇઝર કંટ્રોલ રૂમ</p>
+              <p class="text-slate-500">આણંદ તાલુકા CDPO ઓફિસ</p>
+            </div>
+            <a href="tel:02692245000" class="px-3 py-1.5 rounded-xl bg-slate-800 text-white font-bold">Call CDPO</a>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- ======================================================== -->
-    <!-- VIEW 12: CENTRE DETAILS                                  -->
-    <!-- ======================================================== -->
+    <!-- VIEW 12: CENTRE DETAILS -->
     <div id="viewCentreDetails" class="page-view hidden flex-1 flex flex-col justify-between overflow-hidden bg-[#F7FAF7]">
       <div class="flex-1 overflow-y-auto px-4 pt-4 pb-24 no-scrollbar">
         <div class="flex items-center justify-between mb-4">
@@ -708,21 +598,19 @@
             <i data-lucide="chevron-left" class="w-5 h-5 text-emerald-800"></i>
           </button>
           <h2 class="text-lg font-extrabold text-slate-900">કેન્દ્ર વિગત (Centre Details)</h2>
-          <span class="text-xs bg-emerald-100 text-emerald-800 font-bold px-2 py-1 rounded-lg">Verified AWC</span>
+          <span class="text-xs bg-emerald-100 text-emerald-800 font-bold px-2 py-1 rounded-lg">AWC-10103</span>
         </div>
-
         <div class="bg-white rounded-3xl p-4 border border-slate-100 shadow-xs space-y-2.5 text-xs">
           <div class="flex justify-between border-b pb-2"><span>કેન્દ્ર કોડ:</span><span class="font-bold font-mono">AWC-10103</span></div>
           <div class="flex justify-between border-b pb-2"><span>કેન્દ્ર નામ:</span><span class="font-bold">કલ્યાણ આંગણવાડી કેન્દ્ર</span></div>
           <div class="flex justify-between border-b pb-2"><span>તાલુકો / જિલ્લો:</span><span class="font-bold">આણંદ • ગુજરાત</span></div>
           <div class="flex justify-between border-b pb-2"><span>કાર્યકર:</span><span class="font-bold">અનીતા શર્મા (Anita Sharma)</span></div>
+          <div class="flex justify-between"><span>સ્થિતિ:</span><span class="font-bold text-emerald-700">✓ સુસજ્જ અને સક્રિય</span></div>
         </div>
       </div>
     </div>
 
-    <!-- ======================================================== -->
-    <!-- VIEW 13: PROFILE                                         -->
-    <!-- ======================================================== -->
+    <!-- VIEW 13: PROFILE -->
     <div id="viewProfile" class="page-view hidden flex-1 flex flex-col justify-between overflow-hidden bg-[#F7FAF7]">
       <div class="flex-1 overflow-y-auto px-4 pt-4 pb-24 no-scrollbar">
         <div class="flex items-center justify-between mb-4">
@@ -732,9 +620,8 @@
           <h2 class="text-lg font-extrabold text-slate-900">પ્રોફાઇલ (Worker Profile)</h2>
           <span class="text-xs bg-emerald-100 text-emerald-800 font-bold px-2 py-1 rounded-lg">Govt Verified</span>
         </div>
-
         <div class="bg-white rounded-3xl p-5 border border-slate-100 shadow-xs text-center mb-4">
-          <div class="w-16 h-16 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center mx-auto mb-2 text-xl font-bold">
+          <div class="w-16 h-16 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center mx-auto mb-2 text-2xl">
             👩‍💼
           </div>
           <h3 class="font-extrabold text-slate-900 text-base">અનીતા શર્મા (Anita Sharma)</h3>
@@ -744,9 +631,7 @@
       </div>
     </div>
 
-    <!-- ======================================================== -->
-    <!-- NOTIFICATIONS MODAL                                      -->
-    <!-- ======================================================== -->
+    <!-- NOTIFICATIONS MODAL -->
     <div id="notificationsModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-xs z-50 flex items-end justify-center p-0 md:p-4">
       <div class="w-full max-w-md bg-white rounded-t-[32px] md:rounded-[32px] p-5 max-h-[85%] overflow-y-auto shadow-2xl">
         <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-4"></div>
@@ -770,21 +655,8 @@
 
   </main>
 
-  <!-- ======================================================== -->
-  <!-- APPLICATION BUSINESS LOGIC & FIREBASE REALTIME SYNC      -->
-  <!-- ======================================================== -->
+  <!-- JAVASCRIPT STATE CONTROLLER -->
   <script>
-    // -------------------------------------------------------------
-    // 1. FIREBASE REALTIME DATABASE INITIALIZATION
-    // -------------------------------------------------------------
-    const firebaseConfig = {
-      databaseURL: "https://poshan-setu-default-rtdb.firebaseio.com/"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-    const AWC_PATH = "awc_10103"; // Node for Kalyan Centre
-
-    // Translation Dictionary
     const I18N = {
       en: {
         brandPoshan: "Poshan",
@@ -806,286 +678,67 @@
         cardDownloadReport: "Download\nReport",
         navHome: "Home",
         navHelp: "Help",
-        navCentre: "Centre Details",
-        navProfile: "Profile",
-        inwardTitle: "Stock Inward Entry",
-        inwardCard1Title: "Select Commodity",
-        inwardCard2Title: "Batch & Challan",
-        inwardCard3Title: "Received Quantity",
-        inwardChallan: "Challan No.",
-        inwardExpiry: "Expiry Date",
-        fifoNotice: "Ensure older batches are used first",
-        confirmInwardBtn: "Confirm & Save Inward",
-        usageTitle: "Stock Usage Entry",
-        confirmUsageBtn: "Confirm & Deduct Usage",
+        navCentre: "Centre",
+        navProfile: "Profile"
       },
       gu: {
         brandPoshan: "પોષણ",
         brandTracker: "ટ્રેકર",
-        brandSubtitle: "મહિલા અને બાળ વિકાસ વિભાગ, ગુજરાત",
+        brandSubtitle: "મહિલા અને બાળ વિકાસ વિભાગ • ગુજરાત",
         workerName: "અનીતા શર્મા",
         workerRole: "આંગણવાડી કાર્યકર (AWW)",
         centreName: "કલ્યાણ કેન્દ્ર (AWC-10103)",
         online: "ઓનલાઇન",
         offline: "ઓફલાઇન",
         cardStockReceived: "સ્ટોક આવક",
-        cardStockUsage: "સ્ટોક વપરાશ",
-        cardBalance: "બાકી સિલક\n(વસ્તુવાર)",
+        cardStockUsage: "દૈનિક વપરાશ",
+        cardBalance: "બાકી સિલક\n(વસ્તુ મુજબ)",
         cardSetuShare: "સેતુ-શેર\nઆપ-લે",
-        cardDailyMenu: "દૈનિક\nઆહાર મેનુ",
+        cardDailyMenu: "દૈનિક\nભોજન મેનુ",
         cardAttendance: "બાળકોની\nહાજરી",
-        cardMealPhoto: "ભોજન ફોટો\nઅપલોડ",
-        cardSmartRation: "સ્માર્ટ\nરાશન ગણતરી",
+        cardMealPhoto: "વિતરણ ફોટો\nઅપલોડ",
+        cardSmartRation: "સ્માર્ટ\nરેશન",
         cardDownloadReport: "રિપોર્ટ\nડાઉનલોડ",
         navHome: "હોમ",
         navHelp: "મદદ",
-        navCentre: "કેન્દ્ર વિગત",
-        navProfile: "પ્રોફાઇલ",
-        inwardTitle: "નવો જથ્થો નોંધણી (Stock Inward Entry)",
-        inwardCard1Title: "વસ્તુ પસંદ કરો (Select Commodity)",
-        inwardCard2Title: "Batch & Challan",
-        inwardCard3Title: "મળેલ જથ્થો (Received Quantity)",
-        inwardChallan: "ચલણ નં. (Challan No.)",
-        inwardExpiry: "એક્સપાયરી તારીખ (Expiry Date)",
-        fifoNotice: "જૂના બેચનો પ્રથમ ઉપયોગ સુનિશ્ચિત કરો (FIFO)",
-        confirmInwardBtn: "સ્ટોકમાં જમા કરો (Confirm & Save Inward)",
-        usageTitle: "દૈનિક વપરાશ નોંધણી (Stock Usage Entry)",
-        confirmUsageBtn: "વપરાશ મંજૂર કરો (Confirm & Deduct Usage)",
+        navCentre: "કેન્દ્ર",
+        navProfile: "પ્રોફાઇલ"
       }
     };
 
     let currentLang = 'en';
     let isOnline = true;
     let inwardQty = 50;
-    let usageQty = 5;
+    let usageChildren = 28;
+    let usageQty = 1;
 
-    // Inventory Store
     let inventory = [
-      { id: 'balbhog', nameGu: 'બાળભોગ પેકેટ (Balbhog 500g)', nameEn: 'Balbhog Packets (500g)', type: 'thr', qty: 92, unit: 'Packets', expiry: 'Aug 2027', batch: 'B-883' },
-      { id: 'rice', nameGu: 'ફોર્ટિફાઇડ ચોખા (Rice)', nameEn: 'Fortified Rice', type: 'grains', qty: 145, unit: 'kg', expiry: 'Dec 2027', batch: 'RC-104' },
-      { id: 'matrumrut', nameGu: 'માતૃઅમૃત પેકેટ (Matrumrut 500g)', nameEn: 'Matrumrut Packets (500g)', type: 'thr', qty: 48, unit: 'Packets', expiry: 'Sep 2027', batch: 'MT-49' },
-      { id: 'dal', nameGu: 'તુવેર દાળ (Toor Dal)', nameEn: 'Toor Dal (Pulses)', type: 'grains', qty: 38, unit: 'kg', expiry: 'Nov 2027', batch: 'DL-77' },
-      { id: 'oil', nameGu: 'ફોર્ટિફાઇડ ખાદ્ય તેલ (Edible Oil)', nameEn: 'Fortified Edible Oil', type: 'grains', qty: 22, unit: 'Litres', expiry: 'Jan 2028', batch: 'OL-12' },
-      { id: 'wheat', nameGu: 'ઘઉં (Wheat Grains)', nameEn: 'Wheat Grains', type: 'grains', qty: 60, unit: 'kg', expiry: 'Jan 2028', batch: 'WH-01' }
+      { id: 'balbhog', nameEn: 'Balbhog (THR 500g)', nameGu: 'બાળભોગ પેકેટ (૫૦૦g)', qty: 92, unit: 'Packets', batch: 'BAT-2026-88', expiry: 'Aug 2027', type: 'thr' },
+      { id: 'rice', nameEn: 'Fortified Rice', nameGu: 'ફોર્ટિફાઇડ ચોખા', qty: 145, unit: 'kg', batch: 'RC-104', expiry: 'Dec 2027', type: 'grains' },
+      { id: 'matrumrut', nameEn: 'Matrumrut (500g)', nameGu: 'માતૃઅમૃત પેકેટ (૫૦૦g)', qty: 48, unit: 'Packets', batch: 'MT-49', expiry: 'Sep 2027', type: 'thr' },
+      { id: 'dal', nameEn: 'Toor Dal', nameGu: 'તુવેર દાળ', qty: 38, unit: 'kg', batch: 'DL-202', expiry: 'Nov 2027', type: 'grains' },
+      { id: 'oil', nameEn: 'Fortified Edible Oil', nameGu: 'ફોર્ટિફાઇડ તેલ', qty: 24, unit: 'Liters', batch: 'OIL-99', expiry: 'Jan 2028', type: 'grains' }
     ];
 
-    // 10 Students Attendance Store
     let students = [
-      { id: 1, nameGu: 'આરવ પટેલ', nameEn: 'Aarav Patel', age: '4 yrs', present: true },
-      { id: 2, nameGu: 'દિયા રાઠોડ', nameEn: 'Diya Rathod', age: '3.5 yrs', present: true },
-      { id: 3, nameGu: 'કરણ સોલંકી', nameEn: 'Karan Solanki', age: '2.5 yrs', present: true },
-      { id: 4, nameGu: 'જીયા તડવી', nameEn: 'Jiya Tadvi', age: '3 yrs', present: false },
-      { id: 5, nameGu: 'પ્રિયાંશ પરમાર', nameEn: 'Priyansh Parmar', age: '4 yrs', present: true },
-      { id: 6, nameGu: 'અનન્યા શાહ', nameEn: 'Ananya Shah', age: '3 yrs', present: true },
-      { id: 7, nameGu: 'વિહાન ઠાકોર', nameEn: 'Vihaan Thakor', age: '4 yrs', present: true },
-      { id: 8, nameGu: 'ઈશાન મકવાણા', nameEn: 'Ishaan Makwana', age: '2 yrs', present: true },
-      { id: 9, nameGu: 'રુદ્ર વાઘેલા', nameEn: 'Rudra Vaghela', age: '4 yrs', present: false },
-      { id: 10, nameGu: 'તન્વી પંચાલ', nameEn: 'Tanvi Panchal', age: '3 yrs', present: true }
+      { id: 1, nameEn: 'Aarav Patel', nameGu: 'આરવ પટેલ', age: '3 yrs', status: 'Normal', present: true },
+      { id: 2, nameEn: 'Diya Varma', nameGu: 'દિયા વર્મા', age: '4 yrs', status: 'Normal', present: true },
+      { id: 3, nameEn: 'Rohan Solanki', nameGu: 'રોહન સોલંકી', age: '3.5 yrs', status: 'MAM (Yellow)', present: false },
+      { id: 4, nameEn: 'Kavya Thakor', nameGu: 'કાવ્યા ઠાકોર', age: '2 yrs', status: 'Normal', present: true },
+      { id: 5, nameEn: 'Meet Parmar', nameGu: 'મીત પરમાર', age: '4.5 yrs', status: 'Normal', present: true }
     ];
-
-    // -------------------------------------------------------------
-    // 2. FIREBASE REALTIME DATA SYNC LOGIC
-    // -------------------------------------------------------------
-    function initFirebaseSync() {
-      db.ref(`${AWC_PATH}/stock`).on('value', (snapshot) => {
-        const cloudStock = snapshot.val();
-        if (cloudStock) {
-          inventory.forEach(item => {
-            if (cloudStock[item.id] !== undefined) {
-              item.qty = cloudStock[item.id];
-            }
-          });
-          renderInventory();
-          updateReportSummary();
-        } else {
-          const initialMap = {};
-          inventory.forEach(i => initialMap[i.id] = i.qty);
-          db.ref(`${AWC_PATH}/stock`).set(initialMap);
-        }
-      });
-    }
-
-    function saveStockInward() {
-      const itemKey = document.getElementById('inwardCommoditySelect').value;
-      const challan = document.getElementById('inwardChallanInput').value || 'CH-2026';
-      const expiry = document.getElementById('inwardExpiryInput').value || 'Aug 2027';
-
-      const target = inventory.find(i => i.id === itemKey);
-      if (target) {
-        target.qty += inwardQty;
-        
-        // Update in Firebase
-        db.ref(`${AWC_PATH}/stock/${itemKey}`).set(target.qty);
-        db.ref(`${AWC_PATH}/audit_logs`).push({
-          type: 'INWARD',
-          item: itemKey,
-          change: `+${inwardQty}`,
-          balance: target.qty,
-          challan: challan,
-          expiry: expiry,
-          time: new Date().toLocaleTimeString(),
-          date: new Date().toLocaleDateString()
-        });
-      }
-
-      showToast(currentLang === 'en' 
-        ? `Added +${inwardQty} to ${itemKey.toUpperCase()}. Challan: ${challan}` 
-        : `સ્ટોકમાં +${inwardQty} જમા થયું! ચલણ: ${challan}`);
-      
-      setTimeout(() => navigateTo('viewBalance'), 800);
-    }
-
-    function saveStockUsage() {
-      const itemKey = document.getElementById('usageCommoditySelect').value;
-      const target = inventory.find(i => i.id === itemKey);
-      if (target) {
-        if (usageQty > target.qty) {
-          alert('ભૂલ: સ્ટોક પર્યાપ્ત નથી! / Insufficient stock!');
-          return;
-        }
-        target.qty = Math.max(0, target.qty - usageQty);
-
-        // Update in Firebase
-        db.ref(`${AWC_PATH}/stock/${itemKey}`).set(target.qty);
-        db.ref(`${AWC_PATH}/audit_logs`).push({
-          type: 'CONSUMPTION',
-          item: itemKey,
-          change: `-${usageQty}`,
-          balance: target.qty,
-          time: new Date().toLocaleTimeString(),
-          date: new Date().toLocaleDateString()
-        });
-      }
-
-      showToast(currentLang === 'en' 
-        ? `Deducted -${usageQty} from ${itemKey.toUpperCase()} for today's meal.` 
-        : `દૈનિક ભોજન માટે -${usageQty} વપરાશ મંજૂર થયો!`);
-      
-      setTimeout(() => navigateTo('viewBalance'), 800);
-    }
-
-    function toggleStudentAttendance(id) {
-      const s = students.find(item => item.id === id);
-      if (s) {
-        s.present = !s.present;
-        renderAttendanceList();
-        syncAttendanceToFirebase();
-      }
-    }
-
-    function markAllPresent() {
-      students.forEach(s => s.present = true);
-      renderAttendanceList();
-      syncAttendanceToFirebase();
-      showToast("બધા બાળકો હાજર નોંધાયા! (All marked present)");
-    }
-
-    function syncAttendanceToFirebase() {
-      const presentCount = students.filter(s => s.present).length;
-      const absentCount = students.length - presentCount;
-
-      db.ref(`${AWC_PATH}/attendance`).set({
-        date: new Date().toLocaleDateString(),
-        present_count: presentCount,
-        absent_count: absentCount,
-        records: students
-      });
-    }
-
-    function submitShareRequest() {
-      const item = document.getElementById('shareReqItem').value;
-      const qty = document.getElementById('shareReqQty').value;
-      const center = document.getElementById('shareReqCenter').value;
-
-      document.getElementById('shareCodeBanner').classList.remove('hidden');
-
-      db.ref(`${AWC_PATH}/setushare_transfers`).push({
-        item: item,
-        qty: qty,
-        center: center,
-        verification_code: "#8491",
-        status: "PENDING_HANDSHAKE",
-        timestamp: new Date().toLocaleTimeString()
-      });
-
-      showToast("P2P ટ્રાન્સફર કોડ #8491 જનરેટ થયો! (Synced to Cloud)");
-    }
-
-    // -------------------------------------------------------------
-    // 3. UI RENDERING & EVENT CONTROLLERS
-    // -------------------------------------------------------------
-    function updateClock() {
-      const now = new Date();
-      const isGu = currentLang === 'gu';
-      
-      const timeStr = now.toLocaleTimeString(isGu ? 'gu-IN' : 'en-US', {
-        hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true
-      });
-      const dateStr = now.toLocaleDateString(isGu ? 'gu-IN' : 'en-US', {
-        weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'
-      });
-
-      const timeEl = document.getElementById('liveTimeDisplay');
-      const dateEl = document.getElementById('liveDateDisplay');
-      if (timeEl) timeEl.innerText = timeStr;
-      if (dateEl) dateEl.innerText = dateStr;
-    }
-
-    function navigateTo(viewId) {
-      const views = [
-        'viewHome', 'viewStockInward', 'viewStockUsage', 'viewBalance',
-        'viewSetuShare', 'viewDailyMenu', 'viewAttendance', 'viewMealPhoto',
-        'viewSmartRation', 'viewReport', 'viewHelp', 'viewCentreDetails', 'viewProfile'
-      ];
-      views.forEach(v => {
-        const el = document.getElementById(v);
-        if (el) el.classList.add('hidden');
-      });
-      const target = document.getElementById(viewId);
-      if (target) target.classList.remove('hidden');
-      window.scrollTo(0, 0);
-
-      updateNavHighlight(viewId);
-      if (viewId === 'viewBalance') renderInventory();
-      if (viewId === 'viewAttendance') renderAttendanceList();
-      if (window.lucide) window.lucide.createIcons();
-    }
-
-    function updateNavHighlight(viewId) {
-      const navIds = {
-        'viewHome': 'navBtnHome',
-        'viewHelp': 'navBtnHelp',
-        'viewCentreDetails': 'navBtnCentre',
-        'viewProfile': 'navBtnProfile'
-      };
-      ['navBtnHome', 'navBtnHelp', 'navBtnCentre', 'navBtnProfile'].forEach(btn => {
-        const el = document.getElementById(btn);
-        if (el) el.className = 'flex flex-col items-center justify-center cursor-pointer px-3 py-1.5 rounded-2xl text-slate-500 hover:text-slate-800 transition-all font-medium';
-      });
-      const activeBtnId = navIds[viewId];
-      if (activeBtnId) {
-        const el = document.getElementById(activeBtnId);
-        if (el) el.className = 'flex flex-col items-center justify-center cursor-pointer px-4 py-1.5 rounded-2xl bg-emerald-50 text-emerald-800 transition-all font-bold';
-      }
-    }
 
     function toggleLangMenu() {
-      document.getElementById('langDropdown').classList.toggle('hidden');
+      const menu = document.getElementById('langDropdown');
+      menu.classList.toggle('hidden');
     }
 
     function setLanguage(lang) {
       currentLang = lang;
+      document.getElementById('currentLangText').innerText = lang === 'en' ? 'English' : 'ગુજરાતી';
+      document.getElementById('checkLangEn').classList.toggle('hidden', lang !== 'en');
+      document.getElementById('checkLangGu').classList.toggle('hidden', lang !== 'gu');
       document.getElementById('langDropdown').classList.add('hidden');
-
-      if (lang === 'en') {
-        document.getElementById('currentLangText').innerText = 'English';
-        document.getElementById('checkLangEn').classList.remove('hidden');
-        document.getElementById('checkLangGu').classList.add('hidden');
-      } else {
-        document.getElementById('currentLangText').innerText = 'ગુજરાતી';
-        document.getElementById('checkLangGu').classList.remove('hidden');
-        document.getElementById('checkLangEn').classList.add('hidden');
-      }
 
       const dict = I18N[lang];
       document.getElementById('lblBrandPoshan').innerText = dict.brandPoshan;
@@ -1096,62 +749,105 @@
       document.getElementById('lblCentreName').innerText = dict.centreName;
       document.getElementById('networkText').innerText = isOnline ? dict.online : dict.offline;
 
-      updateClock();
       document.querySelectorAll('[data-key]').forEach(el => {
         const key = el.getAttribute('data-key');
-        if (dict[key]) el.innerHTML = dict[key].replace('\n', '<br>');
+        if (dict[key]) {
+          el.innerHTML = dict[key].replace(/\n/g, '<br>');
+        }
       });
 
-      document.getElementById('lblInwardTitle').innerText = dict.inwardTitle;
-      document.getElementById('lblInwardCard1Title').innerText = dict.inwardCard1Title;
-      document.getElementById('lblInwardCard2Title').innerText = dict.inwardCard2Title;
-      document.getElementById('lblInwardCard3Title').innerText = dict.inwardCard3Title;
-      document.getElementById('lblChallanNo').innerText = dict.inwardChallan;
-      document.getElementById('lblExpiryDate').innerText = dict.inwardExpiry;
-      document.getElementById('lblFifoNotice').innerText = dict.fifoNotice;
-      document.getElementById('lblConfirmInwardBtn').innerText = dict.confirmInwardBtn;
-      document.getElementById('lblUsageTitle').innerText = dict.usageTitle;
-      document.getElementById('lblConfirmUsageBtn').innerText = dict.confirmUsageBtn;
-
-      showToast(lang === 'en' ? "Language: English" : "ભાષા: ગુજરાતી");
+      renderInventory();
+      renderAttendanceList();
+      updateClock();
     }
 
     function toggleOnlineState() {
       isOnline = !isOnline;
       const pill = document.getElementById('networkPill');
       const dot = document.getElementById('networkDot');
-      const txt = document.getElementById('networkText');
-
+      const text = document.getElementById('networkText');
       if (isOnline) {
         pill.className = "flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold transition-all cursor-pointer bg-emerald-50 text-emerald-700 border border-emerald-200";
         dot.className = "w-2 h-2 rounded-full bg-emerald-500 animate-pulse";
-        txt.innerText = currentLang === 'en' ? "Online" : "ઓનલાઇન";
-        showToast("Connected to Firebase Cloud (ઓનલાઇન)");
+        text.innerText = currentLang === 'en' ? 'Online' : 'ઓનલાઇન';
+        showToast(currentLang === 'en' ? "Connected to Cloud Database" : "ક્લાઉડ સર્વર સાથે કનેક્ટ થયું!");
       } else {
-        pill.className = "flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold transition-all cursor-pointer bg-amber-50 text-amber-700 border border-amber-200";
+        pill.className = "flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold transition-all cursor-pointer bg-amber-50 text-amber-700 border border-amber-300";
         dot.className = "w-2 h-2 rounded-full bg-amber-500";
-        txt.innerText = currentLang === 'en' ? "Offline" : "ઓફલાઇન";
-        showToast("Offline Mode (સ્થાનિક સંગ્રહ)");
+        text.innerText = currentLang === 'en' ? 'Offline' : 'ઓફલાઇન';
+        showToast(currentLang === 'en' ? "Offline: Entries saved locally" : "ઓફલાઇન મોડ: લોકલ સ્ટોરેજમાં સેવ થશે.");
       }
     }
 
-    function changeInwardQty(delta) {
-      inwardQty = Math.max(5, inwardQty + delta);
+    function updateClock() {
+      const now = new Date();
+      let hours = now.getHours();
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      hours = hours % 12 || 12;
+      const timeStr = `${hours}:${minutes}:${seconds} ${ampm}`;
+      
+      const timeEl = document.getElementById('liveTimeDisplay');
+      if (timeEl) timeEl.innerText = timeStr;
+
+      const dateEl = document.getElementById('liveDateDisplay');
+      if (dateEl) {
+        const options = { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' };
+        dateEl.innerText = now.toLocaleDateString(currentLang === 'gu' ? 'gu-IN' : 'en-US', options);
+      }
+    }
+
+    function navigateTo(viewId) {
+      document.querySelectorAll('.page-view').forEach(view => view.classList.add('hidden'));
+      const target = document.getElementById(viewId);
+      if (target) {
+        target.classList.remove('hidden');
+        if (viewId === 'viewBalance') renderInventory();
+        if (viewId === 'viewAttendance') renderAttendanceList();
+      }
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    function adjustInwardQty(delta) {
+      inwardQty = Math.max(1, inwardQty + delta);
       document.getElementById('inwardQtyDisplay').innerText = inwardQty;
     }
 
-    function changeUsageQty(delta) {
-      usageQty = Math.max(1, usageQty + delta);
-      document.getElementById('usageQtyDisplay').innerText = usageQty;
+    function submitInward() {
+      const select = document.getElementById('inwardCommoditySelect');
+      const itemKey = select.value;
+      const target = inventory.find(i => i.id === itemKey);
+      if (target) {
+        target.qty += inwardQty;
+      }
+      showToast(currentLang === 'en' ? `Added +${inwardQty} to stock!` : `+${inwardQty} સ્ટોક સફળતાપૂર્વક જમા થયો!`);
+      setTimeout(() => navigateTo('viewBalance'), 800);
+    }
+
+    function adjustUsageChildren(delta) {
+      usageChildren = Math.max(1, usageChildren + delta);
+      document.getElementById('usageChildrenDisplay').innerText = usageChildren;
+      const riceG = usageChildren * 35;
+      document.getElementById('usageFormulaText').innerText = `${usageChildren} બાળકો × ૩૫g = ${riceG} ગ્રામ ચોખા`;
+    }
+
+    function saveStockUsage() {
+      const select = document.getElementById('usageCommoditySelect');
+      const itemKey = select.value;
+      const target = inventory.find(i => i.id === itemKey);
+      if (target) {
+        target.qty = Math.max(0, target.qty - 2);
+      }
+      showToast(currentLang === 'en' ? "Meal consumption saved!" : "દૈનિક ભોજન વપરાશ નોંધાયો!");
+      setTimeout(() => navigateTo('viewBalance'), 800);
     }
 
     function renderInventory() {
       const container = document.getElementById('inventoryCardsContainer');
       if (!container) return;
       container.innerHTML = '';
-
       inventory.forEach(item => {
-        const isLow = item.qty < 30;
         const card = document.createElement('div');
         card.className = "bg-white rounded-2xl p-3.5 border border-slate-100 shadow-xs flex items-center justify-between";
         card.innerHTML = `
@@ -1160,32 +856,17 @@
             <p class="text-[11px] text-slate-400 mt-0.5">બેચ: ${item.batch} • એક્સપાયરી: ${item.expiry}</p>
           </div>
           <div class="text-right">
-            <span class="text-base font-black ${isLow ? 'text-amber-600' : 'text-emerald-700'} font-mono">${item.qty} ${item.unit}</span>
-            <span class="block text-[9px] font-bold ${isLow ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'} px-2 py-0.5 rounded-full mt-0.5">
-              ${isLow ? 'ઓછો સ્ટોક / Low' : 'પર્યાપ્ત / Optimal'}
-            </span>
+            <span class="text-base font-black text-emerald-700 font-mono">${item.qty} ${item.unit}</span>
           </div>
         `;
         container.appendChild(card);
       });
     }
 
-    function updateReportSummary() {
-      const balbhog = inventory.find(i => i.id === 'balbhog');
-      const rice = inventory.find(i => i.id === 'rice');
-      if (balbhog && document.getElementById('repBalbhog')) {
-        document.getElementById('repBalbhog').innerText = `${balbhog.qty} Pkts`;
-      }
-      if (rice && document.getElementById('repRice')) {
-        document.getElementById('repRice').innerText = `${rice.qty} kg`;
-      }
-    }
-
     function renderAttendanceList() {
       const container = document.getElementById('studentRosterContainer');
       if (!container) return;
       container.innerHTML = '';
-
       students.forEach(s => {
         const row = document.createElement('div');
         row.className = "bg-white rounded-2xl p-3 border border-slate-100 shadow-xs flex items-center justify-between text-xs";
@@ -1195,14 +876,11 @@
               ${s.nameGu[0]}
             </div>
             <div>
-              <div class="flex items-center gap-1.5">
-                <span class="font-bold text-slate-900">${currentLang === 'en' ? s.nameEn : s.nameGu}</span>
-                <span class="text-[9px] bg-emerald-50 text-emerald-800 border border-emerald-200 px-1 rounded font-bold">✓ Verified</span>
-              </div>
-              <p class="text-[10px] text-slate-400 mt-0.5">${s.age}</p>
+              <span class="font-bold text-slate-900">${currentLang === 'en' ? s.nameEn : s.nameGu}</span>
+              <p class="text-[10px] text-slate-400 mt-0.5">${s.age} • ${s.status}</p>
             </div>
           </div>
-          <button onclick="toggleStudentAttendance(${s.id})" class="px-3 py-1.5 rounded-xl font-bold text-xs transition-all cursor-pointer ${
+          <button onclick="toggleStudentAttendance(${s.id})" class="px-3 py-1.5 rounded-xl font-bold text-xs cursor-pointer ${
             s.present ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' : 'bg-slate-100 text-slate-500'
           }">
             ${s.present ? '✓ હાજર' : '✗ ગેરહાજર'}
@@ -1210,9 +888,25 @@
         `;
         container.appendChild(row);
       });
+    }
 
-      const presentCount = students.filter(s => s.present).length;
-      document.getElementById('attendanceSummary').innerText = `${presentCount}/${students.length} હાજર`;
+    function toggleStudentAttendance(id) {
+      const s = students.find(item => item.id === id);
+      if (s) {
+        s.present = !s.present;
+        renderAttendanceList();
+      }
+    }
+
+    function markAllPresent() {
+      students.forEach(s => s.present = true);
+      renderAttendanceList();
+      showToast("બધા બાળકો હાજર નોંધાયા!");
+    }
+
+    function submitShareRequest() {
+      document.getElementById('shareCodeBanner').classList.remove('hidden');
+      showToast("P2P ટ્રાન્સફર કોડ જનરેટ થયો!");
     }
 
     function simulatePhotoCapture() {
@@ -1221,19 +915,22 @@
     }
 
     function downloadCsv() {
-      const csvContent = "data:text/csv;charset=utf-8,Item,Batch,Quantity,Unit,Expiry\nBalbhog,B-883,92,Packets,Aug 2027\nRice,RC-104,145,kg,Dec 2027";
-      const encodedUri = encodeURI(csvContent);
+      const csv = "data:text/csv;charset=utf-8,Item,Qty,Unit\nBalbhog,92,Packets\nRice,145,kg";
       const link = document.createElement("a");
-      link.setAttribute("href", encodedUri);
-      link.setAttribute("download", "PoshanSetu_Kalyan_Monthly_MIS.csv");
+      link.setAttribute("href", encodeURI(csv));
+      link.setAttribute("download", "Poshan_Report.csv");
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      showToast("CSV રિપોર્ટ સફળતાપૂર્વક ડાઉનલોડ થયો!");
     }
 
-    function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
-    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+    function openModal(id) {
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.add('hidden');
+    }
 
     let toastTimeout;
     function showToast(msg) {
@@ -1241,14 +938,18 @@
       const toast = document.getElementById('toast');
       document.getElementById('toastMsg').innerText = msg;
       toast.classList.remove('hidden');
-      toastTimeout = setTimeout(() => hideToast(), 3200);
+      toastTimeout = setTimeout(() => hideToast(), 3000);
     }
-    function hideToast() { document.getElementById('toast').classList.add('hidden'); }
+
+    function hideToast() {
+      document.getElementById('toast').classList.add('hidden');
+    }
 
     window.addEventListener('DOMContentLoaded', () => {
       updateClock();
       setInterval(updateClock, 1000);
-      initFirebaseSync();
+      renderInventory();
+      renderAttendanceList();
       if (window.lucide) window.lucide.createIcons();
     });
   </script>
