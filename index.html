@@ -19,24 +19,24 @@
 </head>
 <body class="bg-[#e9f2eb] flex justify-center min-h-screen text-slate-800 antialiased selection:bg-emerald-500 selection:text-white">
 
-  <!-- Mobile Frame Container (Max width matching modern phone display) -->
+  <!-- Mobile Frame Container -->
   <div class="w-full max-w-[420px] bg-[#F4FAF4] min-h-screen flex flex-col shadow-2xl relative pb-20 border-x border-slate-200 overflow-x-hidden">
 
     <!-- ======================================================== -->
-    <!-- SCREEN 1: MAIN HOMEPAGE (MATCHES IMAGE 1 EXACTLY)       -->
+    <!-- SCREEN 1: MAIN HOMEPAGE                                  -->
     <!-- ======================================================== -->
     <div id="screen-home" class="flex-1 flex flex-col">
       
-      <!-- Top Profile Card (Anita Sharma, Kalyan Centre) -->
+      <!-- Top Profile Card -->
       <div class="p-4 pt-5 pb-2">
-        <div class="bg-white rounded-[26px] p-3.5 shadow-sm border border-emerald-100 flex items-center justify-between">
+        <div onclick="openModal('modal-profile')" class="cursor-pointer bg-white rounded-[26px] p-3.5 shadow-sm border border-emerald-100 flex items-center justify-between active:scale-[0.98] transition">
           <div class="flex items-center gap-3">
             <div class="w-12 h-12 rounded-full border-2 border-emerald-500 p-0.5 bg-emerald-50 overflow-hidden flex items-center justify-center font-black text-emerald-800 text-base shadow-inner">
               અશ
             </div>
             <div>
               <h1 class="text-sm font-extrabold text-slate-900 leading-tight">Anita Sharma</h1>
-              <p class="text-[11px] text-slate-500 font-medium">Anganwadi Worker</p>
+              <p class="text-[11px] text-slate-500 font-medium">Anganwadi Worker (AWW)</p>
             </div>
           </div>
           <div class="text-right">
@@ -68,15 +68,15 @@
               <i data-lucide="globe" class="w-3.5 h-3.5 text-emerald-600"></i>
               <span id="btn-lang-display">English ▾</span>
             </button>
-            <div class="relative w-9 h-9 rounded-full bg-white border border-slate-200 flex items-center justify-center shadow-sm">
+            <button onclick="navigateTo('screen-report')" class="relative w-9 h-9 rounded-full bg-white border border-slate-200 flex items-center justify-center shadow-sm">
               <i data-lucide="bell" class="w-4 h-4 text-slate-700"></i>
               <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-amber-500 rounded-full animate-ping"></span>
-            </div>
+            </button>
           </div>
         </div>
       </div>
 
-      <!-- 9 Illustrated Cards Grid (3x3 Layout matching Image 1) -->
+      <!-- 9 Illustrated Cards Grid -->
       <main class="p-4 pt-2 grid grid-cols-3 gap-2.5 flex-1">
 
         <!-- 1. Stock Received -->
@@ -138,11 +138,11 @@
         <div onclick="navigateTo('screen-attendance')" class="cursor-pointer bg-white rounded-2xl p-2.5 flex flex-col items-center justify-between text-center border border-emerald-100/80 shadow-sm active:scale-95 transition h-[126px]">
           <div class="w-12 h-12 rounded-2xl bg-[#E8F5E9] flex items-center justify-center text-emerald-700 shadow-sm mt-1 relative">
             <i data-lucide="user-check" class="w-6 h-6 stroke-[2.2]"></i>
-            <span class="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full border-2 border-white flex items-center justify-center text-[8px] text-white font-black">✓</span>
+            <span class="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full border-2 border-white flex items-center justify-center text-[8px] text-white font-black" id="badge-present-summary">8</span>
           </div>
           <div>
             <p class="text-xs font-black text-slate-900 leading-tight">Student Attendance</p>
-            <p class="text-[9px] text-emerald-700 font-extrabold uppercase mt-0.5">હાજરી</p>
+            <p class="text-[9px] text-emerald-700 font-extrabold uppercase mt-0.5">વિદ્યાર્થી હાજરી</p>
           </div>
         </div>
 
@@ -181,7 +181,7 @@
 
       </main>
 
-      <!-- Bottom Floating Navigation Bar (Matches Image 1) -->
+      <!-- Bottom Floating Navigation Bar -->
       <nav class="fixed bottom-0 w-full max-w-[420px] bg-white border-t border-slate-200/80 px-6 py-2.5 z-40 flex justify-between items-center rounded-t-[30px] shadow-[0_-4px_25px_rgba(0,0,0,0.04)]">
         <button onclick="navigateTo('screen-home')" class="flex flex-col items-center text-emerald-700">
           <div class="p-1 px-3 rounded-full bg-emerald-50">
@@ -190,17 +190,17 @@
           <span class="text-[10px] font-extrabold mt-0.5">Home</span>
         </button>
 
-        <button onclick="alert('હેલ્પલાઇન નંબર: 1800-233-5500 (WCDD Gujarat Helpdesk)')" class="flex flex-col items-center text-slate-400 hover:text-emerald-700 transition">
+        <button onclick="navigateTo('screen-help')" class="flex flex-col items-center text-slate-400 hover:text-emerald-700 transition">
           <i data-lucide="help-circle" class="w-5 h-5"></i>
           <span class="text-[10px] font-bold mt-0.5">Help</span>
         </button>
 
-        <button onclick="navigateTo('screen-report')" class="flex flex-col items-center text-slate-400 hover:text-emerald-700 transition">
+        <button onclick="navigateTo('screen-center-details')" class="flex flex-col items-center text-slate-400 hover:text-emerald-700 transition">
           <i data-lucide="building" class="w-5 h-5"></i>
           <span class="text-[10px] font-bold mt-0.5">Centre Details</span>
         </button>
 
-        <button onclick="alert('આંગણવાડી કાર્યકર: અનીતા શર્મા | કેન્દ્ર કોડ: AWC-10103')" class="flex flex-col items-center text-slate-400 hover:text-emerald-700 transition">
+        <button onclick="openModal('modal-profile')" class="flex flex-col items-center text-slate-400 hover:text-emerald-700 transition">
           <i data-lucide="user" class="w-5 h-5"></i>
           <span class="text-[10px] font-bold mt-0.5">Profile</span>
         </button>
@@ -209,115 +209,150 @@
     </div>
 
     <!-- ======================================================== -->
-    <!-- SCREEN 2: STOCK INWARD (MATCHES IMAGE 2 EXACTLY)         -->
+    <!-- SCREEN: STUDENT ATTENDANCE (10 STUDENTS CHECKLIST)       -->
     <!-- ======================================================== -->
-    <div id="screen-inward" class="hidden flex-1 flex flex-col p-4 pt-5 pb-8 space-y-4">
+    <div id="screen-attendance" class="hidden flex-1 flex flex-col p-4 pt-5 pb-8 space-y-4">
       
-      <!-- Top Bar: Back Button, Brand Logo, Tagline -->
+      <!-- Top Bar -->
       <div class="flex items-center justify-between">
         <button onclick="navigateTo('screen-home')" class="w-10 h-10 rounded-full bg-emerald-100/80 flex items-center justify-center text-emerald-800 shadow-sm active:scale-95 transition">
           <i data-lucide="chevron-left" class="w-6 h-6 stroke-[2.5]"></i>
         </button>
+        <div class="text-center">
+          <h2 class="text-sm font-black text-slate-900">વિદ્યાર્થી દૈનિક હાજરી</h2>
+          <p class="text-[11px] text-slate-500 font-semibold">Student Attendance Ledger</p>
+        </div>
+        <div class="w-10"></div>
+      </div>
 
+      <!-- Attendance Live KPI Card -->
+      <div class="bg-white rounded-2xl p-4 border border-emerald-100 shadow-sm flex items-center justify-between">
+        <div>
+          <p class="text-[10px] font-extrabold uppercase tracking-wide text-slate-400">આજની તારીખ: ૧૭ ઓક્ટોબર ૨૦૨૬</p>
+          <div class="flex items-center gap-3 mt-1">
+            <span class="text-xs font-black text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200">
+              હાજર (Present): <span id="att-present-count" class="text-sm">8</span>
+            </span>
+            <span class="text-xs font-black text-rose-700 bg-rose-50 px-2.5 py-1 rounded-lg border border-rose-200">
+              ગેરહાજર (Absent): <span id="att-absent-count" class="text-sm">2</span>
+            </span>
+          </div>
+        </div>
+        <button onclick="toggleAllAttendance(true)" class="text-[10px] font-black text-emerald-800 bg-[#E8F5E9] hover:bg-emerald-200 px-2.5 py-1.5 rounded-xl border border-emerald-300">
+          બધા હાજર
+        </button>
+      </div>
+
+      <!-- 10 Students Interactive Checklist -->
+      <div class="bg-white rounded-2xl p-3 border border-slate-200 shadow-sm space-y-2 flex-1 overflow-y-auto max-h-[380px] hide-scrollbar" id="students-checklist-container">
+        <!-- Injected via JavaScript (10 Students) -->
+      </div>
+
+      <!-- Direct Connection to Smart Ration / Stock Usage -->
+      <div class="bg-amber-50 border border-amber-200 rounded-2xl p-3 text-xs text-amber-900 flex items-center justify-between">
+        <div>
+          <p class="font-extrabold text-[11px]">સ્માર્ટ રસોઈ લિંક (Smart Ration Link):</p>
+          <p class="text-[10px] text-amber-800">હાજર બાળકો (<span id="link-present-val" class="font-bold">8</span>) મુજબ કાચો માલ ઓટો-કેલ્ક્યુલેટ થશે.</p>
+        </div>
+        <button onclick="navigateTo('screen-rasoi')" class="bg-[#EA580C] hover:bg-orange-700 text-white font-extrabold px-3 py-1.5 rounded-xl text-[10px] shadow-sm">
+          રસોઈ ખોલો →
+        </button>
+      </div>
+
+      <!-- Submit Attendance Button -->
+      <button onclick="commitAttendance()" class="w-full bg-[#15803D] hover:bg-[#14532D] active:scale-95 text-white font-black py-3.5 rounded-full shadow-lg text-xs flex items-center justify-center gap-2 transition">
+        <i data-lucide="check-check" class="w-4 h-4"></i>
+        <span>હાજરી ડેટાસેન્ટરમાં સાચવો (Save Attendance)</span>
+      </button>
+
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- SCREEN: STOCK INWARD (MATCHES SCREENSHOT 2)              -->
+    <!-- ======================================================== -->
+    <div id="screen-inward" class="hidden flex-1 flex flex-col p-4 pt-5 pb-8 space-y-4">
+      <div class="flex items-center justify-between">
+        <button onclick="navigateTo('screen-home')" class="w-10 h-10 rounded-full bg-emerald-100/80 flex items-center justify-center text-emerald-800 shadow-sm active:scale-95 transition">
+          <i data-lucide="chevron-left" class="w-6 h-6 stroke-[2.5]"></i>
+        </button>
         <div class="text-center">
           <div class="flex items-center justify-center gap-1.5">
             <div class="w-6 h-6 rounded-lg bg-gradient-to-tr from-emerald-600 to-amber-500 flex items-center justify-center text-white font-black text-xs shadow-sm">PS</div>
             <span class="text-sm font-black text-[#EA580C]">Poshan<span class="text-[#15803D]">Setu</span></span>
           </div>
         </div>
-
         <div class="text-right">
           <p class="text-[10px] font-extrabold text-emerald-800 leading-tight">સુસંત બાળકો,</p>
           <p class="text-[10px] font-extrabold text-emerald-800 leading-tight">સશક્ત ભારત</p>
         </div>
       </div>
 
-      <!-- Title & Subtitle -->
       <div class="text-center pt-1">
         <h2 class="text-lg font-black text-slate-900">નવો જથ્થો નોંધો (Stock Inward Entry)</h2>
         <p class="text-xs text-slate-500 font-semibold">AWC-10103 Kalyan Centre</p>
       </div>
 
-      <!-- Card 1: Select Commodity -->
+      <!-- Select Commodity -->
       <div class="bg-white rounded-2xl p-4 border border-emerald-100 shadow-sm space-y-3">
         <div class="flex items-center gap-2 text-xs font-black text-slate-900">
           <i data-lucide="package" class="w-4 h-4 text-emerald-600 stroke-[2.5]"></i>
           <span>વસ્તુ પસંદ કરો (Select Commodity)</span>
         </div>
-
-        <select id="inward-item-select" class="w-full p-3 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+        <select id="inward-item-select" class="w-full p-3 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-800 shadow-sm focus:outline-none">
           <option value="Balbhog">બાળભોગ પેકેટ (Balbhog 500g)</option>
           <option value="Matrumrut">માતૃઅમૃત (Matrumrut 1kg)</option>
           <option value="Rice">ચોખા (Rice - kg)</option>
           <option value="Flour">ઘઉંનો લોટ (Wheat Flour - kg)</option>
           <option value="Oil">તેલ (Edible Oil - L)</option>
         </select>
-
-        <div class="flex gap-2">
-          <button type="button" onclick="quickSelectCommodity('Rice')" class="flex-1 py-1.5 bg-[#F0FDF4] border border-emerald-200 rounded-xl text-[11px] font-extrabold text-emerald-800">ચોખા (Rice)</button>
-          <button type="button" onclick="quickSelectCommodity('Matrumrut')" class="flex-1 py-1.5 bg-[#F0FDF4] border border-emerald-200 rounded-xl text-[11px] font-extrabold text-emerald-800">માતૃઅમૃત (Matrumrut)</button>
-        </div>
       </div>
 
-      <!-- Card 2: Batch & Challan -->
+      <!-- Batch & Challan -->
       <div class="bg-white rounded-2xl p-4 border border-emerald-100 shadow-sm space-y-3">
         <div class="flex items-center gap-2 text-xs font-black text-slate-900">
           <i data-lucide="file-text" class="w-4 h-4 text-emerald-600 stroke-[2.5]"></i>
           <span>Batch & Challan</span>
         </div>
-
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block text-[11px] font-bold text-slate-700 mb-1">ચલણ નં. (Challan No.)</label>
-            <input type="text" id="inward-challan-input" placeholder="CH-2026-X" value="CH-2026-09" class="w-full p-2.5 bg-white border border-slate-200 rounded-xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500">
+            <input type="text" id="inward-challan-input" value="CH-2026-09" class="w-full p-2.5 bg-white border border-slate-200 rounded-xl text-xs font-bold">
           </div>
           <div>
-            <label class="block text-[11px] font-bold text-slate-700 mb-1">એક્સપાયરી તારીખ (Expiry Date)</label>
-            <div class="relative">
-              <input type="month" id="inward-expiry-input" value="2027-08" class="w-full p-2.5 bg-white border border-slate-200 rounded-xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500">
-            </div>
+            <label class="block text-[11px] font-bold text-slate-700 mb-1">એક્સપાયરી તારીખ</label>
+            <input type="month" id="inward-expiry-input" value="2027-08" class="w-full p-2.5 bg-white border border-slate-200 rounded-xl text-xs font-bold">
           </div>
         </div>
       </div>
 
-      <!-- Card 3: Received Quantity -->
+      <!-- Quantity Received -->
       <div class="bg-white rounded-2xl p-4 border border-emerald-100 shadow-sm space-y-3">
         <div class="flex items-center gap-2 text-xs font-black text-slate-900">
           <i data-lucide="scale" class="w-4 h-4 text-emerald-600 stroke-[2.5]"></i>
           <span>મળેલ જથ્થો (Received Quantity)</span>
         </div>
-
         <div class="flex items-center justify-between gap-3">
-          <button type="button" onclick="adjustInwardCount(-10)" class="w-12 h-12 rounded-2xl bg-[#E8F5E9] flex items-center justify-center text-emerald-800 font-black text-2xl shadow-sm active:scale-95 transition">-</button>
+          <button type="button" onclick="adjustInwardCount(-10)" class="w-12 h-12 rounded-2xl bg-[#E8F5E9] flex items-center justify-center text-emerald-800 font-black text-2xl shadow-sm active:scale-95">-</button>
           <div class="flex-1 bg-white border border-slate-200 rounded-2xl py-2 flex items-center justify-center shadow-inner">
             <span id="inward-qty-display" class="text-3xl font-black text-emerald-950">50</span>
           </div>
-          <button type="button" onclick="adjustInwardCount(10)" class="w-12 h-12 rounded-2xl bg-[#E8F5E9] flex items-center justify-center text-emerald-800 font-black text-2xl shadow-sm active:scale-95 transition">+</button>
+          <button type="button" onclick="adjustInwardCount(10)" class="w-12 h-12 rounded-2xl bg-[#E8F5E9] flex items-center justify-center text-emerald-800 font-black text-2xl shadow-sm active:scale-95">+</button>
         </div>
-
         <div class="flex gap-2">
           <button type="button" onclick="setInwardCount(10)" class="flex-1 py-1.5 bg-[#E8F5E9] rounded-xl text-xs font-black text-emerald-900">+10</button>
           <button type="button" onclick="setInwardCount(25)" class="flex-1 py-1.5 bg-[#E8F5E9] rounded-xl text-xs font-black text-emerald-900">+25</button>
           <button type="button" onclick="setInwardCount(50)" class="flex-1 py-1.5 bg-[#E8F5E9] rounded-xl text-xs font-black text-emerald-900">+50</button>
         </div>
-
-        <!-- FIFO Reminder Banner -->
-        <div class="bg-[#FFF9C4]/70 border border-amber-200/80 rounded-xl p-2.5 flex items-center gap-2.5 text-xs text-amber-900">
-          <i data-lucide="refresh-cw" class="w-4 h-4 text-amber-700 shrink-0"></i>
-          <span class="font-bold text-[11px]">Ensure older batches are used first</span>
-        </div>
       </div>
 
-      <!-- Confirm Button -->
       <button onclick="commitInwardStock()" class="w-full bg-[#15803D] hover:bg-[#14532D] active:scale-95 text-white font-black py-3.5 rounded-full shadow-lg text-xs flex items-center justify-center gap-2 transition">
         <i data-lucide="check-square" class="w-4 h-4"></i>
         <span>સ્ટોકમાં જમા કરો (Confirm & Save Inward)</span>
       </button>
-
     </div>
 
     <!-- ======================================================== -->
-    <!-- SCREEN 3: STOCK USAGE / CONSUMPTION                      -->
+    <!-- SCREEN: STOCK USAGE / CONSUMPTION                        -->
     <!-- ======================================================== -->
     <div id="screen-usage" class="hidden flex-1 flex flex-col p-4 pt-5 pb-8 space-y-4">
       <div class="flex items-center justify-between">
@@ -328,19 +363,21 @@
         <div class="w-10"></div>
       </div>
 
-      <!-- Beneficiary Portions -->
       <div class="bg-white rounded-2xl p-4 border border-amber-100 shadow-sm space-y-3">
-        <p class="text-xs font-black text-slate-900">લાભાર્થી મુજબ વિતરણ (Daily Portions)</p>
-        
+        <div class="flex justify-between items-center pb-2 border-b">
+          <span class="text-xs font-bold text-slate-600">આજે હાજર વિદ્યાર્થી સંખ્યા:</span>
+          <span id="usage-synced-attendance" class="text-xs font-black bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded">8 હાજર</span>
+        </div>
+
         <!-- Children Balbhog -->
         <div class="flex justify-between items-center p-2.5 bg-slate-50 rounded-xl">
           <div>
             <p class="text-xs font-bold text-slate-800">બાળકો (Balbhog 500g)</p>
-            <p class="text-[10px] text-slate-400">૧ બાળક = ૧ પેકેટ</p>
+            <p class="text-[10px] text-slate-400">૧ બાળક = ૧ પેકેટ (હાજરી મુજબ)</p>
           </div>
           <div class="flex items-center gap-2">
             <button onclick="adjustVal('use-child', -1)" class="w-8 h-8 rounded-lg bg-white border font-bold">-</button>
-            <span id="use-child" class="w-8 text-center font-black text-sm">12</span>
+            <span id="use-child" class="w-8 text-center font-black text-sm">8</span>
             <button onclick="adjustVal('use-child', 1)" class="w-8 h-8 rounded-lg bg-white border font-bold">+</button>
           </div>
         </div>
@@ -366,7 +403,61 @@
     </div>
 
     <!-- ======================================================== -->
-    <!-- SCREEN 4: BALANCE REMAINING (PANTRY OVERVIEW)            -->
+    <!-- SCREEN: SMART RASOI (RECIPE WITH ATTENDANCE SYNC)        -->
+    <!-- ======================================================== -->
+    <div id="screen-rasoi" class="hidden flex-1 flex flex-col p-4 pt-5 pb-8 space-y-4">
+      <div class="flex items-center justify-between">
+        <button onclick="navigateTo('screen-home')" class="w-10 h-10 rounded-full bg-emerald-100/80 flex items-center justify-center text-emerald-800 shadow-sm">
+          <i data-lucide="chevron-left" class="w-6 h-6 stroke-[2.5]"></i>
+        </button>
+        <h2 class="text-sm font-black text-slate-900">સ્માર્ટ રસોઈ (Smart Ration)</h2>
+        <div class="w-10"></div>
+      </div>
+
+      <!-- Weekly Menu Card -->
+      <div class="bg-white rounded-2xl p-4 border border-amber-100 shadow-sm space-y-3">
+        <div class="flex justify-between items-center pb-2 border-b">
+          <span class="text-xs font-bold text-slate-700">આજનું મેનૂ: ખીચડી અને દાળ</span>
+          <span class="text-[10px] bg-amber-100 text-amber-800 px-2 py-0.5 rounded font-black">મંગળવાર</span>
+        </div>
+
+        <div class="flex justify-between items-center p-2.5 bg-amber-50/70 border border-amber-200 rounded-xl">
+          <div>
+            <p class="text-xs font-black text-slate-800">હાજર વિદ્યાર્થીઓ (Synced):</p>
+            <p class="text-[10px] text-amber-900">હાજરી સેક્શનમાંથી સીધા મેળવેલ સંખ્યા</p>
+          </div>
+          <span id="rasoi-attendance-val" class="text-2xl font-black text-[#EA580C]">8</span>
+        </div>
+
+        <!-- Recipe Deductions Grid -->
+        <p class="text-[11px] font-black text-slate-700 uppercase tracking-wide">ઓટો-કેલ્ક્યુલેટ કાચી સામગ્રી:</p>
+        <div class="grid grid-cols-3 gap-2 text-center text-xs">
+          <div class="bg-slate-50 border p-2.5 rounded-xl">
+            <p class="text-[10px] text-slate-400 font-bold">ચોખા (Rice)</p>
+            <p class="text-sm font-black text-slate-800 mt-1" id="rasoi-calc-rice">280 g</p>
+            <p class="text-[9px] text-slate-400">@ 35g / બાળક</p>
+          </div>
+          <div class="bg-slate-50 border p-2.5 rounded-xl">
+            <p class="text-[10px] text-slate-400 font-bold">દાળ (Dal)</p>
+            <p class="text-sm font-black text-slate-800 mt-1" id="rasoi-calc-dal">120 g</p>
+            <p class="text-[9px] text-slate-400">@ 15g / બાળક</p>
+          </div>
+          <div class="bg-slate-50 border p-2.5 rounded-xl">
+            <p class="text-[10px] text-slate-400 font-bold">તેલ (Oil)</p>
+            <p class="text-sm font-black text-slate-800 mt-1" id="rasoi-calc-oil">40 ml</p>
+            <p class="text-[9px] text-slate-400">@ 5g / બાળક</p>
+          </div>
+        </div>
+      </div>
+
+      <button onclick="commitRasoiCooking()" class="w-full bg-[#EA580C] active:scale-95 text-white font-black py-3.5 rounded-full shadow-lg text-xs flex items-center justify-center gap-2">
+        <i data-lucide="check" class="w-4 h-4"></i>
+        <span>રસોઈ વપરાશ સ્ટોકમાંથી બાદ કરો</span>
+      </button>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- SCREEN: BALANCE REMAINING                                -->
     <!-- ======================================================== -->
     <div id="screen-balance" class="hidden flex-1 flex flex-col p-4 pt-5 pb-8 space-y-4">
       <div class="flex items-center justify-between">
@@ -383,7 +474,7 @@
     </div>
 
     <!-- ======================================================== -->
-    <!-- SCREEN 5: SETUSHARE (INTER-AWC TRANSFER)                 -->
+    <!-- SCREEN: SETUSHARE (INTER-AWC TRANSFER)                   -->
     <!-- ======================================================== -->
     <div id="screen-setushare" class="hidden flex-1 flex flex-col p-4 pt-5 pb-8 space-y-4">
       <div class="flex items-center justify-between">
@@ -416,7 +507,7 @@
     </div>
 
     <!-- ======================================================== -->
-    <!-- SCREEN 6: DAILY FOOD MENU (TIME TABLE)                   -->
+    <!-- SCREEN: DAILY FOOD MENU                                  -->
     <!-- ======================================================== -->
     <div id="screen-menu" class="hidden flex-1 flex flex-col p-4 pt-5 pb-8 space-y-4">
       <div class="flex items-center justify-between">
@@ -445,39 +536,7 @@
     </div>
 
     <!-- ======================================================== -->
-    <!-- SCREEN 7: STUDENT ATTENDANCE                            -->
-    <!-- ======================================================== -->
-    <div id="screen-attendance" class="hidden flex-1 flex flex-col p-4 pt-5 pb-8 space-y-4">
-      <div class="flex items-center justify-between">
-        <button onclick="navigateTo('screen-home')" class="w-10 h-10 rounded-full bg-emerald-100/80 flex items-center justify-center text-emerald-800 shadow-sm">
-          <i data-lucide="chevron-left" class="w-6 h-6 stroke-[2.5]"></i>
-        </button>
-        <h2 class="text-sm font-black text-slate-900">વિદ્યાર્થી હાજરી (Attendance)</h2>
-        <div class="w-10"></div>
-      </div>
-
-      <div class="bg-white rounded-2xl p-4 border border-emerald-100 shadow-sm space-y-2 text-xs font-bold">
-        <div class="flex justify-between items-center p-2 bg-slate-50 rounded-xl">
-          <span>આરવ પટેલ (Aarav Patel)</span>
-          <span class="text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">હાજર ✓</span>
-        </div>
-        <div class="flex justify-between items-center p-2 bg-slate-50 rounded-xl">
-          <span>દિયા શર્મા (Diya Sharma)</span>
-          <span class="text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">હાજર ✓</span>
-        </div>
-        <div class="flex justify-between items-center p-2 bg-slate-50 rounded-xl">
-          <span>કાવ્ય જોશી (Kavya Joshi)</span>
-          <span class="text-rose-700 bg-rose-100 px-2 py-0.5 rounded">ગેરહાજર ✕</span>
-        </div>
-      </div>
-
-      <button onclick="alert('હાજરી સેવ થઈ ગઈ! કુલ ૨૨ બાળકો હાજર.'); navigateTo('screen-home');" class="w-full bg-[#15803D] text-white font-black py-3.5 rounded-full shadow text-xs">
-        હાજરી સબમિટ કરો (Submit Attendance)
-      </button>
-    </div>
-
-    <!-- ======================================================== -->
-    <!-- SCREEN 8: MEAL PHOTO UPLOAD                             -->
+    <!-- SCREEN: MEAL PHOTO UPLOAD                                -->
     <!-- ======================================================== -->
     <div id="screen-photo" class="hidden flex-1 flex flex-col p-4 pt-5 pb-8 space-y-4">
       <div class="flex items-center justify-between">
@@ -500,42 +559,7 @@
     </div>
 
     <!-- ======================================================== -->
-    <!-- SCREEN 9: SMART RATION (SMART RASOI)                     -->
-    <!-- ======================================================== -->
-    <div id="screen-rasoi" class="hidden flex-1 flex flex-col p-4 pt-5 pb-8 space-y-4">
-      <div class="flex items-center justify-between">
-        <button onclick="navigateTo('screen-home')" class="w-10 h-10 rounded-full bg-emerald-100/80 flex items-center justify-center text-emerald-800 shadow-sm">
-          <i data-lucide="chevron-left" class="w-6 h-6 stroke-[2.5]"></i>
-        </button>
-        <h2 class="text-sm font-black text-slate-900">સ્માર્ટ રાશન (Smart Rasoi)</h2>
-        <div class="w-10"></div>
-      </div>
-
-      <div class="bg-white rounded-2xl p-4 border border-emerald-100 shadow-sm space-y-3">
-        <p class="text-xs font-black text-slate-900">હાજર બાળકો: ૨૦ (Auto-Calculated)</p>
-        <div class="grid grid-cols-3 gap-2 text-center text-xs">
-          <div class="bg-slate-50 p-2 rounded-xl">
-            <p class="text-[10px] text-slate-400">ચોખા (Rice)</p>
-            <p class="font-black text-slate-800">700 g</p>
-          </div>
-          <div class="bg-slate-50 p-2 rounded-xl">
-            <p class="text-[10px] text-slate-400">દાળ (Dal)</p>
-            <p class="font-black text-slate-800">300 g</p>
-          </div>
-          <div class="bg-slate-50 p-2 rounded-xl">
-            <p class="text-[10px] text-slate-400">તેલ (Oil)</p>
-            <p class="font-black text-slate-800">100 ml</p>
-          </div>
-        </div>
-      </div>
-
-      <button onclick="alert('રસોઈ વપરાશ મુજબ સ્ટોક સફળતાપૂર્વક બાદ થયો!'); navigateTo('screen-home');" class="w-full bg-[#EA580C] text-white font-black py-3.5 rounded-full shadow text-xs">
-        વપરાશ મંજૂર કરો (Deduct from Pantry)
-      </button>
-    </div>
-
-    <!-- ======================================================== -->
-    <!-- SCREEN 10: DOWNLOAD REPORT (OFFICIAL WCDD MIS)           -->
+    <!-- SCREEN: DOWNLOAD REPORT                                  -->
     <!-- ======================================================== -->
     <div id="screen-report" class="hidden flex-1 flex flex-col p-4 pt-5 pb-8 space-y-4">
       <div class="flex items-center justify-between">
@@ -569,9 +593,156 @@
       </button>
     </div>
 
+    <!-- ======================================================== -->
+    <!-- SCREEN: CENTRE DETAILS                                   -->
+    <!-- ======================================================== -->
+    <div id="screen-center-details" class="hidden flex-1 flex flex-col p-4 pt-5 pb-8 space-y-4">
+      <div class="flex items-center justify-between">
+        <button onclick="navigateTo('screen-home')" class="w-10 h-10 rounded-full bg-emerald-100/80 flex items-center justify-center text-emerald-800 shadow-sm">
+          <i data-lucide="chevron-left" class="w-6 h-6 stroke-[2.5]"></i>
+        </button>
+        <h2 class="text-sm font-black text-slate-900">આંગણવાડી કેન્દ્ર વિગત</h2>
+        <div class="w-10"></div>
+      </div>
+
+      <div class="bg-white rounded-3xl p-5 border border-emerald-100 shadow-sm space-y-3 text-xs">
+        <div class="flex items-center gap-3 pb-3 border-b">
+          <div class="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center font-black">
+            <i data-lucide="building" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="font-black text-slate-900 text-sm">કલ્યાણ આંગણવાડી કેન્દ્ર - ૦૪</h3>
+            <p class="text-slate-400">AWC Code: 10103 • Rural Block</p>
+          </div>
+        </div>
+
+        <div class="space-y-2 font-semibold text-slate-700">
+          <div class="flex justify-between py-1 border-b border-slate-100">
+            <span class="text-slate-400">સેક્ટર (Sector):</span>
+            <span class="font-bold">વડતાલ સેક્ટર (Vadtal)</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-slate-100">
+            <span class="text-slate-400">તાલુકો (Taluka):</span>
+            <span class="font-bold">આણંદ (Anand)</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-slate-100">
+            <span class="text-slate-400">મુખ્ય સેવિકા (Supervisor):</span>
+            <span class="font-bold">રેખાબેન પટેલ (+91 94260 55441)</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-slate-100">
+            <span class="text-slate-400">CDPO ઓફિસ:</span>
+            <span class="font-bold">તાલુકા પંચાયત, આણંદ</span>
+          </div>
+          <div class="flex justify-between py-1 border-b border-slate-100">
+            <span class="text-slate-400">નોંધાયેલ કુલ બાળકો:</span>
+            <span class="font-bold text-emerald-700">૩૦ બાળકો (10 મોડેલ લિસ્ટ)</span>
+          </div>
+          <div class="flex justify-between py-1">
+            <span class="text-slate-400">જિયો-કોઓર્ડિનેટ્સ:</span>
+            <span class="font-mono text-[11px]">22.5539° N, 72.9515° E</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- SCREEN: HELP & INSTRUCTIONS                              -->
+    <!-- ======================================================== -->
+    <div id="screen-help" class="hidden flex-1 flex flex-col p-4 pt-5 pb-8 space-y-4">
+      <div class="flex items-center justify-between">
+        <button onclick="navigateTo('screen-home')" class="w-10 h-10 rounded-full bg-emerald-100/80 flex items-center justify-center text-emerald-800 shadow-sm">
+          <i data-lucide="chevron-left" class="w-6 h-6 stroke-[2.5]"></i>
+        </button>
+        <h2 class="text-sm font-black text-slate-900">સહાય અને માર્ગદર્શિકા (Help)</h2>
+        <div class="w-10"></div>
+      </div>
+
+      <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm space-y-3 text-xs">
+        <p class="font-bold text-slate-800">સામાન્ય પ્રશ્નો (FAQ):</p>
+        <div class="space-y-2 text-slate-600">
+          <div class="p-2.5 bg-slate-50 rounded-xl">
+            <p class="font-bold text-slate-800">૧. ઈન્ટરનેટ ન હોય તો એપ ચાલશે?</p>
+            <p class="text-[11px] mt-0.5">હા, બધી હાજરી અને સ્ટોક ઓફલાઇન સેવ થાય છે અને નેટ આવતાં ઓટો-સિંક થાય છે.</p>
+          </div>
+          <div class="p-2.5 bg-slate-50 rounded-xl">
+            <p class="font-bold text-slate-800">૨. સેતુ-શેર કોડ શું છે?</p>
+            <p class="text-[11px] mt-0.5">બીજા કેન્દ્ર પાસેથી સામગ્રી ઉછીની લેવા માટે ૪-અંકનો સુરક્ષા કોડ છે.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- MODAL: ANGANWADI WORKER OFFICIAL PROFILE CARD            -->
+    <!-- ======================================================== -->
+    <div id="modal-profile" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-end justify-center p-0">
+      <div class="w-full max-w-[420px] bg-white rounded-t-[36px] p-6 shadow-2xl border-t space-y-4 max-h-[90vh] overflow-y-auto">
+        
+        <!-- Header -->
+        <div class="flex justify-between items-center pb-2 border-b">
+          <div class="flex items-center gap-2">
+            <div class="w-7 h-7 rounded-lg bg-emerald-700 text-white flex items-center justify-center font-black text-xs">ID</div>
+            <h3 class="text-sm font-black text-slate-900">આંગણવાડી કાર્યકર પ્રોફાઇલ (AWW Identity)</h3>
+          </div>
+          <button onclick="closeModal('modal-profile')" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500">✕</button>
+        </div>
+
+        <!-- Official Identity Card Body -->
+        <div class="bg-gradient-to-br from-emerald-50 via-white to-teal-50 border border-emerald-200 rounded-3xl p-5 shadow-sm space-y-4 text-xs">
+          
+          <div class="flex items-center gap-4">
+            <div class="w-16 h-16 rounded-2xl border-2 border-emerald-600 bg-emerald-100 flex items-center justify-center font-black text-emerald-900 text-2xl shadow-sm shrink-0">
+              અશ
+            </div>
+            <div>
+              <span class="text-[9px] bg-emerald-600 text-white font-extrabold px-2 py-0.5 rounded-full uppercase">ગુજરાત સરકાર • WCDD</span>
+              <h2 class="text-base font-black text-slate-900 mt-1">અનીતાબેન આર. શર્મા</h2>
+              <p class="text-[11px] font-bold text-slate-500">મુખ્ય આંગણવાડી કાર્યકર (AWW)</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2.5 pt-2 border-t border-emerald-100 text-[11px]">
+            <div class="bg-white p-2.5 rounded-xl border border-emerald-100">
+              <span class="text-slate-400 text-[10px] block">કાર્યકર રજી. નંબર:</span>
+              <span class="font-extrabold text-slate-800">AWW-GJ-AND-0492</span>
+            </div>
+            <div class="bg-white p-2.5 rounded-xl border border-emerald-100">
+              <span class="text-slate-400 text-[10px] block">કેન્દ્ર કોડ (AWC Code):</span>
+              <span class="font-extrabold text-slate-800">AWC-10103</span>
+            </div>
+            <div class="bg-white p-2.5 rounded-xl border border-emerald-100">
+              <span class="text-slate-400 text-[10px] block">મોબાઈલ નંબર:</span>
+              <span class="font-extrabold text-slate-800">+91 98765 43210</span>
+            </div>
+            <div class="bg-white p-2.5 rounded-xl border border-emerald-100">
+              <span class="text-slate-400 text-[10px] block">e-KYC સ્થિતિ:</span>
+              <span class="font-extrabold text-emerald-700">✓ પ્રમાણિત (Verified)</span>
+            </div>
+          </div>
+
+          <!-- Helper Details Section -->
+          <div class="p-3 bg-white rounded-2xl border border-slate-200/80 space-y-1.5">
+            <p class="text-[10px] font-black uppercase tracking-wider text-slate-400">તેડાગર બહેન વિગત (Anganwadi Helper):</p>
+            <div class="flex justify-between items-center text-xs">
+              <span class="font-bold text-slate-800">જસુબેન વી. વણકર (AWH)</span>
+              <span class="text-[11px] font-semibold text-slate-500">+91 98250 11223</span>
+            </div>
+          </div>
+
+          <div class="text-[10px] text-slate-400 text-center">
+            ICDS આણંદ બ્લોક • સેક્ટર: વડતાલ-૦૪
+          </div>
+        </div>
+
+        <button onclick="closeModal('modal-profile')" class="w-full bg-slate-900 text-white font-extrabold py-3 rounded-2xl shadow text-xs">
+          બંધ કરો (Close Profile)
+        </button>
+      </div>
+    </div>
+
   </div>
 
-  <!-- Notification Toast -->
+  <!-- Toast Notification -->
   <div id="toast" class="hidden fixed top-6 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white text-xs px-4 py-2.5 rounded-full shadow-2xl flex items-center gap-2 border border-slate-700">
     <i data-lucide="check-circle" class="w-4 h-4 text-emerald-400"></i>
     <span id="toast-text">ડેટા સફળતાપૂર્વક સાચવવામાં આવ્યો!</span>
@@ -579,29 +750,121 @@
 
   <!-- Business Logic -->
   <script>
-    // Global Stock State
+    // 1. Initial 10 Registered Students List
+    const DEFAULT_STUDENTS = [
+      { id: 1, name_gu: 'આરવ પટેલ', name_en: 'Aarav Patel', age: '3 વર્ષ', present: true },
+      { id: 2, name_gu: 'દિયા શર્મા', name_en: 'Diya Sharma', age: '4 વર્ષ', present: true },
+      { id: 3, name_gu: 'કાવ્ય જોશી', name_en: 'Kavya Joshi', age: '5 વર્ષ', present: false },
+      { id: 4, name_gu: 'અનન્યા શાહ', name_en: 'Ananya Shah', age: '3 વર્ષ', present: true },
+      { id: 5, name_gu: 'વિહાન ઠાકોર', name_en: 'Vihaan Thakor', age: '4 વર્ષ', present: true },
+      { id: 6, name_gu: 'ઈશાન મકવાણા', name_en: 'Ishaan Makwana', age: '2 વર્ષ', present: true },
+      { id: 7, name_gu: 'પ્રિયા પરમાર', name_en: 'Priya Parmar', age: '5 વર્ષ', present: false },
+      { id: 8, name_gu: 'રુદ્ર વાઘેલા', name_en: 'Rudra Vaghela', age: '4 વર્ષ', present: true },
+      { id: 9, name_gu: 'તન્વી પંચાલ', name_en: 'Tanvi Panchal', age: '3 વર્ષ', present: true },
+      { id: 10, name_gu: 'કૃષ્ણ ચૌહાણ', name_en: 'Krishna Chauhan', age: '4 વર્ષ', present: true }
+    ];
+
+    let studentsList = JSON.parse(localStorage.getItem('poshan_students_list')) || DEFAULT_STUDENTS;
+
+    // Stock Master State
     let stockState = JSON.parse(localStorage.getItem('poshan_master_v4')) || {
       Balbhog: 92,
       Matrumrut: 44,
-      Rice: 25,
-      Flour: 18,
-      Oil: 8
+      Rice: 25.0,
+      Flour: 18.0,
+      Dal: 8.5,
+      Oil: 5.0
     };
 
     let isGujarati = false;
 
-    function saveState() {
+    function saveGlobalState() {
+      localStorage.setItem('poshan_students_list', JSON.stringify(studentsList));
       localStorage.setItem('poshan_master_v4', JSON.stringify(stockState));
-      renderStockDisplays();
+      updateDisplays();
     }
 
-    function renderStockDisplays() {
+    // Render 10 Students in Attendance Screen
+    function renderStudentsList() {
+      const container = document.getElementById('students-checklist-container');
+      if (!container) return;
+
+      container.innerHTML = '';
+      let presentCount = 0;
+
+      studentsList.forEach((s, idx) => {
+        if (s.present) presentCount++;
+
+        container.innerHTML += `
+          <div onclick="toggleSingleAttendance(${idx})" class="cursor-pointer p-2.5 rounded-xl border flex items-center justify-between transition ${s.present ? 'bg-emerald-50/80 border-emerald-200' : 'bg-slate-50 border-slate-200'}">
+            <div class="flex items-center gap-2.5">
+              <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs ${s.present ? 'bg-emerald-600 text-white' : 'bg-slate-200 text-slate-500'}">
+                ${s.id}
+              </div>
+              <div>
+                <p class="text-xs font-bold text-slate-900">${isGujarati ? s.name_gu : s.name_en}</p>
+                <p class="text-[10px] text-slate-400 font-medium">ઉંમર: ${s.age}</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-[10px] font-black px-2 py-0.5 rounded-md ${s.present ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'}">
+                ${s.present ? 'હાજર ✓' : 'ગેરહાજર ✕'}
+              </span>
+              <input type="checkbox" ${s.present ? 'checked' : ''} class="w-4 h-4 accent-emerald-600 pointer-events-none">
+            </div>
+          </div>
+        `;
+      });
+
+      const absentCount = studentsList.length - presentCount;
+      document.getElementById('att-present-count').innerText = presentCount;
+      document.getElementById('att-absent-count').innerText = absentCount;
+      document.getElementById('badge-present-summary').innerText = presentCount;
+      document.getElementById('link-present-val').innerText = presentCount;
+      document.getElementById('usage-synced-attendance').innerText = `${presentCount} હાજર`;
+      document.getElementById('use-child').innerText = presentCount;
+      document.getElementById('rasoi-attendance-val').innerText = presentCount;
+
+      // Update recipe calculations
+      document.getElementById('rasoi-calc-rice').innerText = `${presentCount * 35} g`;
+      document.getElementById('rasoi-calc-dal').innerText = `${presentCount * 15} g`;
+      document.getElementById('rasoi-calc-oil').innerText = `${presentCount * 5} ml`;
+    }
+
+    function toggleSingleAttendance(idx) {
+      studentsList[idx].present = !studentsList[idx].present;
+      renderStudentsList();
+    }
+
+    function toggleAllAttendance(status) {
+      studentsList.forEach(s => s.present = status);
+      renderStudentsList();
+    }
+
+    function commitAttendance() {
+      const pCount = studentsList.filter(s => s.present).length;
+      saveGlobalState();
+      showToast(`આજની હાજરી સાચવી લીધી! ${pCount} બાળકો હાજર.`);
+      navigateTo('screen-home');
+    }
+
+    // Cooking deduction
+    function commitRasoiCooking() {
+      const pCount = parseInt(document.getElementById('rasoi-attendance-val').innerText) || 8;
+      const riceDeducted = (pCount * 35) / 1000;
+      stockState.Rice = Math.max(0, +(stockState.Rice - riceDeducted).toFixed(2));
+      saveGlobalState();
+      showToast(`${pCount} હાજર બાળકો મુજબ ચોખા સ્ટોકમાંથી બાદ થયા!`);
+      navigateTo('screen-home');
+    }
+
+    function updateDisplays() {
       document.getElementById('home-balbhog-count').innerText = `${stockState.Balbhog} Pkts`;
 
-      // Render Pantry Screen
-      const pantryContainer = document.getElementById('pantry-items-list');
-      if (pantryContainer) {
-        pantryContainer.innerHTML = `
+      // Pantry Screen
+      const pantry = document.getElementById('pantry-items-list');
+      if (pantry) {
+        pantry.innerHTML = `
           <div class="bg-white p-3.5 rounded-2xl border border-emerald-100 shadow-sm flex justify-between items-center">
             <div>
               <p class="text-xs font-extrabold text-slate-800">બાલભોગ પેકેટ (Balbhog 500g)</p>
@@ -619,7 +882,7 @@
           <div class="bg-white p-3.5 rounded-2xl border border-emerald-100 shadow-sm flex justify-between items-center">
             <div>
               <p class="text-xs font-extrabold text-slate-800">ચોખા (Rice - kg)</p>
-              <p class="text-[10px] text-emerald-700 font-bold">🟢 પૂરતો જથ્થો</p>
+              <p class="text-[10px] text-emerald-700 font-bold">🟢 સામાન્ય વપરાશ</p>
             </div>
             <span class="text-lg font-black text-slate-900">${stockState.Rice} kg</span>
           </div>
@@ -633,7 +896,7 @@
         `;
       }
 
-      // Render Report Screen Table
+      // Report Table
       const reportTbody = document.getElementById('report-ledger-body');
       if (reportTbody) {
         reportTbody.innerHTML = `
@@ -645,12 +908,12 @@
       }
     }
 
-    // View Navigation Router
+    // Router Navigation
     function navigateTo(screenId) {
       const allScreens = [
         'screen-home', 'screen-inward', 'screen-usage', 'screen-balance',
         'screen-setushare', 'screen-menu', 'screen-attendance',
-        'screen-photo', 'screen-rasoi', 'screen-report'
+        'screen-photo', 'screen-rasoi', 'screen-report', 'screen-center-details', 'screen-help'
       ];
       allScreens.forEach(id => {
         const el = document.getElementById(id);
@@ -662,58 +925,46 @@
       lucide.createIcons();
     }
 
-    // Adjust Inward Steppers
+    function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+    // Inward
     function adjustInwardCount(delta) {
       const el = document.getElementById('inward-qty-display');
       let val = Math.max(10, (parseInt(el.innerText) || 50) + delta);
       el.innerText = val;
     }
-
-    function setInwardCount(val) {
-      document.getElementById('inward-qty-display').innerText = val;
-    }
-
-    function quickSelectCommodity(name) {
-      document.getElementById('inward-item-select').value = name;
-    }
-
+    function setInwardCount(val) { document.getElementById('inward-qty-display').innerText = val; }
     function commitInwardStock() {
       const item = document.getElementById('inward-item-select').value;
       const qty = parseInt(document.getElementById('inward-qty-display').innerText) || 50;
-
-      if (stockState[item] !== undefined) {
-        stockState[item] += qty;
-      }
-      saveState();
+      if (stockState[item] !== undefined) stockState[item] += qty;
+      saveGlobalState();
       showToast(`${item} માં +${qty} જમા થઈ ગયા!`);
       navigateTo('screen-home');
     }
 
+    // Usage
     function adjustVal(id, delta) {
       const el = document.getElementById(id);
       let v = Math.max(0, (parseInt(el.innerText) || 0) + delta);
       el.innerText = v;
     }
-
     function commitUsageStock() {
-      const childCount = parseInt(document.getElementById('use-child').innerText) || 0;
-      const motherCount = parseInt(document.getElementById('use-mother').innerText) || 0;
-
-      if (childCount > stockState.Balbhog) {
-        alert('ભૂલ: બાલભોગનો પૂરતો સ્ટોક ઉપલબ્ધ નથી!');
-        return;
-      }
-
-      stockState.Balbhog -= childCount;
-      stockState.Matrumrut -= motherCount;
-      saveState();
-      showToast('આજનું વિતરણ સફળતાપૂર્વક સાચવવામાં આવ્યું!');
+      const c = parseInt(document.getElementById('use-child').innerText) || 0;
+      const m = parseInt(document.getElementById('use-mother').innerText) || 0;
+      if (c > stockState.Balbhog) { alert('ભૂલ: પૂરતો સ્ટોક નથી!'); return; }
+      stockState.Balbhog -= c;
+      stockState.Matrumrut -= m;
+      saveGlobalState();
+      showToast('દૈનિક વિતરણ સેવ થયું!');
       navigateTo('screen-home');
     }
 
     function toggleGlobalLang() {
       isGujarati = !isGujarati;
       document.getElementById('btn-lang-display').innerText = isGujarati ? 'ગુજરાતી ▾' : 'English ▾';
+      renderStudentsList();
       showToast(isGujarati ? 'ભાષા: ગુજરાતી પસંદ કરેલ છે' : 'Language set to English');
     }
 
@@ -726,7 +977,8 @@
 
     document.addEventListener('DOMContentLoaded', () => {
       lucide.createIcons();
-      renderStockDisplays();
+      renderStudentsList();
+      saveGlobalState();
     });
   </script>
 </body>
