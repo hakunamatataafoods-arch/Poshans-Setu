@@ -1,639 +1,557 @@
 <!DOCTYPE html>
-<html lang="gu">
+<html lang="gu" class="h-full">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>PoshanSetu - આંગણવાડી સ્ટોક ટ્રેકર</title>
+  <title>PoshanSetu - Daily Meal & Stock Usage</title>
   
-  <!-- Mobile & PWA Meta Tags -->
-  <meta name="theme-color" content="#1e40af">
-  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#15803D">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="PoshanSetu">
+  
+  <!-- Google Fonts: Plus Jakarta Sans & Noto Sans Gujarati -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Noto+Sans+Gujarati:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  
-  <!-- Google Fonts for Gujarati and Modern Numerals -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Gujarati:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
-  
-  <!-- Firebase Realtime Database SDK via CDN -->
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Firebase App & Realtime Database SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
-  
-  <!-- jsPDF & AutoTable via CDN for Standalone PDF Export -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
-  
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              green: '#15803D',
+              greenDark: '#14532D',
+              greenLight: '#E8F5E9',
+              greenBorder: '#A7F3D0',
+              orange: '#EA580C',
+              mint: '#F4FAF4',
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', '"Noto Sans Gujarati"', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
   <style>
     body {
-      font-family: 'Noto Sans Gujarati', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      font-family: 'Plus Jakarta Sans', 'Noto Sans Gujarati', system-ui, sans-serif;
       -webkit-tap-highlight-color: transparent;
-      user-select: none;
+      background-color: #EBF3EB;
     }
-    input, button, select {
-      user-select: auto;
-    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
-<body class="bg-slate-100 text-slate-800 antialiased min-h-screen flex justify-center sm:py-6">
-  
+<body class="h-full flex justify-center items-start sm:py-6">
+
   <!-- Mobile Frame Container -->
-  <div class="w-full max-w-md bg-white shadow-2xl sm:rounded-3xl flex flex-col min-h-screen sm:min-h-[850px] overflow-hidden border border-slate-200">
+  <main class="w-full max-w-[420px] min-h-screen bg-[#F4FAF4] shadow-2xl relative flex flex-col justify-between overflow-x-hidden border-x border-slate-200">
     
-    <!-- Cobalt Blue Header -->
-    <header class="bg-gradient-to-b from-blue-900 via-blue-800 to-blue-700 text-white px-5 pt-5 pb-5 shadow-md relative">
-      
-      <!-- Top Row: Logo & Language Selector -->
-      <div class="flex items-center justify-between mb-2.5">
-        <div class="flex items-center gap-2">
-          <span class="w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm border border-white/20 flex items-center justify-center font-black text-xs text-white">PS</span>
-          <div>
-            <span id="headerBrandTitle" class="text-[11px] font-semibold tracking-wider text-blue-200 uppercase block leading-none">પોષણસેતુ • PoshanSetu</span>
-            <span id="headerDeptTitle" class="text-[10px] text-blue-300">મહિલા & બાળ વિકાસ વિભાગ • ગુજરાત</span>
-          </div>
-        </div>
-
-        <!-- Controls: Language + Audio Toggle -->
-        <div class="flex items-center gap-1.5">
-          <button onclick="toggleLanguage()" id="langToggleBtn" class="flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/20 hover:bg-white/30 active:scale-95 transition text-white border border-white/25 shadow-xs font-bold text-xs">
-            🌐 <span id="langBtnText">English</span>
-          </button>
-          <button onclick="toggleAudio()" id="audioBtn" class="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 text-blue-200 flex items-center justify-center transition text-xs font-bold">
-            🔊
-          </button>
-        </div>
+    <!-- Toast Alert Notification -->
+    <div id="toast" class="hidden absolute top-3 left-3 right-3 z-50 bg-slate-900 text-white text-xs font-semibold px-4 py-3 rounded-2xl shadow-xl flex items-center justify-between gap-2.5 transition-all">
+      <div class="flex items-center gap-2">
+        <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+        <span id="toastMsg">ડેટા સેવ થયો! / Saved successfully!</span>
       </div>
+      <button onclick="hideToast()" class="text-white/70 hover:text-white cursor-pointer">
+        <i data-lucide="x" class="w-3.5 h-3.5"></i>
+      </button>
+    </div>
 
-      <!-- Second Row: Greeting & Online Status -->
-      <div class="flex items-end justify-between mt-2 pt-1 border-t border-white/10">
-        <div>
-          <h1 id="greetingHeading" class="text-lg sm:text-xl font-bold tracking-tight text-white">
-            નમસ્તે ગીતાબેન <span class="text-blue-200 text-sm font-semibold">(વડતાલ-૦૪)</span>
-          </h1>
-          <p id="workerSubtext" class="text-xs text-blue-100 font-medium mt-0.5">આંગણવાડી કાર્યકર્તા • Anganwadi Worker</p>
-        </div>
-
-        <div id="statusBadge" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold backdrop-blur-md bg-emerald-500/25 border border-emerald-400/40 text-emerald-200 shadow-xs">
-          <span class="relative flex h-2 w-2">
-            <span id="statusPing" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span id="statusDot" class="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
-          </span>
-          <span id="statusText">ઓનલાઇન (Online)</span>
-        </div>
-      </div>
-    </header>
-
-    <!-- Main Content -->
-    <main class="flex-1 px-4 py-3.5 space-y-3.5 overflow-y-auto">
-
-      <!-- Toast Notification Alert -->
-      <div id="toast" class="hidden bg-blue-900 text-white text-xs font-medium px-4 py-2.5 rounded-xl shadow-lg border border-blue-600/50 flex items-center justify-between gap-2 transition-all">
-        <span id="toastMsg">સંદેશ</span>
-        <button onclick="hideToast()" class="text-white/60 hover:text-white font-bold ml-2">✕</button>
-      </div>
-
-      <!-- Hero Card: Realtime Live Inventory Overview -->
-      <div class="bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-900 rounded-2xl p-4 text-white shadow-xl relative overflow-hidden border border-blue-500/30">
-        <div class="flex items-center justify-between">
-          <span id="heroCardTag" class="text-[11px] font-semibold tracking-wide uppercase px-2.5 py-0.5 rounded-full bg-white/15 text-blue-100 border border-white/20">
-            સરકારી પોષણ સ્ટોક સિલક (SNP Stock)
-          </span>
-          <span id="stockStatusTag" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/25 text-emerald-200 border border-emerald-400/30">
-            પૂરતો સ્ટોક
-          </span>
-        </div>
-
-        <div class="mt-3 grid grid-cols-2 gap-2 text-xs">
-          <!-- Bal Shakti Packets -->
-          <div class="bg-white/10 p-2.5 rounded-xl border border-white/10">
-            <span class="text-blue-200 block text-[10px]">બાલ શક્તિ (Bal Shakti 500g):</span>
-            <span id="balshaktiVal" class="text-2xl font-black text-amber-300">૧૨૪</span>
-            <span class="text-blue-200 text-xs">પેકેટ</span>
-          </div>
-          <!-- Matru / Purna Shakti Packets -->
-          <div class="bg-white/10 p-2.5 rounded-xl border border-white/10">
-            <span class="text-blue-200 block text-[10px]">માતૃ / પૂર્ણા શક્તિ:</span>
-            <span id="matrushaktiVal" class="text-2xl font-black text-amber-300">૬૫</span>
-            <span class="text-blue-200 text-xs">પેકેટ</span>
-          </div>
-          <!-- Cooking Rice (kg) -->
-          <div class="bg-white/10 p-2.5 rounded-xl border border-white/10">
-            <span class="text-blue-200 block text-[10px]">ચોખા (Cooking Rice):</span>
-            <span id="riceVal" class="text-2xl font-black text-emerald-300">૨૪.૫</span>
-            <span class="text-blue-200 text-xs">કિ.ગ્રા.</span>
-          </div>
-          <!-- Cooking Oil (Litre) & Dal -->
-          <div class="bg-white/10 p-2.5 rounded-xl border border-white/10">
-            <span class="text-blue-200 block text-[10px]">તેલ અને દાળ:</span>
-            <span id="oilVal" class="text-2xl font-black text-emerald-300">૮.૨</span>
-            <span class="text-blue-200 text-xs">કિ.ગ્રા./લિ.</span>
-          </div>
-        </div>
-
-        <div class="mt-3 pt-2 border-t border-white/15 flex items-center justify-between text-xs text-blue-100">
-          <span id="lastActionText" class="truncate pr-2">છેલ્લો ફેરફાર: સિસ્ટમ સક્રિય</span>
-          <span id="lastActionTime" class="text-[11px] text-blue-200 shrink-0">આજે</span>
-        </div>
-      </div>
-
-      <!-- Meal Consumption Calculator (Morning 30g + Afternoon 50g per Child) -->
-      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 space-y-3">
-        <div class="flex items-center justify-between border-b pb-2">
-          <div>
-            <h2 class="text-sm font-bold text-slate-800">🍽️ દૈનિક ભોજન ગણતરી (Daily Meal Cooked)</h2>
-            <p class="text-[10px] text-slate-500">હાજરી મુજબ નિયત ગ્રામ આપમેળે ગણાશે</p>
-          </div>
-          <span class="text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded-lg font-bold">નિયત રેશિયો</span>
-        </div>
-
-        <!-- Attendance Stepper for Meal Multiplier -->
-        <div class="bg-slate-50 p-2.5 rounded-xl border flex items-center justify-between">
-          <div>
-            <span class="text-xs font-bold text-slate-700 block">આજે હાજર બાળકો:</span>
-            <span class="text-[10px] text-slate-500">નોંધાયેલ: ૩૦ બાળકો</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <button onclick="adjustPresentChildren(-1)" class="w-8 h-8 rounded-lg bg-white border border-slate-300 font-bold text-lg active:scale-95 shadow-xs">-</button>
-            <span id="presentKidsDisplay" class="font-black text-xl text-blue-900 w-8 text-center font-mono">20</span>
-            <button onclick="adjustPresentChildren(1)" class="w-8 h-8 rounded-lg bg-white border border-slate-300 font-bold text-lg active:scale-95 shadow-xs">+</button>
-          </div>
-        </div>
-
-        <!-- Meal Type Selector: Morning 30g vs Afternoon 50g -->
-        <div class="grid grid-cols-2 gap-2">
-          <label onclick="setMealType('morning')" id="mealCardMorning" class="cursor-pointer p-2.5 rounded-xl border border-blue-600 bg-blue-50/60 flex flex-col justify-between">
-            <div class="flex justify-between items-center">
-              <span class="text-xs font-bold text-slate-900">સવારનો નાસ્તો</span>
-              <span class="text-[10px] font-black text-blue-700 bg-blue-100 px-1.5 py-0.2 rounded">30g / બાળક</span>
-            </div>
-            <p id="morningCalcText" class="text-[11px] font-extrabold text-blue-900 mt-1.5">કુલ: ૬૦૦ ગ્રામ</p>
-          </label>
-
-          <label onclick="setMealType('afternoon')" id="mealCardAfternoon" class="cursor-pointer p-2.5 rounded-xl border border-slate-200 bg-white flex flex-col justify-between">
-            <div class="flex justify-between items-center">
-              <span class="text-xs font-bold text-slate-900">બપોરનું ભોજન</span>
-              <span class="text-[10px] font-black text-amber-700 bg-amber-100 px-1.5 py-0.2 rounded">50g / બાળક</span>
-            </div>
-            <p id="afternoonCalcText" class="text-[11px] font-bold text-slate-500 mt-1.5">કુલ: ૧,૦૦૦ ગ્રામ (1 kg)</p>
-          </label>
-        </div>
-
-        <!-- Item Deduction Selector -->
-        <div>
-          <label class="block text-[11px] font-bold text-slate-600 mb-1">કઈ સામગ્રીમાંથી કપાત કરવી?</label>
-          <select id="mealIngredientSelect" class="w-full bg-slate-50 border rounded-xl p-2 text-xs font-bold text-slate-800">
-            <option value="rice">ચોખા (Cooking Rice - 35g/50g Portion)</option>
-            <option value="dal">તુવેર દાળ / ચણા (Dal - 15g Portion)</option>
-            <option value="balshakti">બાલ શક્તિ પેકેટ (Sheera Recipe)</option>
-          </select>
-        </div>
-
-        <!-- Deduct Meal Button -->
-        <button onclick="handleMealDeduction()" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-orange-600 to-amber-700 hover:from-orange-700 hover:to-amber-800 active:scale-[0.98] text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md transition">
-          <span>🍴 હાજરી મુજબ ભોજન વપરાશ સ્ટોકમાંથી બાદ કરો</span>
+    <!-- Screen Switcher Tabs (Demo Toggle between Image 1 and Image 2) -->
+    <div class="bg-white border-b border-slate-200 px-4 py-2 flex items-center justify-between z-20">
+      <span class="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider">સ્ક્રીન પસંદ કરો:</span>
+      <div class="flex gap-1.5">
+        <button onclick="switchScreen('screen-meal')" id="tabBtnMeal" class="px-3 py-1 rounded-xl text-xs font-extrabold bg-emerald-700 text-white shadow-xs">
+          Meal 1 (Breakfast)
         </button>
-      </div>
-
-      <!-- Action Steppers (Inward Stock) -->
-      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 space-y-3">
-        <div class="flex items-center justify-between border-b pb-2">
-          <div>
-            <h2 id="inwardTitle" class="text-sm font-bold text-slate-800">+ સ્ટોક આવક નોંધણી (Stock Inward)</h2>
-            <p id="inwardSub" class="text-[10px] text-slate-500 font-medium">ગોડાઉન અથવા બજારમાંથી આવેલ નવો માલ</p>
-          </div>
-          <select id="inwardItemType" onchange="updateInwardUnitText()" class="text-xs border rounded-lg p-1 bg-slate-50 font-bold text-slate-700">
-            <option value="balshakti">બાલ શક્તિ (પેકેટ)</option>
-            <option value="matrushakti">માતૃ/પૂર્ણા શક્તિ (પેકેટ)</option>
-            <option value="rice">ચોખા (કિ.ગ્રા.)</option>
-            <option value="oil">તેલ (લિટર)</option>
-            <option value="dal">તુવેર દાળ/ચણા (કિ.ગ્રા.)</option>
-          </select>
-        </div>
-
-        <div class="bg-slate-50 rounded-xl p-2.5 flex items-center justify-between border border-slate-200">
-          <button onclick="adjustInward(-5)" class="w-10 h-10 rounded-lg bg-white border text-emerald-800 font-black text-xl active:scale-95 shadow-xs">−</button>
-          <div class="text-center">
-            <div id="inwardStepDisplay" class="text-2xl font-black text-slate-800">+૨૫</div>
-            <div id="inwardUnitText" class="text-[10px] text-slate-500 font-bold">પેકેટ (Packets)</div>
-          </div>
-          <button onclick="adjustInward(5)" class="w-10 h-10 rounded-lg bg-white border text-emerald-800 font-black text-xl active:scale-95 shadow-xs">+</button>
-        </div>
-
-        <button onclick="handleInwardSubmit()" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 active:scale-[0.98] text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md transition">
-          <span id="inwardBtnText">+ સ્ટોકમાં નવો જથ્થો જમા કરો</span>
+        <button onclick="switchScreen('screen-stock')" id="tabBtnStock" class="px-3 py-1 rounded-xl text-xs font-extrabold bg-slate-100 text-slate-600 hover:bg-slate-200">
+          Stock Usage
         </button>
-      </div>
-
-      <!-- Quick Action Buttons -->
-      <div class="grid grid-cols-3 gap-2">
-        <button onclick="exportBalancePDF()" id="pdfBtn" class="py-2.5 px-2 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-bold text-xs flex flex-col items-center justify-center gap-1 shadow-md active:scale-95 transition">
-          <span class="text-sm">📄</span>
-          <span id="pdfBtnText" class="text-[11px] leading-tight text-center">પીડીએફ પત્રક</span>
-        </button>
-        <button onclick="openHistoryModal()" class="py-2.5 px-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 active:scale-95 text-xs font-semibold flex flex-col items-center justify-center gap-1 shadow-2xs transition">
-          <span class="text-sm">📋</span>
-          <span id="historyBtnText" class="text-[11px] leading-tight text-center">હિસાબ રજીસ્ટર</span>
-        </button>
-        <button onclick="shareWhatsAppReport()" class="py-2.5 px-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 hover:bg-emerald-100 active:scale-95 text-xs font-semibold flex flex-col items-center justify-center gap-1 shadow-2xs transition">
-          <span class="text-sm">📲</span>
-          <span id="whatsappBtnText" class="text-[11px] leading-tight text-center">વોટ્સએપ શેર</span>
-        </button>
-      </div>
-
-      <!-- Firebase Link Badge -->
-      <div class="p-3 rounded-xl bg-blue-50/70 border border-blue-200 text-slate-700 text-xs space-y-1">
-        <div class="font-bold text-blue-900 flex items-center justify-between">
-          <span>Firebase Realtime Database:</span>
-          <span id="fbLiveTag" class="text-[10px] font-bold text-emerald-700">લાઈવ સિંક સક્રિય</span>
-        </div>
-        <div class="font-mono text-[10px] text-blue-700 break-all">https://poshan-setu-default-rtdb.firebaseio.com/</div>
-        <div class="text-[10px] text-slate-500">• અંદાજિત કપાત અને સ્ટોક આપોઆપ સુપરવાઈઝર સ્ક્રીન પર સિંક થાય છે.</div>
-      </div>
-
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-slate-50 border-t border-slate-200 px-4 py-2.5 text-center text-[11px] text-slate-500 flex items-center justify-between">
-      <span>પોષણસેતુ • વડતાલ-૦૪</span>
-      <span>AWC-10103</span>
-    </footer>
-  </div>
-
-  <!-- History Modal -->
-  <div id="historyModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3">
-    <div class="bg-white rounded-3xl w-full max-w-md max-h-[85vh] flex flex-col shadow-2xl overflow-hidden border border-slate-200">
-      <div class="bg-blue-800 text-white px-5 py-4 flex items-center justify-between">
-        <div>
-          <h3 id="modalTitle" class="text-base font-bold">સ્ટોક હિસાબ અને ઓડિટ રજીસ્ટર</h3>
-          <p class="text-xs text-blue-200">Transaction History • આંગણવાડી ૦૪ વડતાલ</p>
-        </div>
-        <button onclick="closeHistoryModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center">✕</button>
-      </div>
-      <div class="p-2.5 bg-blue-50 border-b border-blue-200 flex items-center justify-between">
-        <span class="text-xs font-bold text-blue-900" id="recordCountText">કુલ નોંધણીઓ</span>
-        <button onclick="exportBalancePDF()" class="px-2.5 py-1 rounded-lg bg-blue-700 hover:bg-blue-800 text-white text-xs font-bold flex items-center gap-1 shadow-xs">
-          📄 PDF ડાઉનલોડ
-        </button>
-      </div>
-      <div id="historyList" class="flex-1 overflow-y-auto p-4 space-y-2"></div>
-      <div class="p-3 bg-slate-100 border-t border-slate-200 flex justify-end">
-        <button onclick="closeHistoryModal()" class="px-4 py-2 rounded-xl bg-blue-700 text-white font-bold text-xs hover:bg-blue-800">બંધ કરો (Close)</button>
       </div>
     </div>
-  </div>
 
-  <!-- Business Logic & Firebase Engine -->
+    <!-- ========================================================================= -->
+    <!-- SCREEN 1: MEAL USAGE ENTRY (MATCHES poshan_setu_meal_usage_entry.jpg)     -->
+    <!-- ========================================================================= -->
+    <div id="screen-meal" class="flex-1 flex flex-col p-4 space-y-4 overflow-y-auto no-scrollbar">
+      
+      <!-- Top Brand Header -->
+      <div class="flex items-center justify-between">
+        <button onclick="alert('Navigating Back')" class="w-10 h-10 rounded-full bg-[#EAF7EE] flex items-center justify-center text-emerald-800 shadow-xs active:scale-95 transition">
+          <i data-lucide="chevron-left" class="w-5 h-5 stroke-[2.5]"></i>
+        </button>
+
+        <div class="flex flex-col items-center">
+          <div class="flex items-center gap-1.5">
+            <!-- PoshanSetu Three-dot Emblem -->
+            <div class="w-6 h-6 flex items-center justify-center">
+              <svg viewBox="0 0 40 40" class="w-5 h-5">
+                <circle cx="20" cy="12" r="5" fill="#15803D" />
+                <circle cx="12" cy="26" r="5" fill="#EA580C" />
+                <circle cx="28" cy="26" r="5" fill="#15803D" />
+              </svg>
+            </div>
+            <span class="text-xl font-black text-[#EA580C]">Poshan <span class="text-[#15803D]">Setu</span></span>
+          </div>
+          <p class="text-[10px] font-bold text-emerald-800">Healthy Children, Empowered India</p>
+        </div>
+
+        <div class="w-10"></div>
+      </div>
+
+      <!-- Heading -->
+      <div class="text-center">
+        <h1 class="text-xl font-black text-slate-900 tracking-tight">Meal Usage Entry</h1>
+        <p class="text-[11px] font-semibold text-slate-500 mt-0.5">AWC-04 Vasant Kalyan Centre • Daily Meal Register</p>
+      </div>
+
+      <!-- Main White Rounded Card -->
+      <div class="bg-white rounded-3xl p-4.5 border border-slate-100 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.04)] space-y-3.5">
+        
+        <!-- Meal Type Header -->
+        <div class="bg-[#EAF7EE] rounded-2xl p-3 flex items-center gap-2.5 text-emerald-950">
+          <div class="w-8 h-8 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-800">
+            <i data-lucide="utensils" class="w-4 h-4 stroke-[2.5]"></i>
+          </div>
+          <h2 class="text-base font-extrabold" id="mealTitleText">Meal 1 – Breakfast</h2>
+        </div>
+
+        <!-- No. of Students Present Stepper -->
+        <div>
+          <label class="block text-xs font-bold text-slate-800 mb-1.5">No. of Students Present</label>
+          <div class="flex items-center gap-0 w-fit">
+            <button onclick="changeStudentCount(-1)" class="w-10 h-10 rounded-l-xl bg-[#EAF7EE] hover:bg-[#DCFCE7] active:scale-95 text-emerald-900 font-extrabold text-xl flex items-center justify-center border border-emerald-200">
+              —
+            </button>
+            <input type="number" id="mealStudentCount" value="10" readonly class="w-16 h-10 border-y border-emerald-200 text-center font-black text-base text-slate-900 bg-white focus:outline-none">
+            <button onclick="changeStudentCount(1)" class="w-10 h-10 rounded-r-xl bg-[#EAF7EE] hover:bg-[#DCFCE7] active:scale-95 text-emerald-900 font-extrabold text-xl flex items-center justify-center border border-emerald-200">
+              +
+            </button>
+          </div>
+        </div>
+
+        <!-- Menu Select Dropdown -->
+        <div>
+          <label class="block text-xs font-bold text-slate-800 mb-1.5">Menu – Select</label>
+          <div class="relative">
+            <select id="mealMenuSelect" onchange="updateMealCalculation()" class="w-full bg-white border border-slate-200 rounded-2xl py-3 px-3.5 text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 appearance-none shadow-xs">
+              <option value="sukdi">Sukdi (Atta)</option>
+              <option value="khichdi">Vegetable Khichdi (Rice + Dal)</option>
+              <option value="poha">Poha / Muthiya</option>
+              <option value="sheera">Bal Shakti Sheera</option>
+            </select>
+            <div class="absolute inset-y-0 right-3.5 flex items-center pointer-events-none text-slate-400">
+              <i data-lucide="chevron-down" class="w-4 h-4"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fixed Ratio Indicator -->
+        <div class="bg-[#EAF7EE] rounded-2xl p-3 flex items-center gap-2.5 text-emerald-950">
+          <div class="w-8 h-8 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-800 shrink-0">
+            <i data-lucide="scale" class="w-4 h-4 stroke-[2.2]"></i>
+          </div>
+          <div>
+            <p class="text-xs font-extrabold text-emerald-900">Fixed Ratio</p>
+            <p class="text-[11px] font-semibold text-emerald-700" id="fixedRatioText">30 gm per student</p>
+          </div>
+        </div>
+
+        <!-- Calculation Equation Row -->
+        <div class="bg-[#F8FAF8] rounded-2xl p-3 border border-slate-100 space-y-1">
+          <p class="text-xs font-semibold text-slate-500" id="calcFormulaHead">Present Students × 30 gm</p>
+          <p class="text-sm font-extrabold text-slate-900">
+            <span id="calcMultiplyFormula">10 × 30 gm</span> = <span class="text-slate-900 font-black text-base" id="calcResultGrams">300 gm</span>
+          </p>
+        </div>
+
+        <!-- Total Box -->
+        <div class="bg-[#EAF7EE] rounded-2xl py-3.5 px-4 flex items-center gap-2 border border-emerald-200">
+          <span class="text-base font-extrabold text-emerald-900">Total =</span>
+          <span class="text-2xl font-black text-emerald-900 font-mono tracking-tight" id="finalTotalDisplay">300 gm</span>
+        </div>
+
+        <!-- Note Banner -->
+        <div class="bg-slate-50 rounded-xl p-2.5 border border-slate-200/80 flex items-center gap-2 text-[11px] text-slate-500 font-medium">
+          <i data-lucide="info" class="w-4 h-4 text-slate-400 shrink-0"></i>
+          <span>Note: Total can be adjusted by 100 gm.</span>
+        </div>
+
+        <!-- Confirm Deduction Button -->
+        <button onclick="confirmMealDeduction()" class="w-full bg-[#15803D] hover:bg-[#14532D] active:scale-[0.98] transition-all text-white font-extrabold text-sm py-3.5 px-4 rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-emerald-900/15 cursor-pointer">
+          <i data-lucide="check-circle" class="w-5 h-5 stroke-[2.5]"></i>
+          <span>Confirm Deduction</span>
+        </button>
+
+      </div>
+
+      <!-- Meal Usage Summary Card (Bottom Card) -->
+      <div class="bg-white rounded-3xl p-4 border border-slate-100 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.04)] space-y-2 text-xs">
+        <div class="flex items-center gap-2 text-emerald-900 font-extrabold pb-1">
+          <i data-lucide="file-text" class="w-4 h-4 text-emerald-700"></i>
+          <span>Meal Usage Summary</span>
+        </div>
+        <div class="flex justify-between items-center text-slate-600 font-medium">
+          <span>Students served</span>
+          <span class="font-extrabold text-slate-900 font-mono" id="sumStudentsServed">10</span>
+        </div>
+        <div class="flex justify-between items-center text-slate-600 font-medium border-t border-slate-100 pt-1.5">
+          <span>Planned quantity</span>
+          <span class="font-black text-emerald-800 font-mono" id="sumPlannedQty">300 gm</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- SCREEN 2: STOCK USAGE ENTRY (MATCHES poshan_setu_stock_usage_entry.jpg)   -->
+    <!-- ========================================================================= -->
+    <div id="screen-stock" class="hidden flex-1 flex flex-col p-4 space-y-4 overflow-y-auto no-scrollbar">
+      
+      <!-- Top Brand Header -->
+      <div class="flex items-center justify-between">
+        <button onclick="switchScreen('screen-meal')" class="w-10 h-10 rounded-full bg-[#EAF7EE] flex items-center justify-center text-emerald-800 shadow-xs active:scale-95 transition">
+          <i data-lucide="chevron-left" class="w-5 h-5 stroke-[2.5]"></i>
+        </button>
+
+        <div class="flex flex-col items-center">
+          <div class="flex items-center gap-1.5">
+            <div class="w-6 h-6 flex items-center justify-center">
+              <svg viewBox="0 0 40 40" class="w-5 h-5">
+                <circle cx="20" cy="12" r="5" fill="#15803D" />
+                <circle cx="12" cy="26" r="5" fill="#EA580C" />
+                <circle cx="28" cy="26" r="5" fill="#15803D" />
+              </svg>
+            </div>
+            <span class="text-xl font-black text-[#EA580C]">Poshan <span class="text-[#15803D]">Setu</span></span>
+          </div>
+          <p class="text-[10px] font-bold text-emerald-800">Healthy Children, Empowered India</p>
+        </div>
+
+        <div class="w-10"></div>
+      </div>
+
+      <!-- Heading -->
+      <div class="text-center">
+        <h1 class="text-xl font-black text-slate-900 tracking-tight">Stock Usage Entry</h1>
+        <p class="text-[11px] font-semibold text-slate-500 mt-0.5">AWC-04 Vasant Kalyan Centre • Distribution Register</p>
+      </div>
+
+      <!-- Main Item Distributed Entry Card -->
+      <div class="bg-white rounded-3xl p-4.5 border border-slate-100 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.04)] space-y-3.5">
+        
+        <div class="flex items-center gap-2 text-slate-900 font-extrabold text-base">
+          <div class="w-8 h-8 rounded-xl bg-emerald-100 flex items-center justify-center text-emerald-800">
+            <i data-lucide="package" class="w-5 h-5 stroke-[2.2]"></i>
+          </div>
+          <h2>Item Distributed Entry</h2>
+        </div>
+
+        <!-- Beneficiary Name Select -->
+        <div class="space-y-1">
+          <label class="block text-xs font-bold text-slate-700">Beneficiary Name</label>
+          <div class="relative">
+            <select id="beneficiarySelect" class="w-full bg-white border border-slate-200 rounded-2xl py-2.5 px-3.5 text-xs font-bold text-slate-800 focus:outline-none appearance-none shadow-xs">
+              <option value="Surbhi Rawat">Surbhi Rawat (Lactating Mother)</option>
+              <option value="Shreeya Dube">Shreeya Dube (Pregnant Woman)</option>
+              <option value="Priti Arora">Priti Arora (Adolescent Girl)</option>
+              <option value="Aarav Patel">Aarav Patel (Child 6m-3y)</option>
+            </select>
+            <div class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-slate-400">
+              <i data-lucide="chevron-down" class="w-4 h-4"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Beneficiary Photo Upload Button -->
+        <div class="flex items-center justify-between pt-1">
+          <span class="text-xs font-bold text-slate-700">Beneficiary Photo</span>
+          <button onclick="triggerPhotoUpload()" class="bg-[#EAF7EE] hover:bg-[#DCFCE7] active:scale-95 text-emerald-800 border border-emerald-300 font-extrabold text-xs px-4 py-2 rounded-xl flex items-center gap-1.5 transition">
+            <i data-lucide="camera" class="w-4 h-4 text-emerald-700"></i>
+            <span id="uploadBtnText">Upload</span>
+          </button>
+        </div>
+
+        <!-- Items Distributed List with Steppers -->
+        <div class="pt-2 space-y-2.5">
+          <p class="text-xs font-black text-slate-900">Items Distributed List</p>
+
+          <!-- Rice (kg) -->
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-bold text-slate-800">Rice</span>
+            <div class="flex items-center gap-2">
+              <button onclick="adjustDistItem('distRice', -1)" class="w-8 h-8 rounded-xl bg-[#EAF7EE] flex items-center justify-center font-black text-emerald-900 border border-emerald-200">-</button>
+              <span id="distRice" class="font-black text-slate-900 w-12 text-center font-mono">1 kg</span>
+              <button onclick="adjustDistItem('distRice', 1)" class="w-8 h-8 rounded-xl bg-[#EAF7EE] flex items-center justify-center font-black text-emerald-900 border border-emerald-200">+</button>
+            </div>
+          </div>
+
+          <!-- Oil (litre) -->
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-bold text-slate-800">Oil</span>
+            <div class="flex items-center gap-2">
+              <button onclick="adjustDistItem('distOil', -1)" class="w-8 h-8 rounded-xl bg-[#EAF7EE] flex items-center justify-center font-black text-emerald-900 border border-emerald-200">-</button>
+              <span id="distOil" class="font-black text-slate-900 w-12 text-center font-mono">1 litre</span>
+              <button onclick="adjustDistItem('distOil', 1)" class="w-8 h-8 rounded-xl bg-[#EAF7EE] flex items-center justify-center font-black text-emerald-900 border border-emerald-200">+</button>
+            </div>
+          </div>
+
+          <!-- Bal Shakti (Pack) -->
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-bold text-slate-800">Bal Shakti</span>
+            <div class="flex items-center gap-2">
+              <button onclick="adjustDistItem('distBalShakti', -1)" class="w-8 h-8 rounded-xl bg-[#EAF7EE] flex items-center justify-center font-black text-emerald-900 border border-emerald-200">-</button>
+              <span id="distBalShakti" class="font-black text-slate-900 w-12 text-center font-mono">1 Pack</span>
+              <button onclick="adjustDistItem('distBalShakti', 1)" class="w-8 h-8 rounded-xl bg-[#EAF7EE] flex items-center justify-center font-black text-emerald-900 border border-emerald-200">+</button>
+            </div>
+          </div>
+
+          <!-- Matru Shakti (Pack) -->
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-bold text-slate-800">Matru Shakti</span>
+            <div class="flex items-center gap-2">
+              <button onclick="adjustDistItem('distMatruShakti', -1)" class="w-8 h-8 rounded-xl bg-[#EAF7EE] flex items-center justify-center font-black text-emerald-900 border border-emerald-200">-</button>
+              <span id="distMatruShakti" class="font-black text-slate-900 w-12 text-center font-mono">1 Pack</span>
+              <button onclick="adjustDistItem('distMatruShakti', 1)" class="w-8 h-8 rounded-xl bg-[#EAF7EE] flex items-center justify-center font-black text-emerald-900 border border-emerald-200">+</button>
+            </div>
+          </div>
+
+          <!-- Purna Shakti (Pack) -->
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-bold text-slate-800">Purna Shakti</span>
+            <div class="flex items-center gap-2">
+              <button onclick="adjustDistItem('distPurnaShakti', -1)" class="w-8 h-8 rounded-xl bg-[#EAF7EE] flex items-center justify-center font-black text-emerald-900 border border-emerald-200">-</button>
+              <span id="distPurnaShakti" class="font-black text-slate-900 w-12 text-center font-mono">1 Pack</span>
+              <button onclick="adjustDistItem('distPurnaShakti', 1)" class="w-8 h-8 rounded-xl bg-[#EAF7EE] flex items-center justify-center font-black text-emerald-900 border border-emerald-200">+</button>
+            </div>
+          </div>
+
+          <!-- Atta (kg) -->
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-bold text-slate-800">Atta</span>
+            <div class="flex items-center gap-2">
+              <button onclick="adjustDistItem('distAtta', -1)" class="w-8 h-8 rounded-xl bg-[#EAF7EE] flex items-center justify-center font-black text-emerald-900 border border-emerald-200">-</button>
+              <span id="distAtta" class="font-black text-slate-900 w-12 text-center font-mono">1 kg</span>
+              <button onclick="adjustDistItem('distAtta', 1)" class="w-8 h-8 rounded-xl bg-[#EAF7EE] flex items-center justify-center font-black text-emerald-900 border border-emerald-200">+</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Confirm & Record Button -->
+        <button onclick="confirmStockDistribution()" class="w-full bg-[#15803D] hover:bg-[#14532D] active:scale-[0.98] transition-all text-white font-extrabold text-sm py-3.5 px-4 rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-emerald-900/15 cursor-pointer mt-2">
+          <i data-lucide="check-circle" class="w-5 h-5 stroke-[2.5]"></i>
+          <span>Confirm & Record</span>
+        </button>
+
+      </div>
+
+      <!-- Remaining Balance Footer Card -->
+      <div class="bg-white rounded-3xl p-4 border border-slate-100 shadow-[0_4px_25px_-5px_rgba(0,0,0,0.04)] flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-2xl bg-[#EAF7EE] flex items-center justify-center text-emerald-800">
+            <i data-lucide="store" class="w-5 h-5 stroke-[2.2]"></i>
+          </div>
+          <div>
+            <p class="text-xs font-bold text-slate-900 leading-tight">Remaining Balance after</p>
+            <p class="text-xs font-bold text-slate-900 leading-tight">Distribution</p>
+          </div>
+        </div>
+
+        <div class="text-right">
+          <span class="text-[10px] font-bold text-slate-400 block uppercase">Current Stock</span>
+          <span id="liveBalanceDisplay" class="text-2xl font-black text-emerald-900 font-mono tracking-tight">149</span>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- ======================================================== -->
+  <!-- APPLICATION BUSINESS LOGIC & FIREBASE SYNC ENGINE        -->
+  <!-- ======================================================== -->
   <script>
-    const FIREBASE_URL = "https://poshan-setu-default-rtdb.firebaseio.com/";
-    const AWC_PATH = "awc_10103";
-    const VILLAGE = "૦૪ વડતાલ (આણંદ)";
-    const WORKER = "ગીતાબેન";
+    // -------------------------------------------------------------
+    // 1. FIREBASE REALTIME DATABASE INITIALIZATION
+    // -------------------------------------------------------------
+    const firebaseConfig = {
+      databaseURL: "https://poshan-setu-default-rtdb.firebaseio.com/"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const AWC_PATH = "awc_10103"; // Targeted node for Vasant Kalyan Centre
 
     // Master Inventory State
-    let stockState = JSON.parse(localStorage.getItem('ps_stock_master')) || {
-      balshakti: 124,     // Packets
-      matrushakti: 65,    // Packets
-      rice: 24.5,         // Kilograms
-      oil: 8.2,           // Litres / kg
-      dal: 14.0           // Kilograms
+    let currentTotalStock = 149;
+    let studentCount = 10;
+    let currentRatioGram = 30; // 30g Breakfast, 50g Lunch
+
+    // Distribution quantities
+    let distQuantities = {
+      distRice: 1,
+      distOil: 1,
+      distBalShakti: 1,
+      distMatruShakti: 1,
+      distPurnaShakti: 1,
+      distAtta: 1
     };
 
-    let presentKids = 20;
-    let selectedMeal = 'morning'; // 'morning' (30g) or 'afternoon' (50g)
-    let inwardAmount = 25;
-    let audioOn = true;
-    let currentLang = localStorage.getItem('ps_lang') || 'gu';
-    let db = null;
-    let historyRecords = JSON.parse(localStorage.getItem('ps_history') || '[]');
+    // Screen Router
+    function switchScreen(screenId) {
+      document.getElementById('screen-meal').classList.add('hidden');
+      document.getElementById('screen-stock').classList.add('hidden');
+      document.getElementById(screenId).classList.remove('hidden');
 
-    function toGujarati(num) {
-      const g = ['૦','૧','૨','૩','૪','૫','૬','૭','૮','૯'];
-      return String(num).replace(/[0-9]/g, d => g[parseInt(d, 10)]);
-    }
-
-    function numStr(val) {
-      return currentLang === 'gu' ? toGujarati(val) : String(val);
-    }
-
-    function saveState() {
-      localStorage.setItem('ps_stock_master', JSON.stringify(stockState));
-      localStorage.setItem('ps_history', JSON.stringify(historyRecords));
-      updateUI();
-    }
-
-    // Adjust Headcount and Update Gram Portions
-    function adjustPresentChildren(delta) {
-      presentKids = Math.max(1, Math.min(30, presentKids + delta));
-      document.getElementById('presentKidsDisplay').innerText = presentKids;
-
-      // Morning = 30g * presentKids
-      const morningGrams = presentKids * 30;
-      document.getElementById('morningCalcText').innerText = `કુલ: ${numStr(morningGrams)} ગ્રામ (${(morningGrams/1000).toFixed(2)} kg)`;
-
-      // Afternoon = 50g * presentKids
-      const afternoonGrams = presentKids * 50;
-      document.getElementById('afternoonCalcText').innerText = `કુલ: ${numStr(afternoonGrams)} ગ્રામ (${(afternoonGrams/1000).toFixed(2)} kg)`;
-    }
-
-    function setMealType(type) {
-      selectedMeal = type;
-      if (type === 'morning') {
-        document.getElementById('mealCardMorning').className = "cursor-pointer p-2.5 rounded-xl border border-blue-600 bg-blue-50/60 flex flex-col justify-between";
-        document.getElementById('mealCardAfternoon').className = "cursor-pointer p-2.5 rounded-xl border border-slate-200 bg-white flex flex-col justify-between";
+      if (screenId === 'screen-meal') {
+        document.getElementById('tabBtnMeal').className = "px-3 py-1 rounded-xl text-xs font-extrabold bg-emerald-700 text-white shadow-xs";
+        document.getElementById('tabBtnStock').className = "px-3 py-1 rounded-xl text-xs font-extrabold bg-slate-100 text-slate-600 hover:bg-slate-200";
       } else {
-        document.getElementById('mealCardAfternoon').className = "cursor-pointer p-2.5 rounded-xl border border-amber-600 bg-amber-50/60 flex flex-col justify-between";
-        document.getElementById('mealCardMorning').className = "cursor-pointer p-2.5 rounded-xl border border-slate-200 bg-white flex flex-col justify-between";
+        document.getElementById('tabBtnStock').className = "px-3 py-1 rounded-xl text-xs font-extrabold bg-emerald-700 text-white shadow-xs";
+        document.getElementById('tabBtnMeal').className = "px-3 py-1 rounded-xl text-xs font-extrabold bg-slate-100 text-slate-600 hover:bg-slate-200";
       }
+      lucide.createIcons();
     }
 
-    // Handle Meal Consumption Based on Present Children
-    async function handleMealDeduction() {
-      const ingredient = document.getElementById('mealIngredientSelect').value;
-      const gramPerChild = selectedMeal === 'morning' ? 30 : 50;
-      const totalGrams = presentKids * gramPerChild;
-      const totalKg = totalGrams / 1000;
-
-      if (ingredient === 'rice') {
-        if (stockState.rice < totalKg) {
-          alert("ચેતવણી: ચોખાનો પર્યાપ્ત સ્ટોક નથી!");
-          return;
-        }
-        stockState.rice = +(stockState.rice - totalKg).toFixed(2);
-      } else if (ingredient === 'dal') {
-        if (stockState.dal < totalKg) {
-          alert("ચેતવણી: દાળનો પર્યાપ્ત સ્ટોક નથી!");
-          return;
-        }
-        stockState.dal = +(stockState.dal - totalKg).toFixed(2);
-      } else if (ingredient === 'balshakti') {
-        // Balshakti sheera recipe packet deduction
-        const packetsDeducted = Math.ceil(totalGrams / 500);
-        if (stockState.balshakti < packetsDeducted) {
-          alert("ચેતવણી: બાલ શક્તિ પેકેટ પૂરતા નથી!");
-          return;
-        }
-        stockState.balshakti -= packetsDeducted;
-      }
-
-      const mealLabel = selectedMeal === 'morning' ? 'સવારનો નાસ્તો (30g)' : 'બપોરનું ભોજન (50g)';
-      const actionText = `${mealLabel}: ${presentKids} બાળકો (${totalGrams}g વપરાશ)`;
-      const timestamp = Date.now();
-
-      historyRecords.unshift({
-        balanceDesc: `Rice: ${stockState.rice}kg, BalShakti: ${stockState.balshakti}pkts`,
-        lastAction: actionText,
-        change: `-${totalKg} kg / portions`,
-        timestamp: timestamp,
-        village: VILLAGE,
-        note: `હાજર બાળકો: ${presentKids}`
-      });
-
-      saveState();
-      playTone('deduct');
-      showToast(`${mealLabel} મુજબ ${totalGrams} ગ્રામ વપરાશ નોંધાઈ ગયો!`);
-
-      // Push to Firebase Realtime Database
-      if (db) {
-        try {
-          await db.ref(`${AWC_PATH}/stock`).set(stockState);
-          await db.ref(`${AWC_PATH}/audit_logs`).push({
-            type: 'MEAL_DEDUCTION',
-            meal: selectedMeal,
-            headcount: presentKids,
-            gramsUsed: totalGrams,
-            ingredient: ingredient,
-            timestamp: new Date().toLocaleTimeString(),
-            date: new Date().toLocaleDateString()
-          });
-        } catch(e) {
-          console.error("Firebase write error:", e);
-        }
-      }
+    // --- MEAL USAGE CALCULATOR (IMAGE 1) ---
+    function changeStudentCount(delta) {
+      studentCount = Math.max(1, studentCount + delta);
+      document.getElementById('mealStudentCount').value = studentCount;
+      updateMealCalculation();
     }
 
-    // Inward Steppers & Submission
-    function adjustInward(delta) {
-      inwardAmount = Math.max(1, inwardAmount + delta);
-      document.getElementById('inwardStepDisplay').innerText = `+${numStr(inwardAmount)}`;
-    }
-
-    function updateInwardUnitText() {
-      const type = document.getElementById('inwardItemType').value;
-      const isPacket = (type === 'balshakti' || type === 'matrushakti');
-      document.getElementById('inwardUnitText').innerText = isPacket ? 'પેકેટ (Packets)' : 'કિલો / લિટર (kg/L)';
-    }
-
-    async function handleInwardSubmit() {
-      const itemKey = document.getElementById('inwardItemType').value;
-      stockState[itemKey] = +(stockState[itemKey] + inwardAmount).toFixed(1);
-
-      const timestamp = Date.now();
-      const actionName = `સ્ટોક આવક: +${inwardAmount}`;
-
-      historyRecords.unshift({
-        balanceDesc: `${itemKey}: ${stockState[itemKey]}`,
-        lastAction: actionName,
-        change: `+${inwardAmount}`,
-        timestamp: timestamp,
-        village: VILLAGE,
-        note: 'સરકારી ગોડાઉન સપ્લાય'
-      });
-
-      saveState();
-      playTone('add');
-      showToast(`+${numStr(inwardAmount)} સ્ટોક સફળતાપૂર્વક જમા થયો!`);
-
-      if (db) {
-        try {
-          await db.ref(`${AWC_PATH}/stock`).set(stockState);
-          await db.ref(`${AWC_PATH}/audit_logs`).push({
-            type: 'STOCK_INWARD',
-            item: itemKey,
-            quantity: inwardAmount,
-            newBalance: stockState[itemKey],
-            timestamp: new Date().toLocaleTimeString(),
-            date: new Date().toLocaleDateString()
-          });
-        } catch(e) {
-          console.error("Firebase write error:", e);
-        }
-      }
-    }
-
-    function updateUI() {
-      const isGu = currentLang === 'gu';
+    function updateMealCalculation() {
+      const menu = document.getElementById('mealMenuSelect').value;
       
-      document.getElementById('balshaktiVal').innerText = numStr(stockState.balshakti);
-      document.getElementById('matrushaktiVal').innerText = numStr(stockState.matrushakti);
-      document.getElementById('riceVal').innerText = numStr(stockState.rice);
-      document.getElementById('oilVal').innerText = numStr(stockState.oil);
+      // Determine ratio
+      if (menu === 'sukdi' || menu === 'sheera') {
+        currentRatioGram = 30; // Morning Breakfast Ratio
+        document.getElementById('mealTitleText').innerText = "Meal 1 – Breakfast";
+      } else {
+        currentRatioGram = 50; // Afternoon Meal Ratio
+        document.getElementById('mealTitleText').innerText = "Meal 2 – Lunch (50 gm)";
+      }
 
-      if (historyRecords.length > 0) {
-        document.getElementById('lastActionText').innerText = historyRecords[0].lastAction;
-        document.getElementById('lastActionTime').innerText = formatTime(historyRecords[0].timestamp);
+      document.getElementById('fixedRatioText').innerText = `${currentRatioGram} gm per student`;
+      document.getElementById('calcFormulaHead').innerText = `Present Students × ${currentRatioGram} gm`;
+
+      const totalGrams = studentCount * currentRatioGram;
+      document.getElementById('calcMultiplyFormula').innerText = `${studentCount} × ${currentRatioGram} gm`;
+      document.getElementById('calcResultGrams').innerText = `${totalGrams} gm`;
+      document.getElementById('finalTotalDisplay').innerText = `${totalGrams} gm`;
+
+      // Summary Card
+      document.getElementById('sumStudentsServed').innerText = studentCount;
+      document.getElementById('sumPlannedQty').innerText = `${totalGrams} gm`;
+    }
+
+    async function confirmMealDeduction() {
+      const totalGrams = studentCount * currentRatioGram;
+      const menuName = document.getElementById('mealMenuSelect').options[document.getElementById('mealMenuSelect').selectedIndex].text;
+
+      // Deduct equivalent packets/weight from stock
+      const packetsEquivalent = Math.ceil(totalGrams / 500);
+      currentTotalStock = Math.max(0, currentTotalStock - packetsEquivalent);
+      document.getElementById('liveBalanceDisplay').innerText = currentTotalStock;
+
+      showToast(`Deducted ${totalGrams} gm for ${studentCount} students.`);
+
+      // Sync to Firebase
+      try {
+        await db.ref(`${AWC_PATH}/meal_logs`).push({
+          meal: document.getElementById('mealTitleText').innerText,
+          menu: menuName,
+          studentsServed: studentCount,
+          portionRatio: `${currentRatioGram} gm/student`,
+          totalGrams: totalGrams,
+          remainingTotalStock: currentTotalStock,
+          timestamp: new Date().toLocaleTimeString(),
+          date: new Date().toLocaleDateString()
+        });
+
+        await db.ref(`${AWC_PATH}/stock/currentTotal`).set(currentTotalStock);
+      } catch (err) {
+        console.error("Firebase Sync Error:", err);
       }
     }
 
-    function formatTime(ts) {
-      if (!ts) return currentLang === 'gu' ? 'હમણાં જ' : 'Just now';
-      const d = new Date(ts);
-      const h = d.getHours() % 12 || 12;
-      const m = d.getMinutes().toString().padStart(2, '0');
-      const ampm = d.getHours() >= 12 ? 'PM' : 'AM';
-      return `${h}:${m} ${ampm}`;
+    // --- STOCK USAGE ENTRY (IMAGE 2) ---
+    function adjustDistItem(id, delta) {
+      distQuantities[id] = Math.max(0, distQuantities[id] + delta);
+      const unit = id.includes('Rice') || id.includes('Atta') ? 'kg' : (id.includes('Oil') ? 'litre' : 'Pack');
+      document.getElementById(id).innerText = `${distQuantities[id]} ${unit}`;
     }
 
-    function toggleLanguage() {
-      currentLang = currentLang === 'gu' ? 'en' : 'gu';
-      localStorage.setItem('ps_lang', currentLang);
-      document.getElementById('langBtnText').innerText = currentLang === 'gu' ? 'English' : 'ગુજરાતી';
-      updateUI();
-      adjustPresentChildren(0);
-      showToast(currentLang === 'gu' ? 'ભાષા: ગુજરાતી' : 'Language: English');
+    function triggerPhotoUpload() {
+      showToast("📸 Camera photo captured successfully!");
+      document.getElementById('uploadBtnText').innerText = "Uploaded ✓";
     }
 
-    function playTone(type) {
-      if (!audioOn) return;
+    async function confirmStockDistribution() {
+      const beneficiary = document.getElementById('beneficiarySelect').value;
+      const totalPktDeducted = distQuantities.distBalShakti + distQuantities.distMatruShakti + distQuantities.distPurnaShakti;
+      
+      currentTotalStock = Math.max(0, currentTotalStock - totalPktDeducted);
+      document.getElementById('liveBalanceDisplay').innerText = currentTotalStock;
+
+      showToast(`Recorded distribution for ${beneficiary}!`);
+
+      // Push to Firebase
       try {
-        const AudioCtx = window.AudioContext || window.webkitAudioContext;
-        if (!AudioCtx) return;
-        const ctx = new AudioCtx();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.frequency.setValueAtTime(type === 'add' ? 600 : 450, ctx.currentTime);
-        gain.gain.setValueAtTime(0.1, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
-        osc.start();
-        osc.stop(ctx.currentTime + 0.15);
-      } catch(e) {}
+        await db.ref(`${AWC_PATH}/distribution_logs`).push({
+          beneficiary: beneficiary,
+          items: distQuantities,
+          totalPacketsDeducted: totalPktDeducted,
+          remainingStock: currentTotalStock,
+          timestamp: new Date().toLocaleTimeString(),
+          date: new Date().toLocaleDateString()
+        });
+
+        await db.ref(`${AWC_PATH}/stock/currentTotal`).set(currentTotalStock);
+      } catch (err) {
+        console.error("Firebase Sync Error:", err);
+      }
     }
 
-    function toggleAudio() {
-      audioOn = !audioOn;
-      document.getElementById('audioBtn').innerText = audioOn ? '🔊' : '🔇';
-    }
-
+    // Toast Helpers
+    let toastTimeout;
     function showToast(msg) {
+      clearTimeout(toastTimeout);
       const toast = document.getElementById('toast');
       document.getElementById('toastMsg').innerText = msg;
       toast.classList.remove('hidden');
-      setTimeout(() => toast.classList.add('hidden'), 3500);
+      toastTimeout = setTimeout(() => hideToast(), 3200);
     }
-    function hideToast() { document.getElementById('toast').classList.add('hidden'); }
-
-    function openHistoryModal() {
-      const container = document.getElementById('historyList');
-      document.getElementById('recordCountText').innerText = `કુલ નોંધણીઓ: ${numStr(historyRecords.length)}`;
-      container.innerHTML = historyRecords.map(item => `
-        <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
-          <div>
-            <div class="text-xs font-bold text-slate-800">${item.lastAction}</div>
-            <div class="text-[10px] text-slate-400">${formatTime(item.timestamp)} • ${item.note || ''}</div>
-          </div>
-          <div class="text-right">
-            <span class="text-xs font-black ${item.change.includes('+') ? 'text-emerald-700' : 'text-amber-700'}">${item.change}</span>
-          </div>
-        </div>
-      `).join('');
-      document.getElementById('historyModal').classList.remove('hidden');
+    function hideToast() {
+      document.getElementById('toast').classList.add('hidden');
     }
 
-    function closeHistoryModal() {
-      document.getElementById('historyModal').classList.add('hidden');
-    }
+    // Startup Initialization
+    window.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+      updateMealCalculation();
 
-    function shareWhatsAppReport() {
-      const msg = `*પોષણસેતુ આંગણવાડી સ્ટોક પત્રક*\nકેન્દ્ર: ${VILLAGE}\nકાર્યકર: ${WORKER}\nબાલ શક્તિ: ${stockState.balshakti} પેકેટ\nચોખા: ${stockState.rice} કિ.ગ્રા.\nતેલ: ${stockState.oil} લિટર\nદાળ: ${stockState.dal} કિ.ગ્રા.\n_PoshanSetu Gujarat_`;
-      window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(msg), '_blank');
-    }
-
-    function exportBalancePDF() {
-      try {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF('p', 'mm', 'a4');
-        doc.setFillColor(30, 64, 175);
-        doc.rect(0, 0, 210, 35, 'F');
-        doc.setTextColor(255, 255, 255);
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(16);
-        doc.text('POSHANSETU - WCDD ANGANWADI STOCK REPORT', 14, 15);
-        doc.setFontSize(10);
-        doc.text('Center: 04 - Vadtal (Anand) | Worker: Geetaben', 14, 23);
-        doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 30);
-
-        const rows = [
-          ['1', 'Bal Shakti (Micro-nutrients)', `${stockState.balshakti} Packets`, 'Optimal (THR)'],
-          ['2', 'Matru / Purna Shakti', `${stockState.matrushakti} Packets`, 'Optimal (THR)'],
-          ['3', 'Cooking Rice (Fortified)', `${stockState.rice} kg`, 'Daily Cooked Meal'],
-          ['4', 'Cooking Oil (Fortified)', `${stockState.oil} Litres`, 'Daily Cooked Meal'],
-          ['5', 'Tuver Dal / Chana', `${stockState.dal} kg`, 'Daily Cooked Meal']
-        ];
-
-        doc.autoTable({
-          startY: 45,
-          head: [['#', 'Commodity Name', 'Closing Balance', 'Utilization Mode']],
-          body: rows,
-          headStyles: { fillColor: [30, 64, 175], textColor: 255 }
-        });
-
-        doc.save(`PoshanSetu_Stock_Vadtal_${new Date().toISOString().slice(0,10)}.pdf`);
-        showToast('PDF ડાઉનલોડ સફળ!');
-      } catch(e) {
-        alert('PDF Export Error: ' + e.message);
-      }
-    }
-
-    // Initialize Firebase and Clock
-    try {
-      if (window.firebase) {
-        let app = window.firebase.apps && window.firebase.apps.length > 0 
-          ? window.firebase.apps[0] 
-          : firebase.initializeApp(firebaseConfig);
-        db = firebase.database(app);
-
-        // Listen for live updates
-        db.ref(`${AWC_PATH}/stock`).on('value', (snap) => {
-          const val = snap.val();
-          if (val) {
-            stockState = val;
-            saveState();
-          }
-        });
-      }
-    } catch(e) {
-      console.warn("RTDB Initialization:", e);
-    }
-
-    function setOnlineBadge(online) {
-      const text = document.getElementById('statusText');
-      const badge = document.getElementById('statusBadge');
-      const dot = document.getElementById('statusDot');
-      const ping = document.getElementById('statusPing');
-
-      if (online) {
-        text.innerText = currentLang === 'gu' ? 'ઓનલાઇન (Online)' : 'Online';
-        badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold backdrop-blur-md bg-emerald-500/25 border border-emerald-400/40 text-emerald-200 shadow-xs';
-        dot.className = 'relative inline-flex rounded-full h-2 w-2 bg-emerald-400';
-        ping.className = 'animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75';
-      } else {
-        text.innerText = currentLang === 'gu' ? 'ઓફલાઇન (Offline)' : 'Offline';
-        badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold backdrop-blur-md bg-rose-500/25 border border-rose-400/40 text-rose-200 shadow-xs';
-        dot.className = 'relative inline-flex rounded-full h-2 w-2 bg-rose-400';
-        ping.className = 'hidden';
-      }
-    }
-
-    window.addEventListener('online', () => setOnlineBadge(true));
-    window.addEventListener('offline', () => setOnlineBadge(false));
-
-    updateUI();
-    adjustPresentChildren(0);
+      // Listen for Live Stock Updates from Firebase
+      db.ref(`${AWC_PATH}/stock/currentTotal`).on('value', (snap) => {
+        const val = snap.val();
+        if (val !== null) {
+          currentTotalStock = val;
+          document.getElementById('liveBalanceDisplay').innerText = currentTotalStock;
+        }
+      });
+    });
   </script>
 </body>
 </html>
