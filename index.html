@@ -2,833 +2,741 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-  <title>PoshanSetu (પોષણ સેતુ) - Anganwadi Worker Mobile App</title>
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PoshanSetu - Supervisor Desktop Monitoring Portal</title>
+  <meta name="description" content="Official Sector Supervisor Desktop Monitoring Portal for PoshanSetu - ICDS & Anganwadi Administration, Gujarat" />
+  <link rel="icon" href="/icon-192.png" type="image/png" />
+
+  <!-- Google Fonts: Plus Jakarta Sans & Noto Sans Gujarati -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Gujarati:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
         extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', '"Noto Sans Gujarati"', 'system-ui', 'sans-serif'],
+          },
           colors: {
-            forest: {
-              700: '#15803D',
-              800: '#166534',
-              900: '#14532D'
+            poshan: {
+              green: '#15803D',
+              darkgreen: '#166534',
+              orange: '#F26A1B',
+              lightgreen: '#EAF7EE',
+              amber: '#D97706',
             }
           }
         }
       }
-    };
+    }
   </script>
 
-  <!-- Google Fonts: Plus Jakarta Sans & Noto Sans Gujarati -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Gujarati:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-  <!-- Lucide Icons -->
+  <!-- Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
 
-  <!-- Firebase v10 Compat SDK -->
+  <!-- Firebase v10 Compat SDK for Realtime Database -->
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 
-  <!-- jsPDF & AutoTable for Offline Report Generation -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
-
-  <!-- React 18 / Babel Standalone -->
-  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
   <style>
     body {
-      font-family: 'Plus Jakarta Sans', 'Noto Sans Gujarati', system-ui, -apple-system, sans-serif;
-      background-color: #e2e8f0;
-      color: #0f172a;
-      -webkit-tap-highlight-color: transparent;
+      font-family: 'Plus Jakarta Sans', 'Noto Sans Gujarati', sans-serif;
+      background-color: #F8FAFC;
     }
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    @media print {
-      @page { size: A4 portrait; margin: 8mm; }
-      body { background: white !important; }
-      .no-print { display: none !important; }
-      main { max-width: 100% !important; border: none !important; box-shadow: none !important; }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #F1F5F9;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #CBD5E1;
+      border-radius: 4px;
     }
   </style>
 </head>
-<body class="selection:bg-emerald-200">
-  <div id="root"></div>
+<body class="min-h-screen text-slate-800 flex flex-col selection:bg-emerald-200">
 
-  <!-- APPLICATION CODE -->
-  <script type="text/babel">
-    const { useState, useEffect, useRef } = React;
-
-    // --- TRANSLATIONS DICTIONARY ---
-    const translations = {
-      en: {
-        appTitle: "Poshan Setu",
-        tagline: "Healthy Children, Empowered India",
-        workerName: "Shrimati Bhavnaben Patel",
-        workerRole: "Anganwadi Worker / AWW",
-        centreName: "04 Vadtal",
-        centreCode: "AWVAD04",
-        online: "Online",
-        offline: "Offline",
-        welcomeTitle: "Welcome to Poshan Setu",
-        welcomeSubtitle: "Application for Anganwadi Workers",
-        loginPrompt: "Please sign in to access daily registers & pantry management",
-        userIdLabel: "User ID",
-        passwordLabel: "Password",
-        loginButton: "Sign In to Poshan Setu",
-        stockReceived: "Stock Received",
-        stockUsage: "Stock Usage",
-        balanceRemaining: "Balance Remaining\n(Item-wise)",
-        setuShareExchange: "Setu Share\nExchange",
-        dailyFoodMenu: "Daily\nFood Menu",
-        studentAttendance: "Student\nAttendance",
-        mealPhotoUpload: "Meal Photo\nUpload",
-        smartRation: "Smart\nRation",
-        downloadReport: "Download\nReport",
-        home: "Home",
-        help: "Help",
-        centreDetails: "Centre Details",
-        profile: "Profile",
-        back: "Back",
-        present: "Present",
-        absent: "Absent"
-      },
-      gu: {
-        appTitle: "પોષણ સેતુ",
-        tagline: "સશક્ત ભારત, સ્વસ્થ બાળક",
-        workerName: "શ્રીમતી ભાવનાબેન પટેલ",
-        workerRole: "આંગણવાડી કાર્યકર (AWW)",
-        centreName: "૦૪ વડતાલ",
-        centreCode: "AWVAD04",
-        online: "ઓનલાઇન",
-        offline: "ઓફલાઇન",
-        welcomeTitle: "પોષણ સેતુમાં સ્વાગત છે",
-        welcomeSubtitle: "આંગણવાડી કાર્યકરો માટેની એપ્લિકેશન",
-        loginPrompt: "દૈનિક રજિસ્ટર અને સ્ટોક વ્યવસ્થાપન માટે કૃપા કરીને લોગિન કરો",
-        userIdLabel: "વપરાશકર્તા આઈડી (User ID)",
-        passwordLabel: "પાસવર્ડ (Password)",
-        loginButton: "પોષણસેતુમાં લોગિન કરો",
-        stockReceived: "સ્ટોક આવક",
-        stockUsage: "સ્ટોક વપરાશ",
-        balanceRemaining: "બાકી જથ્થો\n(વસ્તુ મુજબ)",
-        setuShareExchange: "સેતુ શેર\nવિનિમય",
-        dailyFoodMenu: "દૈનિક\nભોજન મેનૂ",
-        studentAttendance: "બાળકોની\nહાજરી",
-        mealPhotoUpload: "ભોજન ફોટો\nઅપલોડ",
-        smartRation: "સ્માર્ટ\nરેશન",
-        downloadReport: "રિપોર્ટ\nડાઉનલોડ",
-        home: "મુખ્ય પેજ",
-        help: "સહાય",
-        centreDetails: "કેન્દ્ર વિગત",
-        profile: "પ્રોફાઇલ",
-        back: "પાછા જાઓ",
-        present: "હાજર",
-        absent: "ગેરહાજર"
-      }
-    };
-
-    // --- DATA STORE INITIALS ---
-    const INITIAL_STUDENTS = [
-      { id: 1, rollNo: '01', name: 'Aarav Patel', nameGu: 'આરવ પટેલ', age: '4y', present: true },
-      { id: 2, rollNo: '02', name: 'Diya Shah', nameGu: 'દીયા શાહ', age: '5y', present: true },
-      { id: 3, rollNo: '03', name: 'Vihaan Mehta', nameGu: 'વિહાન મહેતા', age: '4y', present: true },
-      { id: 4, rollNo: '04', name: 'Ananya Joshi', nameGu: 'અનન્યા જોશી', age: '3y', present: true },
-      { id: 5, rollNo: '05', name: 'Kabir Parmar', nameGu: 'કબીર પરમાર', age: '5y', present: true },
-      { id: 6, rollNo: '06', name: 'Riya Desai', nameGu: 'રીયા દેસાઈ', age: '4y', present: true },
-      { id: 7, rollNo: '07', name: 'Dev Solanki', nameGu: 'દેવ સોલંકી', age: '5y', present: true },
-      { id: 8, rollNo: '08', name: 'Ishita Vaghela', nameGu: 'ઈશિતા વાઘેલા', age: '3y', present: true },
-      { id: 9, rollNo: '09', name: 'Rudra Makwana', nameGu: 'રુદ્ર મકવાણા', age: '4y', present: true },
-      { id: 10, rollNo: '10', name: 'Priya Chavda', nameGu: 'પ્રિયા ચાવડા', age: '5y', present: true }
-    ];
-
-    const INITIAL_INVENTORY = [
-      { id: 'rice', nameEn: 'Fortified Rice', nameGu: 'ચોખા', unit: 'kg', currentStock: 48, initialStock: 60, minThreshold: 15, batchNo: 'RIC-26-04', expiryDate: '12-2027' },
-      { id: 'oil', nameEn: 'Fortified Edible Oil', nameGu: 'તેલ', unit: 'litre', currentStock: 22, initialStock: 30, minThreshold: 8, batchNo: 'OIL-26-09', expiryDate: '08-2027' },
-      { id: 'bal_shakti', nameEn: 'Bal Shakti Premix', nameGu: 'બાલ શક્તિ', unit: 'Pack', currentStock: 35, initialStock: 50, minThreshold: 12, batchNo: 'BAL-26-22', expiryDate: '06-2027' },
-      { id: 'matru_shakti', nameEn: 'Matru Shakti Premix', nameGu: 'માતૃ શક્તિ', unit: 'Pack', currentStock: 24, initialStock: 35, minThreshold: 10, batchNo: 'MAT-26-18', expiryDate: '07-2027' },
-      { id: 'purna_shakti', nameEn: 'Purna Shakti Premix', nameGu: 'પૂર્ણા શક્તિ', unit: 'Pack', currentStock: 20, initialStock: 30, minThreshold: 8, batchNo: 'PUR-26-05', expiryDate: '07-2027' },
-      { id: 'atta', nameEn: 'Whole Wheat Atta', nameGu: 'ઘઉંનો લોટ', unit: 'kg', currentStock: 50, initialStock: 70, minThreshold: 15, batchNo: 'ATT-26-11', expiryDate: '04-2027' },
-      { id: 'dal', nameEn: 'Tuver Dal', nameGu: 'તુવેર દાળ', unit: 'kg', currentStock: 25, initialStock: 35, minThreshold: 10, batchNo: 'DAL-26-33', expiryDate: '10-2027' }
-    ];
-
-    // --- FIREBASE SYNCHRONIZER ---
-    const AWC_PATH = "awc_awvad04";
-    let dbInstance = null;
-    try {
-      if (!firebase.apps.length) {
-        firebase.initializeApp({ databaseURL: "https://poshan-setu-default-rtdb.firebaseio.com/" });
-      }
-      dbInstance = firebase.database();
-    } catch(e) { console.warn("Firebase Init note", e); }
-
-    function pushRTDB(path, payload, isOnline) {
-      if (!isOnline || !dbInstance) {
-        const queue = JSON.parse(localStorage.getItem('poshansetu_offline_queue') || '[]');
-        queue.push({ path: `${AWC_PATH}/${path}`, payload, timestamp: Date.now() });
-        localStorage.setItem('poshansetu_offline_queue', JSON.stringify(queue));
-        return;
-      }
-      try {
-        dbInstance.ref(`${AWC_PATH}/${path}`).push({ ...payload, syncedAt: new Date().toISOString() });
-      } catch(e) { console.warn("Push error", e); }
-    }
-
-    function updateRTDBInventory(invMap, isOnline) {
-      if (!isOnline || !dbInstance) return;
-      try {
-        dbInstance.ref(`${AWC_PATH}/inventory`).set({ ...invMap, lastUpdated: new Date().toISOString() });
-      } catch(e) {}
-    }
-
-    // --- COMPONENTS ---
-    const Logo = ({ size = 'sm' }) => (
-      <div className="flex items-center gap-2">
-        <div className={size === 'lg' ? 'w-16 h-16' : 'w-9 h-9'}>
-          <svg viewBox="0 0 100 100" fill="none" className="w-full h-full">
-            <path d="M32 20C26 22 20 30 22 38C30 38 38 30 38 22C38 20 35 19 32 20Z" fill="#529E2F"/>
-            <path d="M68 18C74 20 80 28 78 36C70 36 62 28 62 20C62 18 65 17 68 18Z" fill="#529E2F"/>
-            <circle cx="52" cy="19" r="6.5" fill="#E85D04"/>
-            <path d="M40 9C38 15 44 26 50 33C56 40 59 48 53 58C50 63 47 62 47 62C52 56 57 46 51 38C45 30 36 21 38 11C38.5 9 39.5 9 40 9Z" fill="#E85D04"/>
-            <circle cx="36" cy="42" r="5" fill="#15803D"/>
-            <circle cx="68" cy="45" r="4.8" fill="#65A30D"/>
-            <path d="M26 77C33 68 67 68 74 77V80C68 78 32 78 26 80V77Z" fill="#15803D"/>
+  <!-- Top Government Brand Header -->
+  <header class="bg-gradient-to-r from-[#166534] via-[#15803D] to-[#166534] text-white shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap items-center justify-between gap-4">
+      
+      <!-- Brand & Emblem -->
+      <div class="flex items-center gap-3.5">
+        <!-- PoshanSetu Emblem -->
+        <div class="w-12 h-12 rounded-2xl bg-white p-1.5 shadow-sm shrink-0 flex items-center justify-center">
+          <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+            <path d="M36 18C28 20 20 28 22 36C29 36 37 28 37 20C37 18 36.5 17.5 36 18Z" fill="#74B42A" />
+            <path d="M64 18C72 20 80 28 78 36C71 36 63 28 63 20C63 18 63.5 17.5 64 18Z" fill="#74B42A" />
+            <circle cx="52" cy="18" r="6.2" fill="#F26A1B" />
+            <path d="M39 9C38 15 44 26 50 34C55 41 59 49 53 58C50 63 48 62 48 62C52 56 56 47 51 39C45 31 36 21 38 11C38.3 9.5 38.8 9.2 39 9Z" fill="#F26A1B" />
+            <path d="M48 33C52 39 58 47 53 58C50 58 46 54 44 47C42 41 45 36 48 33Z" fill="#F97316" />
+            <circle cx="36" cy="42" r="4.8" fill="#1B7A38" />
+            <path d="M27 45C27 45 32 49 35 52C33 55 33 60 33 62C38 60 41 55 40 52C43 47 47 41 47 41C44 43 40 48 37 48C34 48 30 45 27 45Z" fill="#1B7A38" />
+            <circle cx="68" cy="45" r="4.6" fill="#74B42A" />
+            <path d="M59 46C59 46 64 50 66 54C68 57 66 62 66 62C69 60 72 56 71 53C73 49 77 45 77 45C75 47 72 50 69 50C66 50 62 46 59 46Z" fill="#74B42A" />
+            <path d="M26 77C33 67 67 67 74 77V79C68 77 32 77 26 79V77Z" fill="#1B7A38" />
+            <path d="M28 77C30 64 70 64 72 77H67C65 71 60 70 56 73C54 75 54 77 54 77H46C46 77 46 75 44 73C40 70 35 71 33 77H28Z" fill="#156F37" />
+            <ellipse cx="38" cy="77" rx="3.5" ry="4" fill="#FFFFFF" />
+            <ellipse cx="50" cy="77" rx="4.5" ry="5.2" fill="#FFFFFF" />
+            <ellipse cx="62" cy="77" rx="3.5" ry="4" fill="#FFFFFF" />
+            <path d="M8 65C18 64 33 69 40 76C29 77 17 73 8 65Z" fill="#74B42A" />
+            <path d="M92 65C82 64 67 69 60 76C71 77 83 73 92 65Z" fill="#74B42A" />
           </svg>
         </div>
-        <div className="font-extrabold tracking-tight leading-none">
-          <span className={`${size === 'lg' ? 'text-3xl' : 'text-xl'} text-[#EA580C]`}>Poshan</span>
-          <span className={`${size === 'lg' ? 'text-3xl' : 'text-xl'} text-[#166534] ml-1`}>Setu</span>
+
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-xl font-extrabold tracking-tight">
+              <span class="text-amber-300">Poshan</span> <span class="text-white">Setu</span>
+            </span>
+            <span class="text-[10px] font-bold bg-white/20 text-white uppercase px-2 py-0.5 rounded-full border border-white/30">
+              Supervisor Portal
+            </span>
+          </div>
+          <p class="text-xs text-emerald-100 font-medium">
+            Ministry of Women & Child Development • Government of Gujarat
+          </p>
         </div>
       </div>
-    );
 
-    // --- MAIN APP ---
-    function App() {
-      const [isAuthenticated, setIsAuthenticated] = useState(false);
-      const [lang, setLang] = useState('en');
-      const [isOnline, setIsOnline] = useState(true);
-      const [currentScreen, setCurrentScreen] = useState('home');
-      const [dockTab, setDockTab] = useState('home');
-      
-      const [students, setStudents] = useState(() => {
-        const local = localStorage.getItem('poshansetu_students');
-        return local ? JSON.parse(local) : INITIAL_STUDENTS;
-      });
-
-      const [inventory, setInventory] = useState(() => {
-        const local = localStorage.getItem('poshansetu_inventory');
-        return local ? JSON.parse(local) : INITIAL_INVENTORY;
-      });
-
-      // Modals
-      const [isNotifOpen, setIsNotifOpen] = useState(false);
-      const [isHelpOpen, setIsHelpOpen] = useState(false);
-      const [isCentreOpen, setIsCentreOpen] = useState(false);
-      const [isProfileOpen, setIsProfileOpen] = useState(false);
-
-      const t = translations[lang];
-
-      useEffect(() => {
-        localStorage.setItem('poshansetu_students', JSON.stringify(students));
-      }, [students]);
-
-      useEffect(() => {
-        localStorage.setItem('poshansetu_inventory', JSON.stringify(inventory));
-      }, [inventory]);
-
-      // Sync student presence changes to Firebase RTDB
-      const handleToggleStudent = (id) => {
-        const updated = students.map(s => s.id === id ? { ...s, present: !s.present } : s);
-        setStudents(updated);
-        pushRTDB('students', updated, isOnline);
-      };
-
-      const handleSetAllStudents = (present) => {
-        const updated = students.map(s => ({ ...s, present }));
-        setStudents(updated);
-        pushRTDB('students', updated, isOnline);
-      };
-
-      const handleMealConfirm = (data) => {
-        const deductionKg = Number((data.totalGm / 1000).toFixed(2));
-        setInventory(prev => prev.map(item => {
-          if (data.menuName.includes('Atta') && item.id === 'atta') {
-            return { ...item, currentStock: Math.max(0, item.currentStock - deductionKg) };
-          }
-          if (data.menuName.includes('Khichdi') && (item.id === 'rice' || item.id === 'dal')) {
-            return { ...item, currentStock: Math.max(0, item.currentStock - (deductionKg / 2)) };
-          }
-          return item;
-        }));
-
-        pushRTDB('meal_entries', {
-          mealType: data.mealType,
-          menuName: data.menuName,
-          studentsPresent: data.studentsCount,
-          totalGrams: data.totalGm,
-          timestamp: new Date().toISOString()
-        }, isOnline);
-
-        const invMap = {};
-        inventory.forEach(i => invMap[i.id] = i.currentStock);
-        updateRTDBInventory(invMap, isOnline);
-      };
-
-      const handleDistributionConfirm = (record) => {
-        setInventory(prev => prev.map(item => {
-          const mapKey = { rice: 'Rice', oil: 'Oil', bal_shakti: 'Bal Shakti', matru_shakti: 'Matru Shakti', purna_shakti: 'Purna Shakti', atta: 'Atta' };
-          const key = mapKey[item.id];
-          if (key && record.distributedItems[key]) {
-            return { ...item, currentStock: Math.max(0, item.currentStock - record.distributedItems[key]) };
-          }
-          return item;
-        }));
-
-        pushRTDB('distributions', {
-          beneficiary: record.beneficiaryName,
-          items: record.distributedItems,
-          timestamp: new Date().toISOString()
-        }, isOnline);
-
-        const invMap = {};
-        inventory.forEach(i => invMap[i.id] = i.currentStock);
-        updateRTDBInventory(invMap, isOnline);
-      };
-
-      return (
-        <div className="min-h-screen bg-slate-200/80 flex justify-center py-0 sm:py-6 selection:bg-emerald-200">
-          <main className="w-full max-w-[420px] bg-[#F4FAF4] min-h-screen relative pb-20 shadow-2xl flex flex-col border-x border-slate-300">
-            
-            <!-- TOP PHONE STATUS BAR -->
-            <div className="px-5 pt-2 pb-1 flex items-center justify-between text-slate-800 text-[12px] font-bold select-none z-50">
-              <span>10:38</span>
-              <div className="flex items-center gap-1.5">
-                <span className="text-[10px] bg-slate-200 px-1 rounded">VoLTE</span>
-                <span>4G</span>
-                <span>58%</span>
-                <div className="w-5 h-2.5 border border-slate-700 rounded-xs p-0.5 flex items-center">
-                  <div className="h-full bg-slate-800 w-[58%]"></div>
-                </div>
-              </div>
-            </div>
-
-            <!-- VIEW ROUTING -->
-            <div className="flex-1">
-              {!isAuthenticated ? (
-                <!-- LOGIN SCREEN -->
-                <div className="px-5 pt-4 pb-8 space-y-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-[11px] font-semibold text-emerald-800 bg-[#EAF7EE] px-2.5 py-1 rounded-full border border-emerald-200">
-                      Govt. of Gujarat • WCD
-                    </span>
-                    <button 
-                      onClick={() => setLang(l => l === 'en' ? 'gu' : 'en')}
-                      className="px-2.5 py-1 bg-white border border-slate-300 rounded-full text-xs font-bold text-slate-700 shadow-xs"
-                    >
-                      {lang === 'en' ? 'ગુજરાતી' : 'English'}
-                    </button>
-                  </div>
-
-                  <div className="flex flex-col items-center text-center pt-2">
-                    <div className="p-3 bg-white rounded-3xl border border-emerald-100 shadow-xs">
-                      <Logo size="lg" />
-                    </div>
-                    <h1 className="text-2xl font-black text-slate-900 mt-2">{t.welcomeTitle}</h1>
-                    <p className="text-xs font-bold text-[#15803D] mt-0.5">{t.welcomeSubtitle}</p>
-                    <p className="text-xs text-slate-500 mt-1">{t.loginPrompt}</p>
-                  </div>
-
-                  <div className="bg-[#EAF7EE] border border-emerald-200 p-3 rounded-2xl text-xs">
-                    <span className="font-extrabold text-slate-900 block">04 Vadtal (AWVAD04) • Taluka Anand</span>
-                    <span className="text-slate-600 block text-[11px]">AWW: Shrimati Bhavnaben Patel • Sup: Shardaben Shah</span>
-                  </div>
-
-                  <div className="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs space-y-3">
-                    <div>
-                      <label className="text-xs font-bold text-slate-700 block mb-1">{t.userIdLabel}</label>
-                      <input 
-                        type="text" 
-                        defaultValue="worker" 
-                        id="loginUser" 
-                        className="w-full bg-slate-50 border border-slate-200 text-sm font-semibold rounded-xl px-3 py-2.5" 
-                      />
-                    </div>
-                    <div>
-                      <label className="text-xs font-bold text-slate-700 block mb-1">{t.passwordLabel}</label>
-                      <input 
-                        type="password" 
-                        defaultValue="1234" 
-                        id="loginPass" 
-                        className="w-full bg-slate-50 border border-slate-200 text-sm font-semibold rounded-xl px-3 py-2.5" 
-                      />
-                    </div>
-                    <button 
-                      onClick={() => {
-                        const u = document.getElementById('loginUser').value.trim();
-                        const p = document.getElementById('loginPass').value.trim();
-                        if (u === 'worker' && p === '1234') {
-                          setIsAuthenticated(true);
-                          setCurrentScreen('home');
-                        } else {
-                          alert("Invalid credentials! Enter 'worker' and '1234'.");
-                        }
-                      }}
-                      className="w-full py-3 bg-[#15803D] hover:bg-[#166534] text-white font-bold text-sm rounded-xl transition-all shadow-sm"
-                    >
-                      {t.loginButton}
-                    </button>
-                  </div>
-                </div>
-              ) : currentScreen === 'home' ? (
-                <!-- HOME SCREEN -->
-                <div className="px-4 pt-1 pb-6 space-y-4">
-                  <!-- Worker Profile Banner -->
-                  <div className="bg-[#EAF7EE] border border-emerald-200 rounded-2xl p-3 flex items-center justify-between shadow-2xs">
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-full bg-emerald-700 text-white flex items-center justify-center font-bold text-base shadow-xs shrink-0">
-                        BP
-                      </div>
-                      <div>
-                        <h2 className="font-bold text-slate-900 text-sm">{t.workerName}</h2>
-                        <p className="text-[11px] text-slate-600 font-medium">{t.workerRole}</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <span className="text-[11px] font-bold text-slate-800 block">04 Vadtal (Anand)</span>
-                      <button 
-                        onClick={() => setIsOnline(!isOnline)}
-                        className={`px-2 py-0.5 rounded-full text-[10px] font-black border ${isOnline ? 'bg-emerald-100 text-emerald-900 border-emerald-300' : 'bg-amber-100 text-amber-900 border-amber-300'}`}
-                      >
-                        {isOnline ? t.online : t.offline}
-                      </button>
-                    </div>
-                  </div>
-
-                  <!-- Header Controls -->
-                  <div className="flex items-center justify-between">
-                    <Logo size="sm" />
-                    <div className="flex items-center gap-2">
-                      <button 
-                        onClick={() => setLang(l => l === 'en' ? 'gu' : 'en')}
-                        className="px-2.5 py-1 bg-white border border-slate-200 rounded-full text-xs font-bold shadow-2xs text-slate-700"
-                      >
-                        {lang === 'en' ? 'English' : 'ગુજરાતી'}
-                      </button>
-                      <button 
-                        onClick={() => setIsNotifOpen(true)}
-                        className="w-8 h-8 rounded-full bg-white border border-rose-200 text-rose-600 flex items-center justify-center shadow-2xs relative"
-                      >
-                        <span className="w-2 h-2 rounded-full bg-red-600 absolute top-1 right-1"></span>
-                        🔔
-                      </button>
-                    </div>
-                  </div>
-
-                  <!-- 3x3 Illustrated Grid -->
-                  <div className="grid grid-cols-3 gap-2.5">
-                    {[
-                      { id: 'stock-received', title: t.stockReceived, bg: 'bg-[#F0FDF4]', icon: '🚚' },
-                      { id: 'stock-usage', title: t.stockUsage, bg: 'bg-[#FFF7ED]', icon: '🌾' },
-                      { id: 'balance-remaining', title: t.balanceRemaining, bg: 'bg-[#F0FDF4]', icon: '📦' },
-                      { id: 'setu-share', title: t.setuShareExchange, bg: 'bg-[#F0FDF4]', icon: '🤝' },
-                      { id: 'food-menu', title: t.dailyFoodMenu, bg: 'bg-[#FFF7ED]', icon: '🍲' },
-                      { id: 'student-attendance', title: t.studentAttendance, bg: 'bg-[#F0FDF4]', icon: '🧒' },
-                      { id: 'meal-photo', title: t.mealPhotoUpload, bg: 'bg-[#FFF7ED]', icon: '📷' },
-                      { id: 'smart-ration', title: t.smartRation, bg: 'bg-[#F0FDF4]', icon: '⚖️' },
-                      { id: 'download-report', title: t.downloadReport, bg: 'bg-[#FFF7ED]', icon: '📄' }
-                    ].map(card => (
-                      <button
-                        key={card.id}
-                        onClick={() => setCurrentScreen(card.id)}
-                        className={`${card.bg} border border-slate-200 rounded-2xl p-2.5 flex flex-col items-center justify-between text-center aspect-[4/4.8] shadow-xs active:scale-95 transition-all cursor-pointer`}
-                      >
-                        <div className="text-3xl my-auto">{card.icon}</div>
-                        <span className="text-[11px] font-bold text-slate-900 leading-tight whitespace-pre-line">{card.title}</span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              ) : currentScreen === 'student-attendance' ? (
-                <!-- ATTENDANCE SCREEN -->
-                <div className="px-4 pt-2 pb-6 space-y-4">
-                  <div className="flex items-center justify-between">
-                    <button onClick={() => setCurrentScreen('home')} className="w-9 h-9 rounded-full bg-[#EAF7EE] text-[#15803D] font-bold">←</button>
-                    <Logo size="sm" />
-                    <div className="w-9"></div>
-                  </div>
-
-                  <div className="text-center">
-                    <h1 className="text-xl font-extrabold text-slate-900">{t.studentAttendance}</h1>
-                    <p className="text-xs text-slate-500">10 Registered Model Roster (04 Vadtal)</p>
-                  </div>
-
-                  <div className="bg-[#EAF7EE] p-3 rounded-2xl border border-emerald-200 flex justify-between items-center">
-                    <span className="text-xs font-bold text-emerald-950">
-                      Attendance: {students.filter(s => s.present).length} / {students.length}
-                    </span>
-                    <div className="flex gap-1">
-                      <button onClick={() => handleSetAllStudents(true)} className="px-2 py-1 bg-white text-emerald-800 text-[11px] font-bold rounded shadow-2xs">All Yes</button>
-                      <button onClick={() => handleSetAllStudents(false)} className="px-2 py-1 bg-white text-slate-600 text-[11px] font-bold rounded shadow-2xs">All No</button>
-                    </div>
-                  </div>
-
-                  <div className="bg-white rounded-2xl p-3 border border-slate-200 space-y-2">
-                    {students.map(s => (
-                      <div key={s.id} className="flex justify-between items-center py-1.5 border-b border-slate-100 last:border-none">
-                        <div>
-                          <span className="font-bold text-xs text-slate-900">{lang === 'gu' ? s.nameGu : s.name}</span>
-                          <span className="text-[10px] text-slate-500 ml-2">({s.age})</span>
-                        </div>
-                        <button 
-                          onClick={() => handleToggleStudent(s.id)}
-                          className={`px-3 py-1 rounded-xl text-xs font-bold ${s.present ? 'bg-[#15803D] text-white' : 'bg-slate-100 text-slate-500'}`}
-                        >
-                          {s.present ? t.present : t.absent}
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-
-                  <button 
-                    onClick={() => setCurrentScreen('food-menu')}
-                    className="w-full py-3 bg-[#15803D] text-white font-bold text-xs rounded-xl shadow-sm"
-                  >
-                    Proceed to Daily Meal Entry →
-                  </button>
-                </div>
-              ) : currentScreen === 'food-menu' ? (
-                <!-- MEAL USAGE ENTRY -->
-                <div className="px-4 pt-2 pb-6 space-y-4">
-                  <div className="flex items-center justify-between">
-                    <button onClick={() => setCurrentScreen('home')} className="w-9 h-9 rounded-full bg-[#EAF7EE] text-[#15803D] font-bold">←</button>
-                    <Logo size="sm" />
-                    <div className="w-9"></div>
-                  </div>
-
-                  <div className="text-center">
-                    <h1 className="text-xl font-extrabold text-slate-900">Meal Usage Entry</h1>
-                    <p className="text-xs text-slate-500">04 Vadtal Centre • Daily Meal Register</p>
-                  </div>
-
-                  <div className="bg-white rounded-2xl p-4 border border-slate-200 space-y-3">
-                    <div className="flex justify-between items-center bg-[#EAF7EE] p-2.5 rounded-xl">
-                      <span className="font-bold text-slate-900 text-sm">Meal 1 – Breakfast (30g)</span>
-                    </div>
-
-                    <div className="flex justify-between items-center text-sm font-semibold">
-                      <span>No. of Students Present:</span>
-                      <span className="font-bold text-slate-900 text-base">{students.filter(s => s.present).length}</span>
-                    </div>
-
-                    <div>
-                      <label className="text-xs font-bold text-slate-700 block mb-1">Menu – Select</label>
-                      <select id="menuSelect" className="w-full bg-slate-50 border border-slate-200 text-xs font-semibold rounded-xl p-2.5">
-                        <option>Sukdi (Atta)</option>
-                        <option>Vegetable Khichdi (Rice + Dal)</option>
-                        <option>Bal Shakti Sheera</option>
-                      </select>
-                    </div>
-
-                    <div className="bg-[#EAF7EE] rounded-xl p-3 text-center border border-emerald-200">
-                      <span className="text-lg font-black text-[#15803D]">
-                        Total = {students.filter(s => s.present).length * 30} gm
-                      </span>
-                    </div>
-
-                    <button 
-                      onClick={() => {
-                        const count = students.filter(s => s.present).length;
-                        const menu = document.getElementById('menuSelect').value;
-                        handleMealConfirm({
-                          mealType: 'breakfast',
-                          menuName: menu,
-                          studentsCount: count,
-                          totalGm: count * 30
-                        });
-                        alert("Meal deduction confirmed and updated to Firebase RTDB!");
-                        setCurrentScreen('home');
-                      }}
-                      className="w-full py-3 bg-[#15803D] text-white font-bold text-xs rounded-xl shadow-sm"
-                    >
-                      ✓ Confirm Deduction
-                    </button>
-                  </div>
-                </div>
-              ) : currentScreen === 'stock-usage' ? (
-                <!-- STOCK USAGE DISTRIBUTION -->
-                <div className="px-4 pt-2 pb-6 space-y-4">
-                  <div className="flex items-center justify-between">
-                    <button onClick={() => setCurrentScreen('home')} className="w-9 h-9 rounded-full bg-[#EAF7EE] text-[#15803D] font-bold">←</button>
-                    <Logo size="sm" />
-                    <div className="w-9"></div>
-                  </div>
-
-                  <div className="text-center">
-                    <h1 className="text-xl font-extrabold text-slate-900">Stock Usage Entry</h1>
-                    <p className="text-xs text-slate-500">Beneficiary Distribution Register</p>
-                  </div>
-
-                  <div className="bg-white rounded-2xl p-4 border border-slate-200 space-y-3">
-                    <div>
-                      <label className="text-xs font-bold text-slate-700 block mb-1">Beneficiary Name</label>
-                      <select id="distBeneficiary" className="w-full bg-slate-50 border border-slate-200 text-xs font-semibold rounded-xl p-2.5">
-                        <option>Surbhi Rawat (Lactating Mother)</option>
-                        <option>Shreeya Dube (Pregnant Woman)</option>
-                        <option>Aarav Patel (Child 6m-3y)</option>
-                      </select>
-                    </div>
-
-                    <div className="space-y-2 pt-2">
-                      <span className="text-xs font-bold text-slate-800 block">Items Distributed:</span>
-                      {['Bal Shakti', 'Rice', 'Atta', 'Oil'].map(item => (
-                        <div key={item} className="flex justify-between items-center text-xs">
-                          <span className="font-semibold text-slate-700">{item}</span>
-                          <span className="font-bold text-slate-900">1 Pack/Kg</span>
-                        </div>
-                      ))}
-                    </div>
-
-                    <button 
-                      onClick={() => {
-                        const b = document.getElementById('distBeneficiary').value;
-                        handleDistributionConfirm({
-                          beneficiaryName: b,
-                          distributedItems: { 'Bal Shakti': 1, 'Rice': 1, 'Atta': 1, 'Oil': 1 }
-                        });
-                        alert("Distribution recorded and deducted from pantry!");
-                        setCurrentScreen('home');
-                      }}
-                      className="w-full py-3 bg-[#15803D] text-white font-bold text-xs rounded-xl shadow-sm mt-3"
-                    >
-                      Confirm & Record Distribution
-                    </button>
-                  </div>
-                </div>
-              ) : currentScreen === 'balance-remaining' ? (
-                <!-- BALANCE REMAINING SCREEN -->
-                <div className="px-4 pt-2 pb-6 space-y-4">
-                  <div className="flex items-center justify-between">
-                    <button onClick={() => setCurrentScreen('home')} className="w-9 h-9 rounded-full bg-[#EAF7EE] text-[#15803D] font-bold">←</button>
-                    <Logo size="sm" />
-                    <div className="w-9"></div>
-                  </div>
-
-                  <div className="text-center">
-                    <h1 className="text-xl font-extrabold text-slate-900">Balance Remaining</h1>
-                    <p className="text-xs text-slate-500">Live Pantry Register • 04 Vadtal</p>
-                  </div>
-
-                  <div className="space-y-2.5">
-                    {inventory.map(item => (
-                      <div key={item.id} className="bg-white rounded-2xl p-3 border border-slate-200 flex justify-between items-center shadow-xs">
-                        <div>
-                          <h4 className="font-bold text-xs text-slate-900">{lang === 'gu' ? item.nameGu : item.nameEn}</h4>
-                          <span className="text-[10px] text-slate-500">Batch: {item.batchNo} • Exp: {item.expiryDate}</span>
-                        </div>
-                        <div className="text-right">
-                          <span className="font-black text-sm text-[#15803D]">{item.currentStock} {item.unit}</span>
-                          <span className="block text-[9px] text-slate-400">Cap: {item.initialStock}</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ) : currentScreen === 'download-report' ? (
-                <!-- DOWNLOAD REPORT SCREEN -->
-                <div className="px-4 pt-2 pb-6 space-y-4">
-                  <div className="flex items-center justify-between">
-                    <button onClick={() => setCurrentScreen('home')} className="w-9 h-9 rounded-full bg-[#EAF7EE] text-[#15803D] font-bold">←</button>
-                    <Logo size="sm" />
-                    <div className="w-9"></div>
-                  </div>
-
-                  <div className="text-center">
-                    <h1 className="text-xl font-extrabold text-slate-900">Form MPR-6 Report</h1>
-                    <p className="text-xs text-slate-500">Official Monthly Stock Ledger</p>
-                  </div>
-
-                  <div className="bg-white rounded-2xl p-4 border border-slate-200 space-y-3">
-                    <button 
-                      onClick={() => {
-                        const { jsPDF } = window.jspdf;
-                        const doc = new jsPDF();
-                        doc.text("Government of Gujarat - Women & Child Development Department", 14, 15);
-                        doc.text("PoshanSetu Form MPR-6 Monthly Stock Ledger - 04 Vadtal", 14, 22);
-                        
-                        const rows = inventory.map(i => [i.nameEn, `${i.currentStock} ${i.unit}`, i.batchNo, i.expiryDate]);
-                        doc.autoTable({
-                          startY: 30,
-                          head: [['Item Name', 'Balance', 'Batch No', 'Expiry']],
-                          body: rows
-                        });
-                        doc.save("PoshanSetu_Report_04_Vadtal.pdf");
-                      }}
-                      className="w-full py-3 bg-[#15803D] text-white font-bold text-xs rounded-xl shadow-sm"
-                    >
-                      Download Official A4 PDF
-                    </button>
-
-                    <button 
-                      onClick={() => window.print()}
-                      className="w-full py-3 bg-slate-900 text-white font-bold text-xs rounded-xl shadow-sm"
-                    >
-                      Print Form-6 (A4)
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <!-- GENERAL FALLBACK FOR OTHER TILE SCREENS -->
-                <div className="px-4 pt-2 pb-6 space-y-4 text-center">
-                  <div className="flex items-center justify-between">
-                    <button onClick={() => setCurrentScreen('home')} className="w-9 h-9 rounded-full bg-[#EAF7EE] text-[#15803D] font-bold">←</button>
-                    <Logo size="sm" />
-                    <div className="w-9"></div>
-                  </div>
-                  <div className="bg-white rounded-2xl p-6 border border-slate-200 mt-6 space-y-3">
-                    <h2 className="text-base font-bold text-slate-900 capitalize">{currentScreen.replace('-', ' ')}</h2>
-                    <p className="text-xs text-slate-500">Feature enabled and synchronized with Firebase Realtime Database for AWC 04 Vadtal.</p>
-                    <button onClick={() => setCurrentScreen('home')} className="px-4 py-2 bg-[#15803D] text-white font-bold text-xs rounded-xl">
-                      Return to Home
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <!-- FLOATING BOTTOM DOCK -->
-            {isAuthenticated && (
-              <div className="fixed bottom-0 left-0 right-0 z-40 max-w-[420px] mx-auto bg-white/95 backdrop-blur-md border-t border-slate-200 px-3 py-2 shadow-lg">
-                <div className="grid grid-cols-4 items-center text-center">
-                  {[
-                    { id: 'home', label: t.home, icon: '🏠', action: () => { setDockTab('home'); setCurrentScreen('home'); } },
-                    { id: 'help', label: t.help, icon: '❓', action: () => setIsHelpOpen(true) },
-                    { id: 'centre', label: t.centreDetails, icon: '🏫', action: () => setIsCentreOpen(true) },
-                    { id: 'profile', label: t.profile, icon: '👤', action: () => setIsProfileOpen(true) }
-                  ].map(item => (
-                    <button key={item.id} onClick={item.action} className="flex flex-col items-center">
-                      <span className="text-base">{item.icon}</span>
-                      <span className={`text-[10px] mt-0.5 ${dockTab === item.id ? 'font-bold text-[#15803D]' : 'text-slate-500'}`}>
-                        {item.label}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            <!-- MODAL: URGENT INSPECTION NOTIFICATION -->
-            {isNotifOpen && (
-              <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 p-0 sm:p-4">
-                <div className="w-full max-w-[420px] bg-white rounded-t-3xl sm:rounded-3xl p-5 border-2 border-red-500 space-y-3">
-                  <div className="flex justify-between items-center text-red-600 font-bold">
-                    <span className="flex items-center gap-1.5 text-xs uppercase tracking-wider">⚠️ URGENT INSPECTION</span>
-                    <button onClick={() => setIsNotifOpen(false)} className="text-slate-500 font-bold">✕</button>
-                  </div>
-                  <h3 className="font-extrabold text-base text-slate-900">Supervisor Shardaben Shah is Arriving!</h3>
-                  <p className="text-xs text-slate-600">On-site physical inspection and register audit today at 04 Vadtal (AWVAD04), Taluka Anand.</p>
-                  <div className="bg-red-50 p-2.5 rounded-xl border border-red-200 text-[11px] font-semibold text-red-950">
-                    Required Ready: 30g Breakfast & 50g Lunch register, Stock Inward Batches, 10/10 student attendance.
-                  </div>
-                  <button onClick={() => setIsNotifOpen(false)} className="w-full py-2.5 bg-[#15803D] text-white font-bold text-xs rounded-xl">
-                    ✓ Understood • Ready
-                  </button>
-                </div>
-              </div>
-            )}
-
-            <!-- MODAL: CENTRE DETAILS -->
-            {isCentreOpen && (
-              <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 p-0 sm:p-4">
-                <div className="w-full max-w-[420px] bg-white rounded-t-3xl sm:rounded-3xl p-5 space-y-3">
-                  <div className="flex justify-between items-center">
-                    <h3 className="font-bold text-base text-slate-900">04 Vadtal Anganwadi Centre</h3>
-                    <button onClick={() => setIsCentreOpen(false)} className="text-slate-500 font-bold">✕</button>
-                  </div>
-                  <div className="text-xs text-slate-600 space-y-1">
-                    <p>Taluka: Anand • District: Anand • Code: AWVAD04</p>
-                    <p>Worker: Shrimati Bhavnaben Patel • Supervisor: Shardaben Shah</p>
-                    <div className="p-2 bg-emerald-50 text-emerald-800 rounded-lg font-semibold mt-2">
-                      Model AWC Grade A+ • RO Water Functional • Gas Stove Available
-                    </div>
-                  </div>
-                  <button onClick={() => setIsCentreOpen(false)} className="w-full py-2 bg-[#15803D] text-white font-bold text-xs rounded-xl">
-                    Close
-                  </button>
-                </div>
-              </div>
-            )}
-
-            <!-- MODAL: HELP -->
-            {isHelpOpen && (
-              <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 p-0 sm:p-4">
-                <div className="w-full max-w-[420px] bg-white rounded-t-3xl sm:rounded-3xl p-5 space-y-3">
-                  <div className="flex justify-between items-center">
-                    <h3 className="font-bold text-base text-slate-900">Helpdesk & Support</h3>
-                    <button onClick={() => setIsHelpOpen(false)} className="text-slate-500 font-bold">✕</button>
-                  </div>
-                  <div className="grid grid-cols-2 gap-2 text-xs">
-                    <div className="p-2 bg-emerald-50 rounded-xl">
-                      <span className="text-[10px] text-emerald-800 font-bold block">Poshan Helpline</span>
-                      <span className="font-extrabold text-sm text-emerald-950">14408</span>
-                    </div>
-                    <div className="p-2 bg-orange-50 rounded-xl">
-                      <span className="text-[10px] text-orange-800 font-bold block">Childline</span>
-                      <span className="font-extrabold text-sm text-orange-950">1098</span>
-                    </div>
-                  </div>
-                  <button onClick={() => setIsHelpOpen(false)} className="w-full py-2 bg-[#15803D] text-white font-bold text-xs rounded-xl">
-                    Close
-                  </button>
-                </div>
-              </div>
-            )}
-
-            <!-- MODAL: PROFILE -->
-            {isProfileOpen && (
-              <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 p-0 sm:p-4">
-                <div className="w-full max-w-[420px] bg-white rounded-t-3xl sm:rounded-3xl p-5 space-y-3">
-                  <div className="flex justify-between items-center">
-                    <h3 className="font-bold text-base text-slate-900">Worker Profile</h3>
-                    <button onClick={() => setIsProfileOpen(false)} className="text-slate-500 font-bold">✕</button>
-                  </div>
-                  <div className="text-xs space-y-2">
-                    <div className="p-2.5 bg-slate-50 rounded-xl">
-                      <span className="font-bold text-slate-800 block text-sm">Shrimati Bhavnaben Patel</span>
-                      <span className="text-slate-500">Anganwadi Worker • WCD ID: AWVAD04-GUJ</span>
-                    </div>
-                    <div className="p-2.5 bg-emerald-50 text-emerald-900 rounded-xl font-mono text-[11px] break-all">
-                      https://poshan-setu-default-rtdb.firebaseio.com/awc_awvad04
-                    </div>
-                  </div>
-                  <div className="flex gap-2 pt-2">
-                    <button 
-                      onClick={() => { setIsAuthenticated(false); setIsProfileOpen(false); }} 
-                      className="flex-1 py-2 border border-rose-200 text-rose-700 font-bold text-xs rounded-xl"
-                    >
-                      Log Out
-                    </button>
-                    <button onClick={() => setIsProfileOpen(false)} className="flex-1 py-2 bg-[#15803D] text-white font-bold text-xs rounded-xl">
-                      Done
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-
-          </main>
+      <!-- Supervisor Profile & Live Sync Status -->
+      <div class="flex items-center gap-4">
+        <!-- Live Firebase Status Pill -->
+        <div id="firebase-status" class="flex items-center gap-2 bg-emerald-900/60 border border-emerald-400/40 px-3 py-1.5 rounded-xl text-xs font-semibold">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span id="firebase-status-text">RTDB Connected: /awc_awvad04</span>
         </div>
-      );
+
+        <!-- Supervisor Badge -->
+        <div class="flex items-center gap-2.5 bg-white/10 px-3 py-1.5 rounded-xl border border-white/20">
+          <div class="w-8 h-8 rounded-full bg-amber-400 text-slate-900 flex items-center justify-center font-bold text-xs shadow-xs">
+            SS
+          </div>
+          <div class="text-left text-xs">
+            <span class="font-bold text-white block">Shardaben Shah</span>
+            <span class="text-emerald-200 block text-[11px]">Sector Supervisor • Anand</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Main Content Layout -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 w-full flex-1 space-y-6">
+
+    <!-- Centre Overview & Action Bar -->
+    <div class="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-sm flex flex-wrap items-center justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-2">
+          <span class="p-1.5 rounded-lg bg-emerald-50 text-emerald-700">
+            <i data-lucide="building" class="w-5 h-5"></i>
+          </span>
+          <h1 class="text-xl font-extrabold text-slate-900 tracking-tight">
+            04 Vadtal Anganwadi Centre (AWVAD04)
+          </h1>
+          <span class="text-xs font-bold text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-200">
+            Model Centre Grade A+
+          </span>
+        </div>
+        <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-600 font-medium mt-1.5">
+          <span>Taluka: <strong>Anand</strong></span>
+          <span>•</span>
+          <span>District: <strong>Anand, Gujarat</strong></span>
+          <span>•</span>
+          <span>Assigned AWW: <strong>Smt. Bhavna Ben Patel</strong></span>
+          <span>•</span>
+          <span>Authorization PIN: <strong class="text-amber-700 font-mono">#8491</strong></span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button id="btn-refresh" onclick="fetchLiveFirebaseData()" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl flex items-center gap-1.5 transition-colors shadow-2xs">
+          <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+          <span>Live Refresh</span>
+        </button>
+        <button onclick="window.print()" class="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold rounded-xl flex items-center gap-1.5 transition-colors shadow-sm">
+          <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+          <span>Audit Sheet (A4)</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 4 Key Performance Metrics Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      
+      <!-- Metric 1: Attendance -->
+      <div class="bg-white rounded-2xl p-4 border border-slate-200/90 shadow-sm flex items-start justify-between">
+        <div class="space-y-1">
+          <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider block">Today's Attendance</span>
+          <span id="metric-attendance" class="text-2xl font-black text-slate-900 tabular-nums">10 / 10</span>
+          <span class="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md">
+            <i data-lucide="check-circle-2" class="w-3 h-3"></i> 100% Verified
+          </span>
+        </div>
+        <div class="w-10 h-10 rounded-xl bg-emerald-100/80 text-emerald-800 flex items-center justify-center">
+          <i data-lucide="users" class="w-5 h-5"></i>
+        </div>
+      </div>
+
+      <!-- Metric 2: Cooked Meals Ratio -->
+      <div class="bg-white rounded-2xl p-4 border border-slate-200/90 shadow-sm flex items-start justify-between">
+        <div class="space-y-1">
+          <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider block">Hot Cooked Ration</span>
+          <span id="metric-meal-qty" class="text-2xl font-black text-slate-900 tabular-nums">800 gm</span>
+          <span class="text-[11px] text-slate-500 block">30g Breakfast + 50g Lunch</span>
+        </div>
+        <div class="w-10 h-10 rounded-xl bg-orange-100/80 text-orange-800 flex items-center justify-center">
+          <i data-lucide="utensils" class="w-5 h-5"></i>
+        </div>
+      </div>
+
+      <!-- Metric 3: Total Pantry Balance -->
+      <div class="bg-white rounded-2xl p-4 border border-slate-200/90 shadow-sm flex items-start justify-between">
+        <div class="space-y-1">
+          <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider block">Current Pantry Balance</span>
+          <span id="metric-stock" class="text-2xl font-black text-emerald-800 tabular-nums">149 Units</span>
+          <span class="text-[11px] text-emerald-700 font-semibold block">7 Food Items Tracked</span>
+        </div>
+        <div class="w-10 h-10 rounded-xl bg-blue-100/80 text-blue-800 flex items-center justify-center">
+          <i data-lucide="package" class="w-5 h-5"></i>
+        </div>
+      </div>
+
+      <!-- Metric 4: Inter-AWC Transfers -->
+      <div class="bg-white rounded-2xl p-4 border border-slate-200/90 shadow-sm flex items-start justify-between">
+        <div class="space-y-1">
+          <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider block">Security Voucher Auth</span>
+          <span class="text-2xl font-black text-slate-900 font-mono">#8491</span>
+          <span class="inline-flex items-center gap-1 text-[11px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md">
+            <i data-lucide="shield-check" class="w-3 h-3"></i> Authorized
+          </span>
+        </div>
+        <div class="w-10 h-10 rounded-xl bg-amber-100/80 text-amber-800 flex items-center justify-center">
+          <i data-lucide="arrow-right-left" class="w-5 h-5"></i>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="flex items-center gap-2 border-b border-slate-200 overflow-x-auto pb-2 custom-scrollbar">
+      <button onclick="switchTab('tab-inventory')" id="btn-tab-inventory" class="tab-btn px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 bg-[#15803D] text-white shadow-xs">
+        <i data-lucide="boxes" class="w-4 h-4"></i>
+        <span>Pantry Inventory Balance</span>
+      </button>
+      <button onclick="switchTab('tab-students')" id="btn-tab-students" class="tab-btn px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 bg-white text-slate-700 hover:bg-slate-100 border border-slate-200">
+        <i data-lucide="users" class="w-4 h-4"></i>
+        <span>10-Student Attendance Register</span>
+      </button>
+      <button onclick="switchTab('tab-meals')" id="btn-tab-meals" class="tab-btn px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 bg-white text-slate-700 hover:bg-slate-100 border border-slate-200">
+        <i data-lucide="utensils" class="w-4 h-4"></i>
+        <span>Daily Meal Deductions (RTDB)</span>
+      </button>
+      <button onclick="switchTab('tab-distributions')" id="btn-tab-distributions" class="tab-btn px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 bg-white text-slate-700 hover:bg-slate-100 border border-slate-200">
+        <i data-lucide="package-check" class="w-4 h-4"></i>
+        <span>Stock Distributions (THR)</span>
+      </button>
+      <button onclick="switchTab('tab-inward')" id="btn-tab-inward" class="tab-btn px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 bg-white text-slate-700 hover:bg-slate-100 border border-slate-200">
+        <i data-lucide="truck" class="w-4 h-4"></i>
+        <span>Stock Inward & Batches</span>
+      </button>
+      <button onclick="switchTab('tab-transfers')" id="btn-tab-transfers" class="tab-btn px-4 py-2.5 rounded-xl font-bold text-xs flex items-center gap-2 bg-white text-slate-700 hover:bg-slate-100 border border-slate-200">
+        <i data-lucide="repeat" class="w-4 h-4"></i>
+        <span>Inter-AWC Exchanges (#8491)</span>
+      </button>
+    </div>
+
+    <!-- TAB 1: PANTRY INVENTORY BALANCE -->
+    <div id="tab-inventory" class="tab-content space-y-4">
+      <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-base font-extrabold text-slate-900">Live Item-wise Inventory Balance</h3>
+            <p class="text-xs text-slate-500">Dual-accounting track: Sealed THR Packets vs Raw Bulk Staples</p>
+          </div>
+          <span class="text-xs font-bold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-200">
+            Auto-Synced with Mobile App
+          </span>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="bg-slate-50 text-slate-700 uppercase tracking-wider text-[11px] border-y border-slate-200">
+                <th class="py-3 px-4 font-bold">Item Name (EN / GU)</th>
+                <th class="py-3 px-3 font-bold">Track Category</th>
+                <th class="py-3 px-3 font-bold text-right">Initial Quota</th>
+                <th class="py-3 px-3 font-bold text-right">Current Stock</th>
+                <th class="py-3 px-3 font-bold">Batch Number</th>
+                <th class="py-3 px-3 font-bold">Expiry Date</th>
+                <th class="py-3 px-4 font-bold text-center">Status</th>
+              </tr>
+            </thead>
+            <tbody id="inventory-tbody" class="divide-y divide-slate-100 font-medium">
+              <!-- Dynamically populated from JS / Firebase -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: 10-STUDENT ATTENDANCE REGISTER -->
+    <div id="tab-students" class="tab-content hidden space-y-4">
+      <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-base font-extrabold text-slate-900">Official 10-Student Attendance Roster</h3>
+            <p class="text-xs text-slate-500">Enrolled Children (3 to 6 Years) • 04 Vadtal Centre</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-bold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200">
+              Prescribed Ration: 30g Breakfast • 50g Lunch
+            </span>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="bg-slate-50 text-slate-700 uppercase tracking-wider text-[11px] border-y border-slate-200">
+                <th class="py-3 px-4 font-bold">Roll #</th>
+                <th class="py-3 px-4 font-bold">Student Name (English)</th>
+                <th class="py-3 px-4 font-bold">ગુજરાતી નામ</th>
+                <th class="py-3 px-3 font-bold">Age</th>
+                <th class="py-3 px-3 font-bold">Gender</th>
+                <th class="py-3 px-4 font-bold">Parent / Guardian</th>
+                <th class="py-3 px-4 font-bold text-center">Daily Presence</th>
+              </tr>
+            </thead>
+            <tbody id="students-tbody" class="divide-y divide-slate-100 font-medium">
+              <!-- Exactly the 10 students matching mobile app -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: DAILY MEAL DEDUCTIONS -->
+    <div id="tab-meals" class="tab-content hidden space-y-4">
+      <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-base font-extrabold text-slate-900">Daily Hot Cooked Meal Deductions Log</h3>
+            <p class="text-xs text-slate-500">Live Firebase path: <code class="font-mono text-emerald-800">/awc_awvad04/meal_entries</code></p>
+          </div>
+          <span class="text-xs text-slate-500">Realtime Listener Active</span>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="bg-slate-50 text-slate-700 uppercase tracking-wider text-[11px] border-y border-slate-200">
+                <th class="py-3 px-4 font-bold">Timestamp</th>
+                <th class="py-3 px-3 font-bold">Meal Session</th>
+                <th class="py-3 px-4 font-bold">Menu Item</th>
+                <th class="py-3 px-3 font-bold text-center">Students Present</th>
+                <th class="py-3 px-3 font-bold text-right">Raw Total</th>
+                <th class="py-3 px-4 font-bold">Logged By (AWW)</th>
+              </tr>
+            </thead>
+            <tbody id="meals-tbody" class="divide-y divide-slate-100 font-medium">
+              <!-- Live RTDB entries stream -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: STOCK DISTRIBUTIONS (THR) -->
+    <div id="tab-distributions" class="tab-content hidden space-y-4">
+      <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-base font-extrabold text-slate-900">Beneficiary THR Distribution Ledger</h3>
+            <p class="text-xs text-slate-500">Live Firebase path: <code class="font-mono text-emerald-800">/awc_awvad04/distributions</code></p>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="bg-slate-50 text-slate-700 uppercase tracking-wider text-[11px] border-y border-slate-200">
+                <th class="py-3 px-4 font-bold">Date & Time</th>
+                <th class="py-3 px-4 font-bold">Beneficiary Name</th>
+                <th class="py-3 px-3 font-bold">Category</th>
+                <th class="py-3 px-4 font-bold">Items Issued</th>
+                <th class="py-3 px-3 font-bold text-center">Photo Verified</th>
+              </tr>
+            </thead>
+            <tbody id="distributions-tbody" class="divide-y divide-slate-100 font-medium">
+              <!-- Live RTDB distributions stream -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 5: STOCK INWARD & BATCHES -->
+    <div id="tab-inward" class="tab-content hidden space-y-4">
+      <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-base font-extrabold text-slate-900">District Consignment Inward & Expiry Registry</h3>
+            <p class="text-xs text-slate-500">Live Firebase path: <code class="font-mono text-emerald-800">/awc_awvad04/stock_inward</code></p>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="bg-slate-50 text-slate-700 uppercase tracking-wider text-[11px] border-y border-slate-200">
+                <th class="py-3 px-4 font-bold">Inward Date</th>
+                <th class="py-3 px-3 font-bold">Challan #</th>
+                <th class="py-3 px-4 font-bold">Item Name</th>
+                <th class="py-3 px-3 font-bold text-right">Quantity</th>
+                <th class="py-3 px-3 font-bold">Batch Number</th>
+                <th class="py-3 px-3 font-bold">Expiry Date</th>
+                <th class="py-3 px-4 font-bold">Supplier Godown</th>
+              </tr>
+            </thead>
+            <tbody id="inward-tbody" class="divide-y divide-slate-100 font-medium">
+              <!-- Inward Batches -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 6: INTER-AWC TRANSFERS -->
+    <div id="tab-transfers" class="tab-content hidden space-y-4">
+      <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm space-y-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-base font-extrabold text-slate-900">Inter-AWC Emergency Stock Transfer Ledger</h3>
+            <p class="text-xs text-slate-500">Supervisor Security Verification PIN: <strong class="text-amber-800 font-mono">#8491</strong></p>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="bg-slate-50 text-slate-700 uppercase tracking-wider text-[11px] border-y border-slate-200">
+                <th class="py-3 px-4 font-bold">Transfer Date</th>
+                <th class="py-3 px-3 font-bold">Action</th>
+                <th class="py-3 px-4 font-bold">Peer Anganwadi Centre</th>
+                <th class="py-3 px-4 font-bold">Item Exchanged</th>
+                <th class="py-3 px-3 font-bold text-right">Quantity</th>
+                <th class="py-3 px-3 font-bold text-center">Auth PIN</th>
+                <th class="py-3 px-4 font-bold">Audit Status</th>
+              </tr>
+            </thead>
+            <tbody id="transfers-tbody" class="divide-y divide-slate-100 font-medium">
+              <!-- Transfers data -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-slate-900 text-slate-400 text-xs py-4 border-t border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-wrap justify-between items-center gap-2">
+      <p>PoshanSetu (પોષણ સેતુ) • Women & Child Development Department, Govt. of Gujarat</p>
+      <p>Audited for Sector Supervisor: <strong>Shardaben Shah</strong> • AWC: <strong>04 Vadtal (AWVAD04)</strong></p>
+    </div>
+  </footer>
+
+  <!-- Firebase & Application Scripts -->
+  <script>
+    // Initialize Lucide Icons
+    lucide.createIcons();
+
+    // Exactly the 10 Students matching mobile app
+    const STUDENTS = [
+      { rollNo: '01', name: 'Aarav Patel', nameGu: 'આરવ પટેલ', age: '4y', gender: 'M', parent: 'Ramesh Patel', present: true },
+      { rollNo: '02', name: 'Diya Shah', nameGu: 'દીયા શાહ', age: '5y', gender: 'F', parent: 'Bhavesh Shah', present: true },
+      { rollNo: '03', name: 'Vihaan Mehta', nameGu: 'વિહાન મહેતા', age: '4y', gender: 'M', parent: 'Kunal Mehta', present: true },
+      { rollNo: '04', name: 'Ananya Joshi', nameGu: 'અનન્યા જોશી', age: '3y', gender: 'F', parent: 'Sanjay Joshi', present: true },
+      { rollNo: '05', name: 'Kabir Parmar', nameGu: 'કબીર પરમાર', age: '5y', gender: 'M', parent: 'Hasmukh Parmar', present: true },
+      { rollNo: '06', name: 'Riya Desai', nameGu: 'રીયા દેસાઈ', age: '4y', gender: 'F', parent: 'Chetan Desai', present: true },
+      { rollNo: '07', name: 'Dev Solanki', nameGu: 'દેવ સોલંકી', age: '5y', gender: 'M', parent: 'Prakash Solanki', present: true },
+      { rollNo: '08', name: 'Ishita Vaghela', nameGu: 'ઈશિતા વાઘેલા', age: '3y', gender: 'F', parent: 'Manish Vaghela', present: true },
+      { rollNo: '09', name: 'Rudra Makwana', nameGu: 'રુદ્ર મકવાણા', age: '4y', gender: 'M', parent: 'Sunil Makwana', present: true },
+      { rollNo: '10', name: 'Priya Chavda', nameGu: 'પ્રિયા ચાવડા', age: '5y', gender: 'F', parent: 'Dinesh Chavda', present: true }
+    ];
+
+    // Standard Inventory baseline
+    const DEFAULT_INVENTORY = [
+      { id: 'rice', name: 'Fortified Rice', nameGu: 'ફોર્ટિફાઇડ ચોખા', category: 'Staple Grain', unit: 'kg', initial: 60, current: 48, batch: 'RIC-2026-B1', expiry: '12-2027' },
+      { id: 'oil', name: 'Fortified Edible Oil', nameGu: 'ફોર્ટિફાઇડ ખાદ્ય તેલ', category: 'Staple Fat', unit: 'litre', initial: 30, current: 22, batch: 'OIL-2026-X9', expiry: '08-2027' },
+      { id: 'bal_shakti', name: 'Bal Shakti Premix', nameGu: 'બાલ શક્તિ પૂરક આહાર', category: 'THR Sealed Pack', unit: 'Pack', initial: 50, current: 35, batch: 'BAL-26-90', expiry: '06-2027' },
+      { id: 'matru_shakti', name: 'Matru Shakti Premix', nameGu: 'માતૃ શક્તિ પૂરક આહાર', category: 'THR Sealed Pack', unit: 'Pack', initial: 35, current: 24, batch: 'MAT-26-44', expiry: '07-2027' },
+      { id: 'purna_shakti', name: 'Purna Shakti Premix', nameGu: 'પૂર્ણા શક્તિ પૂરક આહાર', category: 'THR Sealed Pack', unit: 'Pack', initial: 30, current: 20, batch: 'PUR-26-12', expiry: '07-2027' },
+      { id: 'atta', name: 'Whole Wheat Atta', nameGu: 'ઘઉંનો લોટ (આટો)', category: 'Staple Grain', unit: 'kg', initial: 70, current: 50, batch: 'ATT-2026-K4', expiry: '04-2027' },
+      { id: 'dal', name: 'Tuver Dal (Split Red Gram)', nameGu: 'તુવેર દાળ', category: 'Staple Pulse', unit: 'kg', initial: 35, current: 25, batch: 'DAL-26-88', expiry: '10-2027' }
+    ];
+
+    // Standard Inward Batches
+    const DEFAULT_INWARD = [
+      { date: '18-Oct-2026', challan: 'INW-2026-1044', name: 'Fortified Rice', qty: 25, unit: 'kg', batch: 'RIC-VAD-26-04', expiry: '12-2027', supplier: 'District Godown, Anand' },
+      { date: '18-Oct-2026', challan: 'INW-2026-1044', name: 'Whole Wheat Atta', qty: 20, unit: 'kg', batch: 'ATT-VAD-26-11', expiry: '04-2027', supplier: 'District Godown, Anand' },
+      { date: '18-Oct-2026', challan: 'INW-2026-1044', name: 'Fortified Edible Oil', qty: 10, unit: 'litre', batch: 'OIL-VAD-26-09', expiry: '08-2027', supplier: 'District Godown, Anand' },
+      { date: '18-Oct-2026', challan: 'INW-2026-1044', name: 'Bal Shakti Premix', qty: 15, unit: 'Pack', batch: 'BAL-VAD-26-22', expiry: '06-2027', supplier: 'District Godown, Anand' },
+      { date: '18-Oct-2026', challan: 'INW-2026-1044', name: 'Matru Shakti Premix', qty: 10, unit: 'Pack', batch: 'MAT-VAD-26-18', expiry: '07-2027', supplier: 'District Godown, Anand' },
+      { date: '18-Oct-2026', challan: 'INW-2026-1044', name: 'Purna Shakti Premix', qty: 10, unit: 'Pack', batch: 'PUR-VAD-26-05', expiry: '07-2027', supplier: 'District Godown, Anand' },
+      { date: '18-Oct-2026', challan: 'INW-2026-1044', name: 'Tuver Dal', qty: 10, unit: 'kg', batch: 'DAL-VAD-26-33', expiry: '10-2027', supplier: 'District Godown, Anand' }
+    ];
+
+    // Standard Transfers (#8491)
+    const DEFAULT_TRANSFERS = [
+      { date: '17-Oct-2026', action: 'given', peer: 'AWC-02 Mogri (Taluka Anand)', item: 'Bal Shakti Premix', qty: 5, unit: 'Pack', code: '#8491', status: 'Supervisor Verified' },
+      { date: '16-Oct-2026', action: 'given', peer: 'AWC-03 Karamsad (Taluka Anand)', item: 'Fortified Rice', qty: 6, unit: 'kg', code: '#8491', status: 'Supervisor Verified' },
+      { date: '16-Oct-2026', action: 'given', peer: 'AWC-05 Samarkha (Taluka Anand)', item: 'Fortified Edible Oil', qty: 2, unit: 'litre', code: '#8491', status: 'Supervisor Verified' },
+      { date: '15-Oct-2026', action: 'received', peer: 'AWC-02 Mogri (Taluka Anand)', item: 'Matru Shakti Premix', qty: 4, unit: 'Pack', code: '#8491', status: 'Supervisor Verified' }
+    ];
+
+    // Tab Switcher
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('bg-[#15803D]', 'text-white', 'shadow-xs');
+        btn.classList.add('bg-white', 'text-slate-700', 'border', 'border-slate-200');
+      });
+
+      document.getElementById(tabId).classList.remove('hidden');
+      const activeBtn = document.getElementById('btn-' + tabId);
+      if (activeBtn) {
+        activeBtn.classList.remove('bg-white', 'text-slate-700', 'border', 'border-slate-200');
+        activeBtn.classList.add('bg-[#15803D]', 'text-white', 'shadow-xs');
+      }
+      lucide.createIcons();
     }
 
-    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    // Render 10 Students Register
+    function renderStudents() {
+      const tbody = document.getElementById('students-tbody');
+      tbody.innerHTML = STUDENTS.map(st => `
+        <tr class="hover:bg-slate-50">
+          <td class="py-3 px-4 font-mono font-bold text-slate-800">${st.rollNo}</td>
+          <td class="py-3 px-4 font-bold text-slate-900">${st.name}</td>
+          <td class="py-3 px-4 font-medium text-slate-700">${st.nameGu}</td>
+          <td class="py-3 px-3 text-slate-600">${st.age}</td>
+          <td class="py-3 px-3 text-slate-600">${st.gender === 'M' ? 'Boy' : 'Girl'}</td>
+          <td class="py-3 px-4 text-slate-700">${st.parent}</td>
+          <td class="py-3 px-4 text-center">
+            <span class="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full border border-emerald-300">
+              ✓ Present
+            </span>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // Render Inventory Table
+    function renderInventory(items) {
+      const tbody = document.getElementById('inventory-tbody');
+      tbody.innerHTML = items.map(it => {
+        const percent = Math.round((it.current / it.initial) * 100);
+        return `
+          <tr class="hover:bg-slate-50">
+            <td class="py-3 px-4 font-bold text-slate-900">
+              ${it.name} <span class="text-slate-500 font-normal">(${it.nameGu})</span>
+            </td>
+            <td class="py-3 px-3 font-semibold text-slate-600">${it.category}</td>
+            <td class="py-3 px-3 text-right text-slate-600 tabular-nums">${it.initial} ${it.unit}</td>
+            <td class="py-3 px-3 text-right font-black text-[#15803D] tabular-nums">${it.current} ${it.unit}</td>
+            <td class="py-3 px-3 font-mono font-bold text-slate-700">${it.batch}</td>
+            <td class="py-3 px-3 text-slate-600">${it.expiry}</td>
+            <td class="py-3 px-4 text-center">
+              <span class="inline-flex items-center gap-1 text-[10.5px] font-bold text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full border border-emerald-300">
+                ${percent}% In Stock
+              </span>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Render Inward Batches
+    function renderInward(batches) {
+      const tbody = document.getElementById('inward-tbody');
+      tbody.innerHTML = batches.map(b => `
+        <tr class="hover:bg-slate-50">
+          <td class="py-3 px-4 font-bold text-slate-900">${b.date}</td>
+          <td class="py-3 px-3 font-mono text-[11px] text-slate-600">${b.challan}</td>
+          <td class="py-3 px-4 font-bold text-slate-800">${b.name}</td>
+          <td class="py-3 px-3 text-right font-black text-emerald-700 tabular-nums">+${b.qty} ${b.unit}</td>
+          <td class="py-3 px-3 font-mono font-bold text-slate-800">${b.batch}</td>
+          <td class="py-3 px-3 text-slate-600">${b.expiry}</td>
+          <td class="py-3 px-4 text-slate-600">${b.supplier}</td>
+        </tr>
+      `).join('');
+    }
+
+    // Render Transfers Table
+    function renderTransfers(transfers) {
+      const tbody = document.getElementById('transfers-tbody');
+      tbody.innerHTML = transfers.map(tr => `
+        <tr class="hover:bg-slate-50">
+          <td class="py-3 px-4 font-bold text-slate-800">${tr.date}</td>
+          <td class="py-3 px-3">
+            <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase ${tr.action === 'given' ? 'bg-rose-100 text-rose-800' : 'bg-emerald-100 text-emerald-800'}">
+              ${tr.action === 'given' ? 'Given to' : 'Received from'}
+            </span>
+          </td>
+          <td class="py-3 px-4 font-semibold text-slate-900">${tr.peer}</td>
+          <td class="py-3 px-4 font-bold text-slate-800">${tr.item}</td>
+          <td class="py-3 px-3 text-right font-black text-slate-900 tabular-nums">${tr.qty} ${tr.unit}</td>
+          <td class="py-3 px-3 text-center font-mono font-bold text-amber-800">${tr.code}</td>
+          <td class="py-3 px-4 text-emerald-700 font-bold">✓ ${tr.status}</td>
+        </tr>
+      `).join('');
+    }
+
+    // Render Realtime Meal Entries
+    function renderMealEntries(entries) {
+      const tbody = document.getElementById('meals-tbody');
+      if (!entries || entries.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" class="py-6 text-center text-slate-500">
+              No meal deductions recorded yet today. Waiting for live sync from AWW Smt. Bhavna Ben Patel...
+            </td>
+          </tr>
+        `;
+        return;
+      }
+      tbody.innerHTML = entries.map(m => `
+        <tr class="hover:bg-slate-50">
+          <td class="py-3 px-4 text-slate-600 font-mono text-[11px]">${m.timestamp ? new Date(m.timestamp).toLocaleTimeString() : 'Recent'}</td>
+          <td class="py-3 px-3 font-bold capitalize text-slate-800">${m.mealType || 'Breakfast'}</td>
+          <td class="py-3 px-4 font-bold text-slate-900">${m.menuName || 'Sukdi (Atta)'}</td>
+          <td class="py-3 px-3 text-center font-bold text-emerald-700">${m.studentsPresent || 10}</td>
+          <td class="py-3 px-3 text-right font-black text-slate-900">${m.totalGrams || 300} gm</td>
+          <td class="py-3 px-4 text-slate-600">${m.confirmedBy || 'Smt. Bhavna Ben Patel (AWW)'}</td>
+        </tr>
+      `).join('');
+    }
+
+    // Render Realtime Distributions
+    function renderDistributions(distList) {
+      const tbody = document.getElementById('distributions-tbody');
+      if (!distList || distList.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="5" class="py-6 text-center text-slate-500">
+              No THR distributions recorded today. Awaiting AWW entries...
+            </td>
+          </tr>
+        `;
+        return;
+      }
+      tbody.innerHTML = distList.map(d => {
+        const itemsStr = d.items ? Object.entries(d.items).map(([k, v]) => `${k}: ${v}`).join(', ') : 'Ration packs';
+        return `
+          <tr class="hover:bg-slate-50">
+            <td class="py-3 px-4 text-slate-600 font-mono text-[11px]">${d.timestamp ? new Date(d.timestamp).toLocaleDateString() : 'Recent'}</td>
+            <td class="py-3 px-4 font-bold text-slate-900">${d.beneficiary || 'Beneficiary'}</td>
+            <td class="py-3 px-3 font-semibold text-slate-700">${d.category || 'Lactating Mother'}</td>
+            <td class="py-3 px-4 text-slate-800 text-[11px]">${itemsStr}</td>
+            <td class="py-3 px-3 text-center text-emerald-700 font-bold">${d.photoAttached ? '✓ Photo Verified' : 'Standard'}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // ==========================================
+    // Firebase Realtime Database Sync
+    // ==========================================
+    const FIREBASE_CONFIG = {
+      databaseURL: "https://poshan-setu-default-rtdb.firebaseio.com/"
+    };
+    const AWC_PATH = "awc_awvad04";
+
+    let db = null;
+
+    function initFirebase() {
+      try {
+        if (!firebase.apps || firebase.apps.length === 0) {
+          firebase.initializeApp(FIREBASE_CONFIG);
+        }
+        db = firebase.database();
+        document.getElementById('firebase-status-text').innerText = 'RTDB Live: /awc_awvad04';
+        
+        // Listen to live meal deductions
+        db.ref(`${AWC_PATH}/meal_entries`).on('value', snapshot => {
+          const val = snapshot.val();
+          if (val) {
+            const list = Object.values(val).reverse();
+            renderMealEntries(list);
+          }
+        });
+
+        // Listen to live distributions
+        db.ref(`${AWC_PATH}/distributions`).on('value', snapshot => {
+          const val = snapshot.val();
+          if (val) {
+            const list = Object.values(val).reverse();
+            renderDistributions(list);
+          }
+        });
+
+        // Listen to live inventory updates
+        db.ref(`${AWC_PATH}/inventory`).on('value', snapshot => {
+          const val = snapshot.val();
+          if (val) {
+            const updated = DEFAULT_INVENTORY.map(item => ({
+              ...item,
+              current: typeof val[item.id] === 'number' ? val[item.id] : item.current
+            }));
+            renderInventory(updated);
+          }
+        });
+
+      } catch (err) {
+        console.warn('Firebase RTDB connect notice:', err);
+        document.getElementById('firebase-status-text').innerText = 'Offline Simulation (Local Mode)';
+      }
+    }
+
+    function fetchLiveFirebaseData() {
+      const btn = document.getElementById('btn-refresh');
+      btn.classList.add('opacity-50');
+      btn.innerText = 'Refreshing...';
+      setTimeout(() => {
+        btn.classList.remove('opacity-50');
+        btn.innerHTML = '<i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i><span>Live Refresh</span>';
+        lucide.createIcons();
+      }, 500);
+    }
+
+    // Initial Mount
+    document.addEventListener('DOMContentLoaded', () => {
+      renderStudents();
+      renderInventory(DEFAULT_INVENTORY);
+      renderInward(DEFAULT_INWARD);
+      renderTransfers(DEFAULT_TRANSFERS);
+      renderMealEntries([
+        { timestamp: new Date().toISOString(), mealType: 'Breakfast', menuName: 'Sukdi (Atta)', studentsPresent: 10, totalGrams: 300, confirmedBy: 'Smt. Bhavna Ben Patel (AWW)' },
+        { timestamp: new Date(Date.now() - 3600000).toISOString(), mealType: 'Lunch', menuName: 'Vegetable Khichdi (Rice + Dal)', studentsPresent: 10, totalGrams: 500, confirmedBy: 'Smt. Bhavna Ben Patel (AWW)' }
+      ]);
+      renderDistributions([
+        { timestamp: new Date().toISOString(), beneficiary: 'Surbhi Rawat', category: 'Lactating Mother (LM)', items: { 'Bal Shakti': 1, 'Oil': 1, 'Rice': 1 }, photoAttached: true },
+        { timestamp: new Date(Date.now() - 7200000).toISOString(), beneficiary: 'Shreeya Dube', category: 'Pregnant Woman (PW)', items: { 'Matru Shakti': 1, 'Atta': 1 }, photoAttached: true }
+      ]);
+      initFirebase();
+      lucide.createIcons();
+    });
   </script>
+
 </body>
 </html>
