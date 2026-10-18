@@ -1,45 +1,639 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="gu">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-    <title>PoshanSetu - Gujarat Anganwadi PWA</title>
-    <meta name="description" content="Bilingual mobile Progressive Web App for Anganwadi workers in Gujarat to track nutrition stock, inward entries, daily distribution, and sync real-time with Firebase." />
-    <meta property="og:title" content="PoshanSetu - Gujarat Anganwadi PWA" />
-    <meta property="og:description" content="Bilingual mobile Progressive Web App for Anganwadi workers in Gujarat to track nutrition stock, inward entries, daily distribution, and sync real-time with Firebase." />
-    <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary_large_image" />
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>PoshanSetu - આંગણવાડી સ્ટોક ટ્રેકર</title>
+  
+  <!-- Mobile & PWA Meta Tags -->
+  <meta name="theme-color" content="#1e40af">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="PoshanSetu">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts for Gujarati and Modern Numerals -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Gujarati:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Firebase Realtime Database SDK via CDN -->
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+  
+  <!-- jsPDF & AutoTable via CDN for Standalone PDF Export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+  
+  <style>
+    body {
+      font-family: 'Noto Sans Gujarati', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+    input, button, select {
+      user-select: auto;
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased min-h-screen flex justify-center sm:py-6">
+  
+  <!-- Mobile Frame Container -->
+  <div class="w-full max-w-md bg-white shadow-2xl sm:rounded-3xl flex flex-col min-h-screen sm:min-h-[850px] overflow-hidden border border-slate-200">
     
-    <!-- PWA meta tags -->
-    <meta name="theme-color" content="#13653F" />
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <meta name="apple-mobile-web-app-title" content="PoshanSetu" />
-    <link rel="manifest" href="/manifest.webmanifest" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <!-- Cobalt Blue Header -->
+    <header class="bg-gradient-to-b from-blue-900 via-blue-800 to-blue-700 text-white px-5 pt-5 pb-5 shadow-md relative">
+      
+      <!-- Top Row: Logo & Language Selector -->
+      <div class="flex items-center justify-between mb-2.5">
+        <div class="flex items-center gap-2">
+          <span class="w-8 h-8 rounded-full bg-white/20 backdrop-blur-sm border border-white/20 flex items-center justify-center font-black text-xs text-white">PS</span>
+          <div>
+            <span id="headerBrandTitle" class="text-[11px] font-semibold tracking-wider text-blue-200 uppercase block leading-none">પોષણસેતુ • PoshanSetu</span>
+            <span id="headerDeptTitle" class="text-[10px] text-blue-300">મહિલા & બાળ વિકાસ વિભાગ • ગુજરાત</span>
+          </div>
+        </div>
 
-    <!-- Google Fonts for Gujarati and English -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Gujarati:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+        <!-- Controls: Language + Audio Toggle -->
+        <div class="flex items-center gap-1.5">
+          <button onclick="toggleLanguage()" id="langToggleBtn" class="flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/20 hover:bg-white/30 active:scale-95 transition text-white border border-white/25 shadow-xs font-bold text-xs">
+            🌐 <span id="langBtnText">English</span>
+          </button>
+          <button onclick="toggleAudio()" id="audioBtn" class="w-7 h-7 rounded-full bg-white/10 hover:bg-white/20 text-blue-200 flex items-center justify-center transition text-xs font-bold">
+            🔊
+          </button>
+        </div>
+      </div>
 
-    <!-- Firebase SDK via CDN (Realtime Database compat) -->
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+      <!-- Second Row: Greeting & Online Status -->
+      <div class="flex items-end justify-between mt-2 pt-1 border-t border-white/10">
+        <div>
+          <h1 id="greetingHeading" class="text-lg sm:text-xl font-bold tracking-tight text-white">
+            નમસ્તે ગીતાબેન <span class="text-blue-200 text-sm font-semibold">(વડતાલ-૦૪)</span>
+          </h1>
+          <p id="workerSubtext" class="text-xs text-blue-100 font-medium mt-0.5">આંગણવાડી કાર્યકર્તા • Anganwadi Worker</p>
+        </div>
 
-    <script>
-      // Register service worker if available
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js').catch(() => {});
+        <div id="statusBadge" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold backdrop-blur-md bg-emerald-500/25 border border-emerald-400/40 text-emerald-200 shadow-xs">
+          <span class="relative flex h-2 w-2">
+            <span id="statusPing" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span id="statusDot" class="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
+          </span>
+          <span id="statusText">ઓનલાઇન (Online)</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-1 px-4 py-3.5 space-y-3.5 overflow-y-auto">
+
+      <!-- Toast Notification Alert -->
+      <div id="toast" class="hidden bg-blue-900 text-white text-xs font-medium px-4 py-2.5 rounded-xl shadow-lg border border-blue-600/50 flex items-center justify-between gap-2 transition-all">
+        <span id="toastMsg">સંદેશ</span>
+        <button onclick="hideToast()" class="text-white/60 hover:text-white font-bold ml-2">✕</button>
+      </div>
+
+      <!-- Hero Card: Realtime Live Inventory Overview -->
+      <div class="bg-gradient-to-br from-blue-700 via-blue-800 to-indigo-900 rounded-2xl p-4 text-white shadow-xl relative overflow-hidden border border-blue-500/30">
+        <div class="flex items-center justify-between">
+          <span id="heroCardTag" class="text-[11px] font-semibold tracking-wide uppercase px-2.5 py-0.5 rounded-full bg-white/15 text-blue-100 border border-white/20">
+            સરકારી પોષણ સ્ટોક સિલક (SNP Stock)
+          </span>
+          <span id="stockStatusTag" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/25 text-emerald-200 border border-emerald-400/30">
+            પૂરતો સ્ટોક
+          </span>
+        </div>
+
+        <div class="mt-3 grid grid-cols-2 gap-2 text-xs">
+          <!-- Bal Shakti Packets -->
+          <div class="bg-white/10 p-2.5 rounded-xl border border-white/10">
+            <span class="text-blue-200 block text-[10px]">બાલ શક્તિ (Bal Shakti 500g):</span>
+            <span id="balshaktiVal" class="text-2xl font-black text-amber-300">૧૨૪</span>
+            <span class="text-blue-200 text-xs">પેકેટ</span>
+          </div>
+          <!-- Matru / Purna Shakti Packets -->
+          <div class="bg-white/10 p-2.5 rounded-xl border border-white/10">
+            <span class="text-blue-200 block text-[10px]">માતૃ / પૂર્ણા શક્તિ:</span>
+            <span id="matrushaktiVal" class="text-2xl font-black text-amber-300">૬૫</span>
+            <span class="text-blue-200 text-xs">પેકેટ</span>
+          </div>
+          <!-- Cooking Rice (kg) -->
+          <div class="bg-white/10 p-2.5 rounded-xl border border-white/10">
+            <span class="text-blue-200 block text-[10px]">ચોખા (Cooking Rice):</span>
+            <span id="riceVal" class="text-2xl font-black text-emerald-300">૨૪.૫</span>
+            <span class="text-blue-200 text-xs">કિ.ગ્રા.</span>
+          </div>
+          <!-- Cooking Oil (Litre) & Dal -->
+          <div class="bg-white/10 p-2.5 rounded-xl border border-white/10">
+            <span class="text-blue-200 block text-[10px]">તેલ અને દાળ:</span>
+            <span id="oilVal" class="text-2xl font-black text-emerald-300">૮.૨</span>
+            <span class="text-blue-200 text-xs">કિ.ગ્રા./લિ.</span>
+          </div>
+        </div>
+
+        <div class="mt-3 pt-2 border-t border-white/15 flex items-center justify-between text-xs text-blue-100">
+          <span id="lastActionText" class="truncate pr-2">છેલ્લો ફેરફાર: સિસ્ટમ સક્રિય</span>
+          <span id="lastActionTime" class="text-[11px] text-blue-200 shrink-0">આજે</span>
+        </div>
+      </div>
+
+      <!-- Meal Consumption Calculator (Morning 30g + Afternoon 50g per Child) -->
+      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 space-y-3">
+        <div class="flex items-center justify-between border-b pb-2">
+          <div>
+            <h2 class="text-sm font-bold text-slate-800">🍽️ દૈનિક ભોજન ગણતરી (Daily Meal Cooked)</h2>
+            <p class="text-[10px] text-slate-500">હાજરી મુજબ નિયત ગ્રામ આપમેળે ગણાશે</p>
+          </div>
+          <span class="text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded-lg font-bold">નિયત રેશિયો</span>
+        </div>
+
+        <!-- Attendance Stepper for Meal Multiplier -->
+        <div class="bg-slate-50 p-2.5 rounded-xl border flex items-center justify-between">
+          <div>
+            <span class="text-xs font-bold text-slate-700 block">આજે હાજર બાળકો:</span>
+            <span class="text-[10px] text-slate-500">નોંધાયેલ: ૩૦ બાળકો</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <button onclick="adjustPresentChildren(-1)" class="w-8 h-8 rounded-lg bg-white border border-slate-300 font-bold text-lg active:scale-95 shadow-xs">-</button>
+            <span id="presentKidsDisplay" class="font-black text-xl text-blue-900 w-8 text-center font-mono">20</span>
+            <button onclick="adjustPresentChildren(1)" class="w-8 h-8 rounded-lg bg-white border border-slate-300 font-bold text-lg active:scale-95 shadow-xs">+</button>
+          </div>
+        </div>
+
+        <!-- Meal Type Selector: Morning 30g vs Afternoon 50g -->
+        <div class="grid grid-cols-2 gap-2">
+          <label onclick="setMealType('morning')" id="mealCardMorning" class="cursor-pointer p-2.5 rounded-xl border border-blue-600 bg-blue-50/60 flex flex-col justify-between">
+            <div class="flex justify-between items-center">
+              <span class="text-xs font-bold text-slate-900">સવારનો નાસ્તો</span>
+              <span class="text-[10px] font-black text-blue-700 bg-blue-100 px-1.5 py-0.2 rounded">30g / બાળક</span>
+            </div>
+            <p id="morningCalcText" class="text-[11px] font-extrabold text-blue-900 mt-1.5">કુલ: ૬૦૦ ગ્રામ</p>
+          </label>
+
+          <label onclick="setMealType('afternoon')" id="mealCardAfternoon" class="cursor-pointer p-2.5 rounded-xl border border-slate-200 bg-white flex flex-col justify-between">
+            <div class="flex justify-between items-center">
+              <span class="text-xs font-bold text-slate-900">બપોરનું ભોજન</span>
+              <span class="text-[10px] font-black text-amber-700 bg-amber-100 px-1.5 py-0.2 rounded">50g / બાળક</span>
+            </div>
+            <p id="afternoonCalcText" class="text-[11px] font-bold text-slate-500 mt-1.5">કુલ: ૧,૦૦૦ ગ્રામ (1 kg)</p>
+          </label>
+        </div>
+
+        <!-- Item Deduction Selector -->
+        <div>
+          <label class="block text-[11px] font-bold text-slate-600 mb-1">કઈ સામગ્રીમાંથી કપાત કરવી?</label>
+          <select id="mealIngredientSelect" class="w-full bg-slate-50 border rounded-xl p-2 text-xs font-bold text-slate-800">
+            <option value="rice">ચોખા (Cooking Rice - 35g/50g Portion)</option>
+            <option value="dal">તુવેર દાળ / ચણા (Dal - 15g Portion)</option>
+            <option value="balshakti">બાલ શક્તિ પેકેટ (Sheera Recipe)</option>
+          </select>
+        </div>
+
+        <!-- Deduct Meal Button -->
+        <button onclick="handleMealDeduction()" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-orange-600 to-amber-700 hover:from-orange-700 hover:to-amber-800 active:scale-[0.98] text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md transition">
+          <span>🍴 હાજરી મુજબ ભોજન વપરાશ સ્ટોકમાંથી બાદ કરો</span>
+        </button>
+      </div>
+
+      <!-- Action Steppers (Inward Stock) -->
+      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 space-y-3">
+        <div class="flex items-center justify-between border-b pb-2">
+          <div>
+            <h2 id="inwardTitle" class="text-sm font-bold text-slate-800">+ સ્ટોક આવક નોંધણી (Stock Inward)</h2>
+            <p id="inwardSub" class="text-[10px] text-slate-500 font-medium">ગોડાઉન અથવા બજારમાંથી આવેલ નવો માલ</p>
+          </div>
+          <select id="inwardItemType" onchange="updateInwardUnitText()" class="text-xs border rounded-lg p-1 bg-slate-50 font-bold text-slate-700">
+            <option value="balshakti">બાલ શક્તિ (પેકેટ)</option>
+            <option value="matrushakti">માતૃ/પૂર્ણા શક્તિ (પેકેટ)</option>
+            <option value="rice">ચોખા (કિ.ગ્રા.)</option>
+            <option value="oil">તેલ (લિટર)</option>
+            <option value="dal">તુવેર દાળ/ચણા (કિ.ગ્રા.)</option>
+          </select>
+        </div>
+
+        <div class="bg-slate-50 rounded-xl p-2.5 flex items-center justify-between border border-slate-200">
+          <button onclick="adjustInward(-5)" class="w-10 h-10 rounded-lg bg-white border text-emerald-800 font-black text-xl active:scale-95 shadow-xs">−</button>
+          <div class="text-center">
+            <div id="inwardStepDisplay" class="text-2xl font-black text-slate-800">+૨૫</div>
+            <div id="inwardUnitText" class="text-[10px] text-slate-500 font-bold">પેકેટ (Packets)</div>
+          </div>
+          <button onclick="adjustInward(5)" class="w-10 h-10 rounded-lg bg-white border text-emerald-800 font-black text-xl active:scale-95 shadow-xs">+</button>
+        </div>
+
+        <button onclick="handleInwardSubmit()" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 active:scale-[0.98] text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md transition">
+          <span id="inwardBtnText">+ સ્ટોકમાં નવો જથ્થો જમા કરો</span>
+        </button>
+      </div>
+
+      <!-- Quick Action Buttons -->
+      <div class="grid grid-cols-3 gap-2">
+        <button onclick="exportBalancePDF()" id="pdfBtn" class="py-2.5 px-2 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-bold text-xs flex flex-col items-center justify-center gap-1 shadow-md active:scale-95 transition">
+          <span class="text-sm">📄</span>
+          <span id="pdfBtnText" class="text-[11px] leading-tight text-center">પીડીએફ પત્રક</span>
+        </button>
+        <button onclick="openHistoryModal()" class="py-2.5 px-2 rounded-xl bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 active:scale-95 text-xs font-semibold flex flex-col items-center justify-center gap-1 shadow-2xs transition">
+          <span class="text-sm">📋</span>
+          <span id="historyBtnText" class="text-[11px] leading-tight text-center">હિસાબ રજીસ્ટર</span>
+        </button>
+        <button onclick="shareWhatsAppReport()" class="py-2.5 px-2 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 hover:bg-emerald-100 active:scale-95 text-xs font-semibold flex flex-col items-center justify-center gap-1 shadow-2xs transition">
+          <span class="text-sm">📲</span>
+          <span id="whatsappBtnText" class="text-[11px] leading-tight text-center">વોટ્સએપ શેર</span>
+        </button>
+      </div>
+
+      <!-- Firebase Link Badge -->
+      <div class="p-3 rounded-xl bg-blue-50/70 border border-blue-200 text-slate-700 text-xs space-y-1">
+        <div class="font-bold text-blue-900 flex items-center justify-between">
+          <span>Firebase Realtime Database:</span>
+          <span id="fbLiveTag" class="text-[10px] font-bold text-emerald-700">લાઈવ સિંક સક્રિય</span>
+        </div>
+        <div class="font-mono text-[10px] text-blue-700 break-all">https://poshan-setu-default-rtdb.firebaseio.com/</div>
+        <div class="text-[10px] text-slate-500">• અંદાજિત કપાત અને સ્ટોક આપોઆપ સુપરવાઈઝર સ્ક્રીન પર સિંક થાય છે.</div>
+      </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-50 border-t border-slate-200 px-4 py-2.5 text-center text-[11px] text-slate-500 flex items-center justify-between">
+      <span>પોષણસેતુ • વડતાલ-૦૪</span>
+      <span>AWC-10103</span>
+    </footer>
+  </div>
+
+  <!-- History Modal -->
+  <div id="historyModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3">
+    <div class="bg-white rounded-3xl w-full max-w-md max-h-[85vh] flex flex-col shadow-2xl overflow-hidden border border-slate-200">
+      <div class="bg-blue-800 text-white px-5 py-4 flex items-center justify-between">
+        <div>
+          <h3 id="modalTitle" class="text-base font-bold">સ્ટોક હિસાબ અને ઓડિટ રજીસ્ટર</h3>
+          <p class="text-xs text-blue-200">Transaction History • આંગણવાડી ૦૪ વડતાલ</p>
+        </div>
+        <button onclick="closeHistoryModal()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center">✕</button>
+      </div>
+      <div class="p-2.5 bg-blue-50 border-b border-blue-200 flex items-center justify-between">
+        <span class="text-xs font-bold text-blue-900" id="recordCountText">કુલ નોંધણીઓ</span>
+        <button onclick="exportBalancePDF()" class="px-2.5 py-1 rounded-lg bg-blue-700 hover:bg-blue-800 text-white text-xs font-bold flex items-center gap-1 shadow-xs">
+          📄 PDF ડાઉનલોડ
+        </button>
+      </div>
+      <div id="historyList" class="flex-1 overflow-y-auto p-4 space-y-2"></div>
+      <div class="p-3 bg-slate-100 border-t border-slate-200 flex justify-end">
+        <button onclick="closeHistoryModal()" class="px-4 py-2 rounded-xl bg-blue-700 text-white font-bold text-xs hover:bg-blue-800">બંધ કરો (Close)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Business Logic & Firebase Engine -->
+  <script>
+    const FIREBASE_URL = "https://poshan-setu-default-rtdb.firebaseio.com/";
+    const AWC_PATH = "awc_10103";
+    const VILLAGE = "૦૪ વડતાલ (આણંદ)";
+    const WORKER = "ગીતાબેન";
+
+    // Master Inventory State
+    let stockState = JSON.parse(localStorage.getItem('ps_stock_master')) || {
+      balshakti: 124,     // Packets
+      matrushakti: 65,    // Packets
+      rice: 24.5,         // Kilograms
+      oil: 8.2,           // Litres / kg
+      dal: 14.0           // Kilograms
+    };
+
+    let presentKids = 20;
+    let selectedMeal = 'morning'; // 'morning' (30g) or 'afternoon' (50g)
+    let inwardAmount = 25;
+    let audioOn = true;
+    let currentLang = localStorage.getItem('ps_lang') || 'gu';
+    let db = null;
+    let historyRecords = JSON.parse(localStorage.getItem('ps_history') || '[]');
+
+    function toGujarati(num) {
+      const g = ['૦','૧','૨','૩','૪','૫','૬','૭','૮','૯'];
+      return String(num).replace(/[0-9]/g, d => g[parseInt(d, 10)]);
+    }
+
+    function numStr(val) {
+      return currentLang === 'gu' ? toGujarati(val) : String(val);
+    }
+
+    function saveState() {
+      localStorage.setItem('ps_stock_master', JSON.stringify(stockState));
+      localStorage.setItem('ps_history', JSON.stringify(historyRecords));
+      updateUI();
+    }
+
+    // Adjust Headcount and Update Gram Portions
+    function adjustPresentChildren(delta) {
+      presentKids = Math.max(1, Math.min(30, presentKids + delta));
+      document.getElementById('presentKidsDisplay').innerText = presentKids;
+
+      // Morning = 30g * presentKids
+      const morningGrams = presentKids * 30;
+      document.getElementById('morningCalcText').innerText = `કુલ: ${numStr(morningGrams)} ગ્રામ (${(morningGrams/1000).toFixed(2)} kg)`;
+
+      // Afternoon = 50g * presentKids
+      const afternoonGrams = presentKids * 50;
+      document.getElementById('afternoonCalcText').innerText = `કુલ: ${numStr(afternoonGrams)} ગ્રામ (${(afternoonGrams/1000).toFixed(2)} kg)`;
+    }
+
+    function setMealType(type) {
+      selectedMeal = type;
+      if (type === 'morning') {
+        document.getElementById('mealCardMorning').className = "cursor-pointer p-2.5 rounded-xl border border-blue-600 bg-blue-50/60 flex flex-col justify-between";
+        document.getElementById('mealCardAfternoon').className = "cursor-pointer p-2.5 rounded-xl border border-slate-200 bg-white flex flex-col justify-between";
+      } else {
+        document.getElementById('mealCardAfternoon').className = "cursor-pointer p-2.5 rounded-xl border border-amber-600 bg-amber-50/60 flex flex-col justify-between";
+        document.getElementById('mealCardMorning').className = "cursor-pointer p-2.5 rounded-xl border border-slate-200 bg-white flex flex-col justify-between";
+      }
+    }
+
+    // Handle Meal Consumption Based on Present Children
+    async function handleMealDeduction() {
+      const ingredient = document.getElementById('mealIngredientSelect').value;
+      const gramPerChild = selectedMeal === 'morning' ? 30 : 50;
+      const totalGrams = presentKids * gramPerChild;
+      const totalKg = totalGrams / 1000;
+
+      if (ingredient === 'rice') {
+        if (stockState.rice < totalKg) {
+          alert("ચેતવણી: ચોખાનો પર્યાપ્ત સ્ટોક નથી!");
+          return;
+        }
+        stockState.rice = +(stockState.rice - totalKg).toFixed(2);
+      } else if (ingredient === 'dal') {
+        if (stockState.dal < totalKg) {
+          alert("ચેતવણી: દાળનો પર્યાપ્ત સ્ટોક નથી!");
+          return;
+        }
+        stockState.dal = +(stockState.dal - totalKg).toFixed(2);
+      } else if (ingredient === 'balshakti') {
+        // Balshakti sheera recipe packet deduction
+        const packetsDeducted = Math.ceil(totalGrams / 500);
+        if (stockState.balshakti < packetsDeducted) {
+          alert("ચેતવણી: બાલ શક્તિ પેકેટ પૂરતા નથી!");
+          return;
+        }
+        stockState.balshakti -= packetsDeducted;
+      }
+
+      const mealLabel = selectedMeal === 'morning' ? 'સવારનો નાસ્તો (30g)' : 'બપોરનું ભોજન (50g)';
+      const actionText = `${mealLabel}: ${presentKids} બાળકો (${totalGrams}g વપરાશ)`;
+      const timestamp = Date.now();
+
+      historyRecords.unshift({
+        balanceDesc: `Rice: ${stockState.rice}kg, BalShakti: ${stockState.balshakti}pkts`,
+        lastAction: actionText,
+        change: `-${totalKg} kg / portions`,
+        timestamp: timestamp,
+        village: VILLAGE,
+        note: `હાજર બાળકો: ${presentKids}`
+      });
+
+      saveState();
+      playTone('deduct');
+      showToast(`${mealLabel} મુજબ ${totalGrams} ગ્રામ વપરાશ નોંધાઈ ગયો!`);
+
+      // Push to Firebase Realtime Database
+      if (db) {
+        try {
+          await db.ref(`${AWC_PATH}/stock`).set(stockState);
+          await db.ref(`${AWC_PATH}/audit_logs`).push({
+            type: 'MEAL_DEDUCTION',
+            meal: selectedMeal,
+            headcount: presentKids,
+            gramsUsed: totalGrams,
+            ingredient: ingredient,
+            timestamp: new Date().toLocaleTimeString(),
+            date: new Date().toLocaleDateString()
+          });
+        } catch(e) {
+          console.error("Firebase write error:", e);
+        }
+      }
+    }
+
+    // Inward Steppers & Submission
+    function adjustInward(delta) {
+      inwardAmount = Math.max(1, inwardAmount + delta);
+      document.getElementById('inwardStepDisplay').innerText = `+${numStr(inwardAmount)}`;
+    }
+
+    function updateInwardUnitText() {
+      const type = document.getElementById('inwardItemType').value;
+      const isPacket = (type === 'balshakti' || type === 'matrushakti');
+      document.getElementById('inwardUnitText').innerText = isPacket ? 'પેકેટ (Packets)' : 'કિલો / લિટર (kg/L)';
+    }
+
+    async function handleInwardSubmit() {
+      const itemKey = document.getElementById('inwardItemType').value;
+      stockState[itemKey] = +(stockState[itemKey] + inwardAmount).toFixed(1);
+
+      const timestamp = Date.now();
+      const actionName = `સ્ટોક આવક: +${inwardAmount}`;
+
+      historyRecords.unshift({
+        balanceDesc: `${itemKey}: ${stockState[itemKey]}`,
+        lastAction: actionName,
+        change: `+${inwardAmount}`,
+        timestamp: timestamp,
+        village: VILLAGE,
+        note: 'સરકારી ગોડાઉન સપ્લાય'
+      });
+
+      saveState();
+      playTone('add');
+      showToast(`+${numStr(inwardAmount)} સ્ટોક સફળતાપૂર્વક જમા થયો!`);
+
+      if (db) {
+        try {
+          await db.ref(`${AWC_PATH}/stock`).set(stockState);
+          await db.ref(`${AWC_PATH}/audit_logs`).push({
+            type: 'STOCK_INWARD',
+            item: itemKey,
+            quantity: inwardAmount,
+            newBalance: stockState[itemKey],
+            timestamp: new Date().toLocaleTimeString(),
+            date: new Date().toLocaleDateString()
+          });
+        } catch(e) {
+          console.error("Firebase write error:", e);
+        }
+      }
+    }
+
+    function updateUI() {
+      const isGu = currentLang === 'gu';
+      
+      document.getElementById('balshaktiVal').innerText = numStr(stockState.balshakti);
+      document.getElementById('matrushaktiVal').innerText = numStr(stockState.matrushakti);
+      document.getElementById('riceVal').innerText = numStr(stockState.rice);
+      document.getElementById('oilVal').innerText = numStr(stockState.oil);
+
+      if (historyRecords.length > 0) {
+        document.getElementById('lastActionText').innerText = historyRecords[0].lastAction;
+        document.getElementById('lastActionTime').innerText = formatTime(historyRecords[0].timestamp);
+      }
+    }
+
+    function formatTime(ts) {
+      if (!ts) return currentLang === 'gu' ? 'હમણાં જ' : 'Just now';
+      const d = new Date(ts);
+      const h = d.getHours() % 12 || 12;
+      const m = d.getMinutes().toString().padStart(2, '0');
+      const ampm = d.getHours() >= 12 ? 'PM' : 'AM';
+      return `${h}:${m} ${ampm}`;
+    }
+
+    function toggleLanguage() {
+      currentLang = currentLang === 'gu' ? 'en' : 'gu';
+      localStorage.setItem('ps_lang', currentLang);
+      document.getElementById('langBtnText').innerText = currentLang === 'gu' ? 'English' : 'ગુજરાતી';
+      updateUI();
+      adjustPresentChildren(0);
+      showToast(currentLang === 'gu' ? 'ભાષા: ગુજરાતી' : 'Language: English');
+    }
+
+    function playTone(type) {
+      if (!audioOn) return;
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.frequency.setValueAtTime(type === 'add' ? 600 : 450, ctx.currentTime);
+        gain.gain.setValueAtTime(0.1, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.15);
+      } catch(e) {}
+    }
+
+    function toggleAudio() {
+      audioOn = !audioOn;
+      document.getElementById('audioBtn').innerText = audioOn ? '🔊' : '🔇';
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastMsg').innerText = msg;
+      toast.classList.remove('hidden');
+      setTimeout(() => toast.classList.add('hidden'), 3500);
+    }
+    function hideToast() { document.getElementById('toast').classList.add('hidden'); }
+
+    function openHistoryModal() {
+      const container = document.getElementById('historyList');
+      document.getElementById('recordCountText').innerText = `કુલ નોંધણીઓ: ${numStr(historyRecords.length)}`;
+      container.innerHTML = historyRecords.map(item => `
+        <div class="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+          <div>
+            <div class="text-xs font-bold text-slate-800">${item.lastAction}</div>
+            <div class="text-[10px] text-slate-400">${formatTime(item.timestamp)} • ${item.note || ''}</div>
+          </div>
+          <div class="text-right">
+            <span class="text-xs font-black ${item.change.includes('+') ? 'text-emerald-700' : 'text-amber-700'}">${item.change}</span>
+          </div>
+        </div>
+      `).join('');
+      document.getElementById('historyModal').classList.remove('hidden');
+    }
+
+    function closeHistoryModal() {
+      document.getElementById('historyModal').classList.add('hidden');
+    }
+
+    function shareWhatsAppReport() {
+      const msg = `*પોષણસેતુ આંગણવાડી સ્ટોક પત્રક*\nકેન્દ્ર: ${VILLAGE}\nકાર્યકર: ${WORKER}\nબાલ શક્તિ: ${stockState.balshakti} પેકેટ\nચોખા: ${stockState.rice} કિ.ગ્રા.\nતેલ: ${stockState.oil} લિટર\nદાળ: ${stockState.dal} કિ.ગ્રા.\n_PoshanSetu Gujarat_`;
+      window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(msg), '_blank');
+    }
+
+    function exportBalancePDF() {
+      try {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('p', 'mm', 'a4');
+        doc.setFillColor(30, 64, 175);
+        doc.rect(0, 0, 210, 35, 'F');
+        doc.setTextColor(255, 255, 255);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(16);
+        doc.text('POSHANSETU - WCDD ANGANWADI STOCK REPORT', 14, 15);
+        doc.setFontSize(10);
+        doc.text('Center: 04 - Vadtal (Anand) | Worker: Geetaben', 14, 23);
+        doc.text(`Generated: ${new Date().toLocaleString()}`, 14, 30);
+
+        const rows = [
+          ['1', 'Bal Shakti (Micro-nutrients)', `${stockState.balshakti} Packets`, 'Optimal (THR)'],
+          ['2', 'Matru / Purna Shakti', `${stockState.matrushakti} Packets`, 'Optimal (THR)'],
+          ['3', 'Cooking Rice (Fortified)', `${stockState.rice} kg`, 'Daily Cooked Meal'],
+          ['4', 'Cooking Oil (Fortified)', `${stockState.oil} Litres`, 'Daily Cooked Meal'],
+          ['5', 'Tuver Dal / Chana', `${stockState.dal} kg`, 'Daily Cooked Meal']
+        ];
+
+        doc.autoTable({
+          startY: 45,
+          head: [['#', 'Commodity Name', 'Closing Balance', 'Utilization Mode']],
+          body: rows,
+          headStyles: { fillColor: [30, 64, 175], textColor: 255 }
+        });
+
+        doc.save(`PoshanSetu_Stock_Vadtal_${new Date().toISOString().slice(0,10)}.pdf`);
+        showToast('PDF ડાઉનલોડ સફળ!');
+      } catch(e) {
+        alert('PDF Export Error: ' + e.message);
+      }
+    }
+
+    // Initialize Firebase and Clock
+    try {
+      if (window.firebase) {
+        let app = window.firebase.apps && window.firebase.apps.length > 0 
+          ? window.firebase.apps[0] 
+          : firebase.initializeApp(firebaseConfig);
+        db = firebase.database(app);
+
+        // Listen for live updates
+        db.ref(`${AWC_PATH}/stock`).on('value', (snap) => {
+          const val = snap.val();
+          if (val) {
+            stockState = val;
+            saveState();
+          }
         });
       }
-    </script>
-  </head>
-  <body class="bg-[#F2F9F3] text-gray-900 antialiased select-none font-['Plus_Jakarta_Sans','Noto_Sans_Gujarati',sans-serif]">
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+    } catch(e) {
+      console.warn("RTDB Initialization:", e);
+    }
+
+    function setOnlineBadge(online) {
+      const text = document.getElementById('statusText');
+      const badge = document.getElementById('statusBadge');
+      const dot = document.getElementById('statusDot');
+      const ping = document.getElementById('statusPing');
+
+      if (online) {
+        text.innerText = currentLang === 'gu' ? 'ઓનલાઇન (Online)' : 'Online';
+        badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold backdrop-blur-md bg-emerald-500/25 border border-emerald-400/40 text-emerald-200 shadow-xs';
+        dot.className = 'relative inline-flex rounded-full h-2 w-2 bg-emerald-400';
+        ping.className = 'animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75';
+      } else {
+        text.innerText = currentLang === 'gu' ? 'ઓફલાઇન (Offline)' : 'Offline';
+        badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold backdrop-blur-md bg-rose-500/25 border border-rose-400/40 text-rose-200 shadow-xs';
+        dot.className = 'relative inline-flex rounded-full h-2 w-2 bg-rose-400';
+        ping.className = 'hidden';
+      }
+    }
+
+    window.addEventListener('online', () => setOnlineBadge(true));
+    window.addEventListener('offline', () => setOnlineBadge(false));
+
+    updateUI();
+    adjustPresentChildren(0);
+  </script>
+</body>
 </html>
